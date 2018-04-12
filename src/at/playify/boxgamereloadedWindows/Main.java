@@ -1,4 +1,4 @@
-package at.playify.boxgamereloaded.actor;
+package at.playify.boxgamereloadedWindows;
 
 import at.playify.boxgamereloaded.BoxGameReloaded;
 import at.playify.boxgamereloaded.util.Finger;
