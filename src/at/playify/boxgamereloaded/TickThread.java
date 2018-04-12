@@ -1,6 +1,7 @@
 package at.playify.boxgamereloaded;
 
 import at.playify.boxgamereloaded.interfaces.Game;
+import at.playify.boxgamereloaded.network.connection.ConnectionToServer;
 import at.playify.boxgamereloaded.network.packet.PacketHello;
 
 //TickThread ist zuständig um die Ticks vom Spiel zu bestimmen und zu berechnen
@@ -18,8 +19,8 @@ public class TickThread extends Thread{
     public void run() {
         try {
             try {
-                //game.connection=new ConnectionToServer(game, "192.168.0.123");
-                game.connection=new EmptyConnection();
+                game.connection=new ConnectionToServer(game, "192.168.0.123");
+                //game.connection=new EmptyConnection();
                 game.connection.sendPacket(new PacketHello());
             }catch (Exception e){
                 Game.report(e);

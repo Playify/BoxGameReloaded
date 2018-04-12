@@ -9,6 +9,7 @@ public class VariableContainer {
     public int jumps=2;
     public boolean wallbounce=false;
     public boolean wallslide=false;
+    public boolean inverted_gravity;
     public boolean fly;
     public boolean noclip;
     public boolean god;
@@ -16,7 +17,7 @@ public class VariableContainer {
     public boolean cubic_check=true;
     public int deaths=0;
     public Debug debug=new Debug();
-    public String playername="TheUser";
+    public String playername="TheUser"+System.currentTimeMillis();
     public String world;
     public boolean tickOnDraw;
 

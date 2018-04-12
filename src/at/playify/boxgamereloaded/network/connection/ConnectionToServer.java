@@ -1,18 +1,18 @@
 package at.playify.boxgamereloaded.network.connection;
 
-import java.io.*;
-import java.net.InetAddress;
-import java.net.Socket;
-import java.net.SocketException;
-import java.util.LinkedList;
-import java.util.Queue;
-
 import at.playify.boxgamereloaded.BoxGameReloaded;
 import at.playify.boxgamereloaded.interfaces.Game;
 import at.playify.boxgamereloaded.network.packet.Packet;
 import at.playify.boxgamereloaded.network.packet.PacketSetWorld;
 import at.playify.boxgamereloaded.player.Player;
 import at.playify.boxgamereloaded.util.bound.RectBound;
+
+import java.io.*;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.net.SocketException;
+import java.util.LinkedList;
+import java.util.Queue;
 
 //Verbindung zum Server [WIP]
 public class ConnectionToServer implements Closeable {
@@ -59,6 +59,11 @@ public class ConnectionToServer implements Closeable {
                                 System.err.println("Unknown Packet received: "+packetName);
                             } catch (ClassCastException cls) {
                                 System.err.println("Wrong Packet received: "+packetName);
+                            }
+                        }catch (InstantiationException e){
+                            if (e.getCause() instanceof NoSuchMethodException) {
+                                System.err.println("No Constructor available.");
+                                Game.report(e);
                             }
                         }catch (Exception e){
                             Game.report(e);

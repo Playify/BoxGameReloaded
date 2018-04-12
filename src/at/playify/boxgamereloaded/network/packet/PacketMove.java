@@ -22,6 +22,9 @@ public class PacketMove extends Packet {
         w=bound.w();
         h=bound.h();
     }
+    public PacketMove() {
+        player="";
+    }
 
     @Override
     public String convertToString(BoxGameReloaded game) {
@@ -44,6 +47,7 @@ public class PacketMove extends Packet {
                 stringBuilder.append(c);
             }
         }
+        split[index]=stringBuilder.toString();
         x= Utils.parseInt(split[0],10)/100f;
         y= Utils.parseInt(split[1],10)/100f;
         w= Utils.parseInt(split[2],80)/100f;
@@ -54,6 +58,7 @@ public class PacketMove extends Packet {
     @Override
     public void handle(BoxGameReloaded game, ConnectionToServer connectionToServer) {
         if (player==null||player.isEmpty()||player.equals(game.vars.playername)){
+            game.player.motionX=game.player.motionY=0;
             game.player.bound.set(x,y,w,h);
             connectionToServer.serverbound.set(x,y,w,h);
         }else{

@@ -21,7 +21,12 @@ public class BlockBoost extends Block implements Collideable{
 
     @Override
     public void getCollisionBox(Level level, int x, int y, Borrow.BorrowedBoundingBox bound, ArrayList<Borrow.BorrowedBoundingBox> list, PlayerSP player) {
-
+        if (Math.abs(player.motionY)<0.015f) {
+            Borrow.BorrowedBoundingBox b = Borrow.bound(x, y, x + 1, y + 1);
+            b.left=b.right=false;
+            b.down=!(b.up=game.vars.inverted_gravity);
+            list.add(b);
+        }
     }
 
     @Override
@@ -40,7 +45,7 @@ public class BlockBoost extends Block implements Collideable{
             game.d.cube(x, y, 0.9f, 1, 1, .1f,0xFF00C656);
             game.d.pushMatrix();
             game.d.translate(x+.5f,y+.5f,.9f);
-            game.d.rotate(15,-1,0,0);
+            game.d.rotate(game.vars.inverted_gravity?-15:15,-1,0,0);
             game.d.rotate(45,0,0,1);
             final float v=.3f;
             game.d.cube(-v,-v,0,2*v,2*v,.2f, 0xFF59FF59);
@@ -49,7 +54,7 @@ public class BlockBoost extends Block implements Collideable{
             game.d.rect(x, y, 1, 1,0xFFFFFF00);
             game.d.pushMatrix();
             game.d.translate(x+.5f,y+.5f,.9f);
-            game.d.rotate(1,-1,0,0);
+            game.d.rotate(game.vars.inverted_gravity?-1:1,-1,0,0);
             game.d.rotate(45,0,0,1);
             final float v=.3f;
             game.d.rect(-v,-v,2*v,2*v, 0xFF59FF59);

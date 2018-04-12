@@ -10,7 +10,6 @@ public abstract class Player {
     public float motionX;
     public float motionY;
     private float glib0x,glib0y,glib1x,glib1y,glib2x,glib2y,glib3x,glib3y;
-    private String name;
 
     public Player(BoxGameReloaded game){
         this.game = game;
@@ -85,7 +84,5 @@ public abstract class Player {
     }
 
     //Spielername
-    public String name() {
-        return name;
-    }
+    public String name(){return "";}
 }

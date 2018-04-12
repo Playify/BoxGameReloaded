@@ -92,7 +92,7 @@ public class PlayerSP extends Player {
             }
 
             //bewegen
-            move(motionX,motionY);
+            move(motionX,game.vars.inverted_gravity?-motionY:motionY);
 
 
             //Spezialfähigkeiten von Blöcken mit Kollision ausführen
@@ -186,12 +186,14 @@ public class PlayerSP extends Player {
     //Ausgeführt wenn Spieler von Block gekillt wird
     public void killedByBlock() {
         this.bound.set(game.level.spawnPoint);
+        motionX=motionY=0;
         game.vars.deaths++;
     }
 
     //Ausgeführt wenn Spieler von Respawnbutton gekillt wird
     public void killedByButton() {
         this.bound.set(game.level.spawnPoint);
+        motionX=motionY=0;
         game.vars.deaths++;
     }
 
