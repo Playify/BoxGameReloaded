@@ -1,20 +1,20 @@
 <component name="libraryTable">
   <library name="AppleJavaExtensions">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/../lwjgl-2.9.3/jar/AppleJavaExtensions.jar!/" />
-      <root url="jar://$PROJECT_DIR$/../lwjgl-2.9.3/jar/asm-debug-all.jar!/" />
-      <root url="jar://$PROJECT_DIR$/../lwjgl-2.9.3/jar/jinput.jar!/" />
-      <root url="jar://$PROJECT_DIR$/../lwjgl-2.9.3/jar/laf-plugin-7.2.1.jar!/" />
-      <root url="jar://$PROJECT_DIR$/../lwjgl-2.9.3/jar/laf-widget-7.2.1.jar!/" />
-      <root url="jar://$PROJECT_DIR$/../lwjgl-2.9.3/jar/log4j-api-2.0-beta9.jar!/" />
-      <root url="jar://$PROJECT_DIR$/../lwjgl-2.9.3/jar/lwjgl-debug.jar!/" />
-      <root url="jar://$PROJECT_DIR$/../lwjgl-2.9.3/jar/lwjgl.jar!/" />
-      <root url="jar://$PROJECT_DIR$/../lwjgl-2.9.3/jar/lwjgl_test.jar!/" />
-      <root url="jar://$PROJECT_DIR$/../lwjgl-2.9.3/jar/lwjgl_util.jar!/" />
-      <root url="jar://$PROJECT_DIR$/../lwjgl-2.9.3/jar/lwjgl_util_applet.jar!/" />
-      <root url="jar://$PROJECT_DIR$/../lwjgl-2.9.3/jar/lzma.jar!/" />
-      <root url="jar://$PROJECT_DIR$/../lwjgl-2.9.3/jar/substance-7.2.1.jar!/" />
-      <root url="jar://$PROJECT_DIR$/../lwjgl-2.9.3/jar/trident-7.2.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/jar/AppleJavaExtensions.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/jar/asm-debug-all.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/jar/jinput.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/jar/laf-plugin-7.2.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/jar/laf-widget-7.2.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/jar/log4j-api-2.0-beta9.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/jar/lwjgl-debug.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/jar/lwjgl.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/jar/lwjgl_test.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/jar/lwjgl_util.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/jar/lwjgl_util_applet.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/jar/lzma.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/jar/substance-7.2.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/jar/trident-7.2.1.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

@@ -13,7 +13,6 @@ import static org.lwjgl.opengl.GL11.*;
 //Zuständig Text zu zeichnen
 public class FontRenderer {
     private final WindowsDrawer d;
-    private float texture[] = new float[8];
 
     private int textureID;
     //Alle Zeichen die in der Texture vorkommen
