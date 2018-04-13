@@ -13,7 +13,7 @@ import java.util.ArrayList;
 public class BlockLadder extends Block implements Collideable{
     public static char chr='l';
 
-    public BlockLadder(BoxGameReloaded game, char c) {
+    BlockLadder(BoxGameReloaded game, char c) {
         super(game, c);
     }
 

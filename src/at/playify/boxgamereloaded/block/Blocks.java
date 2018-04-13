@@ -4,6 +4,7 @@ import at.playify.boxgamereloaded.BoxGameReloaded;
 
 import java.util.ArrayList;
 
+@SuppressWarnings("WeakerAccess")
 public class Blocks {
     public Block[] map=new Block[Character.MAX_VALUE];
     public ArrayList<Block> list=new ArrayList<>();

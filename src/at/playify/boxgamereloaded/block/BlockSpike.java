@@ -21,118 +21,42 @@ public class BlockSpike extends Block implements Collideable {
     {
         float x=-.5f, y=-.5f;
         int meta=0;
-        if((meta&2)!=0) {
-            vertex[0]=x;
-            vertex[1]=y;
-            vertex[2]=0;
-        } else {
-            vertex[0]=x+1;
-            vertex[1]=y+1;
-            vertex[2]=0;
-        }
-        if(meta==0||meta==3) {
-            vertex[3]=x;
-            vertex[4]=y+1;
-            vertex[5]=0;
-        } else {
-            vertex[3]=x+1;
-            vertex[4]=y;
-            vertex[5]=0;
-        }
-        if(meta==0) {
-            vertex[6]=x+.5f;
-            vertex[7]=y;
-            vertex[8]=0.5f;
-        } else if(meta==1) {
-            vertex[6]=x;
-            vertex[7]=y+.5f;
-            vertex[8]=0.5f;
-        } else if(meta==2) {
-            vertex[6]=x+.5f;
-            vertex[7]=y+1;
-            vertex[8]=0.5f;
-        } else if(meta==3) {
-            vertex[6]=x+1;
-            vertex[7]=y+.5f;
-            vertex[8]=0.5f;
-        }
+        vertex[0]=x+1;
+        vertex[1]=y+1;
+        vertex[2]=0;
+        vertex[3]=x;
+        vertex[4]=y+1;
+        vertex[5]=0;
+        vertex[6]=x+.5f;
+        vertex[7]=y;
+        vertex[8]=0.5f;
         System.arraycopy(vertex, 0, vertex1, 0, vertex.length);
-        if(meta==0||meta==3) {
-            vertex[0]=x;
-            vertex[1]=y+1;
-            vertex[2]=0;
-        } else {
-            vertex[0]=x+1;
-            vertex[1]=y;
-            vertex[2]=0;
-        }
-        if(meta==0||meta==3) {
-            vertex[3]=x;
-            vertex[4]=y+1;
-            vertex[5]=1;
-        } else {
-            vertex[3]=x+1;
-            vertex[4]=y;
-            vertex[5]=1;
-        }
+        vertex[0]=x;
+        vertex[1]=y+1;
+        vertex[2]=0;
+        vertex[3]=x;
+        vertex[4]=y+1;
+        vertex[5]=1;
         System.arraycopy(vertex, 0, vertex2, 0, vertex.length);
-        if((meta&2)!=0) {
-            vertex[0]=x;
-            vertex[1]=y;
-            vertex[2]=0;
-        } else {
-            vertex[0]=x+1;
-            vertex[1]=y+1;
-            vertex[2]=0;
-        }
-        if((meta&2)!=0) {
-            vertex[3]=x;
-            vertex[4]=y;
-            vertex[5]=1;
-        } else {
-            vertex[3]=x+1;
-            vertex[4]=y+1;
-            vertex[5]=1;
-        }
+        vertex[0]=x+1;
+        vertex[1]=y+1;
+        vertex[2]=0;
+        vertex[3]=x+1;
+        vertex[4]=y+1;
+        vertex[5]=1;
         System.arraycopy(vertex, 0, vertex3, 0, vertex.length);
-        if((meta&2)!=0) {
-            vertex[0]=x;
-            vertex[1]=y;
-            vertex[2]=0;
-        } else {
-            vertex[0]=x+1;
-            vertex[1]=y+1;
-            vertex[2]=0;
-        }
-        if(meta==0||meta==3) {
-            vertex[3]=x;
-            vertex[4]=y+1;
-            vertex[5]=0;
-        } else {
-            vertex[3]=x+1;
-            vertex[4]=y;
-            vertex[5]=0;
-        }
-        if(meta==0) {
-            vertex[6]=x+.5f;
-            vertex[7]=y;
-            vertex[8]=0;
-        } else if(meta==1) {
-            vertex[6]=x;
-            vertex[7]=y+.5f;
-            vertex[8]=0;
-        } else if(meta==2) {
-            vertex[6]=x+.5f;
-            vertex[7]=y+1;
-            vertex[8]=0;
-        } else if(meta==3) {
-            vertex[6]=x+1;
-            vertex[7]=y+.5f;
-            vertex[8]=0;
-        }
+        vertex[0]=x+1;
+        vertex[1]=y+1;
+        vertex[2]=0;
+        vertex[3]=x;
+        vertex[4]=y+1;
+        vertex[5]=0;
+        vertex[6]=x+.5f;
+        vertex[7]=y;
+        vertex[8]=0;
     }
 
-    public BlockSpike(BoxGameReloaded game, char c) {
+    BlockSpike(BoxGameReloaded game, char c) {
         super(game,c);
     }
 

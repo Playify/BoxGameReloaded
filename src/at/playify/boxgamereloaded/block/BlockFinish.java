@@ -13,7 +13,7 @@ import java.util.ArrayList;
 public class BlockFinish extends Block implements Collideable{
     public static char chr='f';
 
-    public BlockFinish(BoxGameReloaded game, char c) {
+    BlockFinish(BoxGameReloaded game, char c) {
         super(game,c);
     }
 

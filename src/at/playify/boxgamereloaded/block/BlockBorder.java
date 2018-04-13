@@ -12,7 +12,7 @@ import java.util.ArrayList;
 public class BlockBorder extends Block {
     public static char chr='b';
 
-    public BlockBorder(BoxGameReloaded game, char c) {
+    BlockBorder(BoxGameReloaded game, char c) {
         super(game,c);
     }
 
@@ -69,7 +69,7 @@ public class BlockBorder extends Block {
         list.add(Borrow.bound(x,y,x+1,y+1));
     }
 
-    protected boolean connect(int x, int y, Level level) {
+    private boolean connect(int x, int y, Level level) {
         return !(level.get(x, y) instanceof BlockBorder);
     }
 }

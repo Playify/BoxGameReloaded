@@ -12,7 +12,7 @@ import java.util.ArrayList;
 public class BlockOneWay extends Block {
     public static char chr='w';
 
-    public BlockOneWay(BoxGameReloaded game, char c) {
+    BlockOneWay(BoxGameReloaded game, char c) {
         super(game,c);
     }
 

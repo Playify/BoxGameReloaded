@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 public class Block08 extends Block {
     public static char chr='o';
-    public Block08(BoxGameReloaded game, char c) {
+    Block08(BoxGameReloaded game, char c) {
         super(game,c);
     }
     public boolean collide(Bound b, int x, int y, Player player, boolean checkOnly, int meta, Level level) {

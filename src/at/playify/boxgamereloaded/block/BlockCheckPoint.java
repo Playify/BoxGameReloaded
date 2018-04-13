@@ -12,7 +12,7 @@ import java.util.ArrayList;
 public class BlockCheckPoint extends Block implements Collideable{
     public static char chr='c';
 
-    public BlockCheckPoint(BoxGameReloaded game, char c) {
+    BlockCheckPoint(BoxGameReloaded game, char c) {
         super(game,c);
     }
 

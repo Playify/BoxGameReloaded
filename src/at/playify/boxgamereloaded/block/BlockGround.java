@@ -13,7 +13,7 @@ import java.util.ArrayList;
 public class BlockGround extends Block {
     public static char chr='g';
 
-    public BlockGround(BoxGameReloaded game, char c) {
+    BlockGround(BoxGameReloaded game, char c) {
         super(game,c);
     }
     public boolean collide(Bound b, int x, int y, Player player, boolean checkOnly, int meta, Level level) {
