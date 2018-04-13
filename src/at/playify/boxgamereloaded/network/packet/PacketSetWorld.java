@@ -53,6 +53,7 @@ public class PacketSetWorld extends Packet {
         for (ConnectionToClient client : last) {
             connectionToClient.sendPacket(new PacketMove(client));
 
+
         }
 
     }
