@@ -4,12 +4,11 @@ import at.playify.boxgamereloaded.BoxGameReloaded;
 import at.playify.boxgamereloaded.network.Server;
 import at.playify.boxgamereloaded.network.connection.ConnectionToClient;
 import at.playify.boxgamereloaded.network.connection.ConnectionToServer;
-import at.playify.boxgamereloaded.player.Player;
+import at.playify.boxgamereloaded.player.PlayerMP;
 import at.playify.boxgamereloaded.util.Utils;
 import at.playify.boxgamereloaded.util.bound.RectBound;
 
 //Packet um den Client von Spielerbewegungen zu berichten und den Server von Clientbewegungen
-//Noch nicht getestet
 public class PacketMove extends Packet {
     public String player="";
     public float x=.1f;
@@ -78,11 +77,21 @@ public class PacketMove extends Packet {
             game.player.bound.set(x,y,w,h);
             connectionToServer.serverbound.set(x,y,w,h);
         }else{
-            Player[] p=connectionToServer.players;
-            for(Player player1 : p) {
+            PlayerMP[] p=connectionToServer.players;
+            for(PlayerMP player1 : p) {
                 if (player1.name().equals(player)) {
                     player1.bound.set(x,y,w,h);
+                    return;
                 }
+            }
+            synchronized (connectionToServer.playerLock){
+                int length = connectionToServer.players.length;
+                PlayerMP[] players = new PlayerMP[length + 1];
+                System.arraycopy(connectionToServer.players, 0, players, 0, length);
+                PlayerMP playerMP = new PlayerMP(game, player);
+                playerMP.bound.set(x,y,w,h);
+                players[players.length - 1]= playerMP;
+                connectionToServer.players= players;
             }
         }
     }

@@ -31,7 +31,7 @@ public class PacketHello extends Packet{
 
     @Override
     public String convertToString(Server server, ConnectionToClient client) {
-        return name;
+        return name==null?"SERVER":name;
     }
 
     @Override

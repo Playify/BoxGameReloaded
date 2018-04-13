@@ -76,7 +76,7 @@ public class Server extends Thread{
     }
 
     public void broadcast(Packet packet) {
-        if (last.get()!=null) {
+        if (last.get()==null) {
             last.set(new ArrayList<>());
         }
         last.get().clear();
@@ -86,7 +86,7 @@ public class Server extends Thread{
         }
     }
     public void broadcastRaw(String s) {
-        if (last.get()!=null) {
+        if (last.get()==null) {
             last.set(new ArrayList<>());
         }
         last.get().clear();
@@ -97,7 +97,7 @@ public class Server extends Thread{
     }
 
     public void broadcast(Packet packet, ConnectionToClient except) {
-        if (last.get()!=null) {
+        if (last.get()==null) {
             last.set(new ArrayList<>());
         }
         last.get().clear();
@@ -110,7 +110,7 @@ public class Server extends Thread{
     }
 
     public void broadcast(Packet packet, String world, ConnectionToClient except) {
-        if (last.get()!=null) {
+        if (last.get()==null) {
             last.set(new ArrayList<>());
         }
         last.get().clear();

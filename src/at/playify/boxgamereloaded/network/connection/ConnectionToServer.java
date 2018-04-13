@@ -4,7 +4,7 @@ import at.playify.boxgamereloaded.BoxGameReloaded;
 import at.playify.boxgamereloaded.interfaces.Game;
 import at.playify.boxgamereloaded.network.packet.Packet;
 import at.playify.boxgamereloaded.network.packet.PacketSetWorld;
-import at.playify.boxgamereloaded.player.Player;
+import at.playify.boxgamereloaded.player.PlayerMP;
 import at.playify.boxgamereloaded.util.bound.RectBound;
 
 import java.io.*;
@@ -16,7 +16,7 @@ import java.util.Queue;
 
 //Verbindung zum Server [WIP]
 public class ConnectionToServer implements Closeable,Runnable {
-    public Player[] players=new Player[0];
+    public PlayerMP[] players=new PlayerMP[0];
     public boolean connected;
     public String servername;
     public boolean pause;
@@ -28,6 +28,8 @@ public class ConnectionToServer implements Closeable,Runnable {
     private PrintStream out;
     private Queue<Packet> q=new LinkedList<>();
     public RectBound serverbound=new RectBound();
+    public final Object playerLock=new Object();
+
     public ConnectionToServer() {}
 
     public ConnectionToServer(final BoxGameReloaded game, String ip) {

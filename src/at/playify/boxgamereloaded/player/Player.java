@@ -84,5 +84,5 @@ public abstract class Player {
     }
 
     //Spielername
-    public String name(){return "";}
+    public abstract String name();
 }

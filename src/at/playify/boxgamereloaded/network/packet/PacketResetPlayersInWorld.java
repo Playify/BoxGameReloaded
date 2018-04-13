@@ -4,7 +4,7 @@ import at.playify.boxgamereloaded.BoxGameReloaded;
 import at.playify.boxgamereloaded.network.Server;
 import at.playify.boxgamereloaded.network.connection.ConnectionToClient;
 import at.playify.boxgamereloaded.network.connection.ConnectionToServer;
-import at.playify.boxgamereloaded.player.Player;
+import at.playify.boxgamereloaded.player.PlayerMP;
 
 public class PacketResetPlayersInWorld extends Packet {
     @Override
@@ -18,7 +18,9 @@ public class PacketResetPlayersInWorld extends Packet {
 
     @Override
     public void handle(BoxGameReloaded game, ConnectionToServer connectionToServer) {
-        connectionToServer.players=new Player[0];
+        synchronized (connectionToServer.playerLock){
+            connectionToServer.players= new PlayerMP[0];
+        }
     }
 
     @Override

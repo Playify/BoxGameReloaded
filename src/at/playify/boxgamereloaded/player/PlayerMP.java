@@ -8,4 +8,9 @@ public class PlayerMP extends Player {
         super(game);
         this.name=s;
     }
+
+    @Override
+    public String name() {
+        return name;
+    }
 }
