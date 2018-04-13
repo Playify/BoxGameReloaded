@@ -1,7 +1,7 @@
 package at.playify.boxgamereloaded.network;
 
 import at.playify.boxgamereloaded.level.EmptyLevel;
-import at.playify.boxgamereloaded.level.Level;
+import at.playify.boxgamereloaded.level.ServerLevel;
 import at.playify.boxgamereloaded.network.connection.ConnectionToClient;
 import at.playify.boxgamereloaded.network.packet.Packet;
 import at.playify.boxgamereloaded.network.packet.PacketSetPauseMode;
@@ -18,10 +18,11 @@ import java.util.Iterator;
 //Server wird später auch für singleplayer benutzt
 public class Server extends Thread{
     private ArrayList<ConnectionToClient> connected=new ArrayList<ConnectionToClient>();
-    private HashMap<String, Level> levelmap=new HashMap<>();
+    private HashMap<String, ServerLevel> levelmap=new HashMap<>();
     private int pausemode= PacketSetPauseMode.USER;
 
-    private Level empty;
+    private ServerLevel empty;
+    private final ThreadLocal<ArrayList<ConnectionToClient>> last = new ThreadLocal<>();
 
     public int getPausemode() {
         return pausemode;
@@ -45,13 +46,13 @@ public class Server extends Thread{
         }
     }
 
-    public Level getLevel(String world) {
+    public ServerLevel getLevel(String world) {
         if (levelmap.containsKey(world)) {
             return levelmap.get(world);
         }else {
             File file = new File("levels", world + ".txt");
             if (file.exists()) {
-                Level level = new Level();
+                ServerLevel level = new ServerLevel();
                 level.loadWorldString(file(file));
                 levelmap.put(world, level);
                 return level;
@@ -75,41 +76,65 @@ public class Server extends Thread{
     }
 
     public void broadcast(Packet packet) {
+        if (last.get()!=null) {
+            last.set(new ArrayList<>());
+        }
+        last.get().clear();
         for (ConnectionToClient connectionToClient : connected) {
             connectionToClient.sendPacket(packet);
+                last.get().add(connectionToClient);
         }
     }
     public void broadcastRaw(String s) {
+        if (last.get()!=null) {
+            last.set(new ArrayList<>());
+        }
+        last.get().clear();
         for (ConnectionToClient connectionToClient : connected) {
             connectionToClient.sendRaw(s);
+                last.get().add(connectionToClient);
         }
     }
 
     public void broadcast(Packet packet, ConnectionToClient except) {
+        if (last.get()!=null) {
+            last.set(new ArrayList<>());
+        }
+        last.get().clear();
         for (ConnectionToClient connectionToClient : connected) {
             if (connectionToClient!=except) {
                 connectionToClient.sendPacket(packet);
+                last.get().add(connectionToClient);
             }
         }
     }
 
     public void broadcast(Packet packet, String world, ConnectionToClient except) {
+        if (last.get()!=null) {
+            last.set(new ArrayList<>());
+        }
+        last.get().clear();
         for (ConnectionToClient connectionToClient : connected) {
             if (connectionToClient!=except&&world.equals(connectionToClient.world)){
                 connectionToClient.sendPacket(packet);
+                last.get().add(connectionToClient);
             }
         }
     }
 
-    public void connected(ArrayList<ConnectionToClient> lst) {
+    public void checkConnected() {
         Iterator<ConnectionToClient> iterator=connected.iterator();
         while (iterator.hasNext()) {
             ConnectionToClient next = iterator.next();
             if (next.isClosed()) {
                 iterator.remove();
             }else {
-                lst.add(next);
+                last.get().add(next);
             }
         }
+    }
+
+    public ArrayList<ConnectionToClient> getLastBroadcast() {
+        return last.get();
     }
 }

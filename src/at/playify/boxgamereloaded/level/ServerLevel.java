@@ -1,6 +1,8 @@
 package at.playify.boxgamereloaded.level;
 
 import at.playify.boxgamereloaded.block.BlockAir;
+import at.playify.boxgamereloaded.block.BlockOneWay;
+import at.playify.boxgamereloaded.block.BlockSpike;
 import at.playify.boxgamereloaded.util.Compresser;
 import at.playify.boxgamereloaded.util.Utils;
 import at.playify.boxgamereloaded.util.bound.RectBound;
@@ -10,7 +12,7 @@ public class ServerLevel {
     protected char[] blocks;
     protected int[] metas;
     public RectBound spawnPoint=new RectBound(.1f,.1f,.8f,.8f);
-    public Level() {
+    public ServerLevel() {
         blocks=new char[sizeX*sizeY];
         metas=new int[sizeX*sizeY];
     }
@@ -43,6 +45,8 @@ public class ServerLevel {
             return false;
         }
     }
+
+
     public boolean set(int x, int y, char b) {
         if ((x|y)>=0&&x<sizeX&&y<sizeY){
             char block = blocks[y * sizeX + x];
@@ -135,5 +139,14 @@ public class ServerLevel {
             blocks[i]=block;
             metas[i]=number;
         }
+    }
+
+
+
+    private int metaStates(char block) {
+        if (block== BlockOneWay.chr||block== BlockSpike.chr) {
+            return 4;
+        }
+        return 1;
     }
 }

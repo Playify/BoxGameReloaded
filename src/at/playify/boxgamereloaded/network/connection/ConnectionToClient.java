@@ -1,27 +1,95 @@
 package at.playify.boxgamereloaded.network.connection;
 
+import at.playify.boxgamereloaded.network.Server;
 import at.playify.boxgamereloaded.network.packet.Packet;
+import at.playify.boxgamereloaded.util.bound.RectBound;
 
-import java.io.Closeable;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.io.*;
+import java.net.Socket;
 
 //Verbindung zum Client [WIP]
 public class ConnectionToClient implements Closeable{
-    public Queue<Packet> q=new ConcurrentLinkedQueue<>();
-    public void addPendingPacket(Packet packet) {
-        q.add(packet);
+    private final Server server;
+    private Socket socket;
+    private BufferedReader in;
+    private PrintStream out;
+    private boolean closed;
+    public String world="NONE";
+    public String name;
+    public RectBound bound=new RectBound(.1f,.1f,.8f,.8f);
+
+    public ConnectionToClient(Socket socket, Server server) {
+        this.server = server;
+        try {
+            this.socket = socket;
+            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            out = new PrintStream(socket.getOutputStream());
+        } catch (IOException e) {
+            e.printStackTrace();
+            closed = true;
+            return;
+        }
+        Thread thread = new Thread(() -> {
+            try {
+                String s;
+                while ((s = in.readLine()) != null) {
+                    try {
+                        int i = s.indexOf(':');
+                        String packetName = i == -1 ? s : s.substring(0, i);
+                        try {
+                            Class<? extends Packet> cls = (Class<? extends Packet>) Class.forName(Packet.class.getName() + packetName);
+                            Packet packet = cls.newInstance();
+                            packet.loadFromString(i == -1 ? "" : s.substring(i + 1), server);
+                            packet.handle(server, this);
+                        } catch (ClassNotFoundException cls) {
+                            System.err.println("Unknown Packet received: " + packetName);
+                        } catch (ClassCastException cls) {
+                            System.err.println("Wrong Packet received: " + packetName);
+                        }
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+            } catch (Exception e) {
+                System.err.println("Error in ConnectionToClient");
+                e.printStackTrace();
+                close();
+            }
+        });
+        thread.setName("ConnectionToClient");
+        thread.start();
+        System.out.println("Opened Connection to " + socket.getInetAddress());
     }
+
+    public void sendPacket(Packet packet) {
+        out.println(packet.getClass().getSimpleName().substring(6) + ":" + packet.convertToString(server, this));
+        if (out.checkError()) {
+            close();
+        }
+        packet.onSend(server,this);
+    }
+
+    public void sendRaw(String s) {
+        out.println(s);
+        if (out.checkError()) {
+            close();
+        }
+    }
+
 
     public boolean isClosed() {
-        return false;
+        return closed||socket.isClosed();
     }
 
+
+    @Override
     public void close() {
-
-    }
-
-    public void sendNow(Packet packet) {
-
+        try {
+            if (socket!=null) {
+                socket.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

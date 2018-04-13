@@ -4,46 +4,35 @@ import at.playify.boxgamereloaded.BoxGameReloaded;
 import at.playify.boxgamereloaded.network.Server;
 import at.playify.boxgamereloaded.network.connection.ConnectionToClient;
 import at.playify.boxgamereloaded.network.connection.ConnectionToServer;
+import at.playify.boxgamereloaded.player.Player;
 
-//Packet beim Joinen
-public class PacketHello extends Packet{
-    public String name;
-
+public class PacketResetPlayersInWorld extends Packet {
     @Override
     public String convertToString(BoxGameReloaded game) {
-        if (name==null) {
-            return name=game.vars.playername;
-        }
-        return name;
+        return "";
     }
 
     @Override
     public void loadFromString(String s, BoxGameReloaded game) {
-        name=s;
-        game.connection.connected=true;
     }
 
     @Override
     public void handle(BoxGameReloaded game, ConnectionToServer connectionToServer) {
-        connectionToServer.servername=name;
-        game.log("Connected to Server "+name);
+        connectionToServer.players=new Player[0];
     }
 
     @Override
     public String convertToString(Server server, ConnectionToClient client) {
-        return name;
+        return "";
     }
 
     @Override
     public void loadFromString(String s, Server server) {
-        name=s;
+
     }
 
     @Override
     public void handle(Server server, ConnectionToClient connectionToClient) {
-        System.out.println("Hello from Client "+name);
-        connectionToClient.name=name;
-        connectionToClient.sendPacket(new PacketHello());
-        connectionToClient.sendPacket(new PacketSetPauseMode(server.getPausemode()));
+
     }
 }
