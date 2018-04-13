@@ -52,8 +52,6 @@ public class PacketSetWorld extends Packet {
         ArrayList<ConnectionToClient> last = server.getLastBroadcast();
         for (ConnectionToClient client : last) {
             connectionToClient.sendPacket(new PacketMove(client));
-
-
         }
 
     }
