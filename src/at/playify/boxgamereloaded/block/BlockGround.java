@@ -11,6 +11,8 @@ import java.util.ArrayList;
 
 //Ground
 public class BlockGround extends Block {
+    public static char chr='g';
+
     public BlockGround(BoxGameReloaded game, char c) {
         super(game,c);
     }

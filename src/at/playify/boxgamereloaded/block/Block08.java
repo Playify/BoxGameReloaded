@@ -11,6 +11,7 @@ import at.playify.boxgamereloaded.util.bound.Bound;
 import java.util.ArrayList;
 
 public class Block08 extends Block {
+    public static char chr='o';
     public Block08(BoxGameReloaded game, char c) {
         super(game,c);
     }

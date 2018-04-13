@@ -11,6 +11,7 @@ import java.util.ArrayList;
 
 //Luft
 public class BlockAir extends Block {
+    public static char chr='a';
     public BlockAir(BoxGameReloaded game, char c) {
         super(game,c);
     }

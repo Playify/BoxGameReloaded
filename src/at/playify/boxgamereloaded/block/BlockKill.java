@@ -10,6 +10,8 @@ import at.playify.boxgamereloaded.util.bound.Bound;
 import java.util.ArrayList;
 
 public class BlockKill extends Block implements Collideable {
+    public static char chr='k';
+
     public BlockKill(BoxGameReloaded game, char c) {
         super(game,c);
     }

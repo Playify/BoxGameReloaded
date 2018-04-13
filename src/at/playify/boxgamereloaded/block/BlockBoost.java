@@ -10,6 +10,7 @@ import at.playify.boxgamereloaded.util.bound.Bound;
 import java.util.ArrayList;
 
 public class BlockBoost extends Block implements Collideable{
+    public static char chr='j';
     public BlockBoost(BoxGameReloaded game, char c) {
         super(game,c);
     }

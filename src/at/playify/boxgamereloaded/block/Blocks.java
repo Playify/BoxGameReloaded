@@ -26,15 +26,15 @@ public class Blocks {
 
     //Registriere Blöcke
     public void init(BoxGameReloaded game) {
-        AIR = new BlockAir(game,'a');
-        GROUND = new BlockGround(game,'g');
-        BORDER = new BlockBorder(game,'b');
-        SPIKE=new BlockSpike(game,'s');
-        KILL=new BlockKill(game,'k');
-        BLOCK08=new Block08(game,'o');
-        LADDER=new BlockLadder(game,'l');
-        ONEWAY=new BlockOneWay(game,'w');
-        BOOST=new BlockBoost(game,'j');
-        CHECK=new BlockCheckPoint(game,'c');
+        AIR = new BlockAir(game,BlockAir.chr);
+        GROUND = new BlockGround(game,BlockGround.chr);
+        BORDER = new BlockBorder(game,BlockBorder.chr);
+        SPIKE=new BlockSpike(game,BlockSpike.chr);
+        KILL=new BlockKill(game,BlockKill.chr);
+        BLOCK08=new Block08(game,Block08.chr);
+        LADDER=new BlockLadder(game,BlockLadder.chr);
+        ONEWAY=new BlockOneWay(game,BlockOneWay.chr);
+        BOOST=new BlockBoost(game,BlockBoost.chr);
+        CHECK=new BlockCheckPoint(game,BlockCheckPoint.chr);
     }
 }

@@ -1,35 +1,115 @@
 package at.playify.boxgamereloaded.network;
 
+import at.playify.boxgamereloaded.level.EmptyLevel;
 import at.playify.boxgamereloaded.level.Level;
 import at.playify.boxgamereloaded.network.connection.ConnectionToClient;
 import at.playify.boxgamereloaded.network.packet.Packet;
+import at.playify.boxgamereloaded.network.packet.PacketSetPauseMode;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Queue;
 
-//Server wird in extrigem Projekt ausgeführt und erst später ins Spiel implementiert
-public class Server {
-    public ArrayList<ConnectionToClient> cons=new ArrayList<>();
+//Server wird später auch für singleplayer benutzt
+public class Server extends Thread{
+    private ArrayList<ConnectionToClient> connected=new ArrayList<ConnectionToClient>();
+    private HashMap<String, Level> levelmap=new HashMap<>();
+    private int pausemode= PacketSetPauseMode.USER;
 
-    public void tick() {
-        Iterator<ConnectionToClient> iterator=cons.iterator();
-        while (iterator.hasNext()) {
-            ConnectionToClient next=iterator.next();
-            if (next.isClosed()) {
-                iterator.remove();
-                next.close();
-            }else{
-                Queue<Packet> q=next.q;
-                while (!q.isEmpty()){
-                    Packet remove=q.remove();
-                    next.sendNow(remove);
-                }
+    private Level empty;
+
+    public int getPausemode() {
+        return pausemode;
+    }
+
+    public void setPausemode(int pausemode) {
+        this.pausemode = pausemode;
+        System.out.println("Pause Mode changed to "+pausemode);
+    }
+
+    public void run() {
+
+        ServerSocket serverSocket = null;
+        try {
+            serverSocket = new ServerSocket(45565);
+            while (true) {
+                connected.add(new ConnectionToClient(serverSocket.accept(),this));
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
     public Level getLevel(String world) {
-        return null;
+        if (levelmap.containsKey(world)) {
+            return levelmap.get(world);
+        }else {
+            File file = new File("levels", world + ".txt");
+            if (file.exists()) {
+                Level level = new Level();
+                level.loadWorldString(file(file));
+                levelmap.put(world, level);
+                return level;
+            }else{
+                return empty==null?empty=new EmptyLevel():empty;
+            }
+        }
+    }
+
+    private String file(File file) {
+        String content = "";
+        try
+        {
+            content = new String ( Files.readAllBytes( Paths.get(file.toURI()) ) );
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+        return content;
+    }
+
+    public void broadcast(Packet packet) {
+        for (ConnectionToClient connectionToClient : connected) {
+            connectionToClient.sendPacket(packet);
+        }
+    }
+    public void broadcastRaw(String s) {
+        for (ConnectionToClient connectionToClient : connected) {
+            connectionToClient.sendRaw(s);
+        }
+    }
+
+    public void broadcast(Packet packet, ConnectionToClient except) {
+        for (ConnectionToClient connectionToClient : connected) {
+            if (connectionToClient!=except) {
+                connectionToClient.sendPacket(packet);
+            }
+        }
+    }
+
+    public void broadcast(Packet packet, String world, ConnectionToClient except) {
+        for (ConnectionToClient connectionToClient : connected) {
+            if (connectionToClient!=except&&world.equals(connectionToClient.world)){
+                connectionToClient.sendPacket(packet);
+            }
+        }
+    }
+
+    public void connected(ArrayList<ConnectionToClient> lst) {
+        Iterator<ConnectionToClient> iterator=connected.iterator();
+        while (iterator.hasNext()) {
+            ConnectionToClient next = iterator.next();
+            if (next.isClosed()) {
+                iterator.remove();
+            }else {
+                lst.add(next);
+            }
+        }
     }
 }

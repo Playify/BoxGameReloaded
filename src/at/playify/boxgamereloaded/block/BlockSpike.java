@@ -12,6 +12,7 @@ import at.playify.boxgamereloaded.util.bound.RectBound;
 import java.util.ArrayList;
 
 public class BlockSpike extends Block implements Collideable {
+    public static char chr='s';
     private float[] vertex=new float[9];
     private float[] vertex1=new float[9];
     private float[] vertex2=new float[9];
