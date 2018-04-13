@@ -1,11 +1,6 @@
 package at.playify.boxgamereloaded;
 
 
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.util.ArrayList;
-import java.util.Locale;
-
 import at.playify.boxgamereloaded.block.Blocks;
 import at.playify.boxgamereloaded.exceptions.DrawingException;
 import at.playify.boxgamereloaded.interfaces.Game;
@@ -13,12 +8,18 @@ import at.playify.boxgamereloaded.level.Level;
 import at.playify.boxgamereloaded.network.Server;
 import at.playify.boxgamereloaded.network.connection.ConnectionToServer;
 import at.playify.boxgamereloaded.network.packet.PacketSetPauseMode;
+import at.playify.boxgamereloaded.network.packet.PacketSetWorld;
 import at.playify.boxgamereloaded.player.Player;
 import at.playify.boxgamereloaded.player.PlayerSP;
 import at.playify.boxgamereloaded.util.DrawHelper;
 import at.playify.boxgamereloaded.util.Finger;
 import at.playify.boxgamereloaded.util.Utils;
 import at.playify.boxgamereloaded.util.bound.RectBound;
+
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.ArrayList;
+import java.util.Locale;
 
 public class BoxGameReloaded extends Game {
 
@@ -470,10 +471,19 @@ public class BoxGameReloaded extends Game {
                 optionsKeyDown=false;
             }
         }
+        if (keys[keyChar]){
+            if (Character.isDigit(keyChar)){
+                joinWorld(""+((char)keyChar));
+            }
+        }
     }
 
     //Text zur Konsole ausgeben
     public void log(String s) {
         System.out.println(s);
+    }
+
+    public void joinWorld(String name){
+        connection.sendPacketSoon(new PacketSetWorld(name));
     }
 }

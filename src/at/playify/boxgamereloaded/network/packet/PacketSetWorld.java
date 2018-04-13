@@ -59,5 +59,6 @@ public class PacketSetWorld extends Packet {
     @Override
     public void onSend(Server server, ConnectionToClient connectionToClient) {
         connectionToClient.world=world;
+        System.out.println(connectionToClient.name+" moved in world: "+world);
     }
 }
