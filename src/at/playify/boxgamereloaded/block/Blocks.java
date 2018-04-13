@@ -17,6 +17,7 @@ public class Blocks {
     public BlockOneWay ONEWAY;
     public BlockBoost BOOST;
     public BlockCheckPoint CHECK;
+    public BlockFinish FINISH;
     public int blockscount;
 
     //Block anhand des Zeichens bekommen
@@ -36,5 +37,6 @@ public class Blocks {
         ONEWAY=new BlockOneWay(game,BlockOneWay.chr);
         BOOST=new BlockBoost(game,BlockBoost.chr);
         CHECK=new BlockCheckPoint(game,BlockCheckPoint.chr);
+        FINISH=new BlockFinish(game,BlockFinish.chr);
     }
 }

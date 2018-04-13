@@ -53,7 +53,7 @@ public class PacketResetPlayersInWorld extends Packet {
 
     @Override
     public void loadFromString(String s, Server server) {
-
+        player=s.isEmpty()?null:s;
     }
 
     @Override

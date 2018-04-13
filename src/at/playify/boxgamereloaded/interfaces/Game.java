@@ -6,6 +6,7 @@ import at.playify.boxgamereloaded.level.Level;
 import at.playify.boxgamereloaded.util.Finger;
 
 public abstract class Game {
+    public final Handler handler;
     protected boolean canDraw = false;
     public boolean[] keys = new boolean[300];
     public Finger[] fingers = new Finger[]{new Finger(0),new Finger(1),new Finger(2),new Finger(3),new Finger(4)};
@@ -17,8 +18,9 @@ public abstract class Game {
     public Blocks blocks;
     public boolean paused;
 
-    public Game(){
+    public Game(Handler handler){
         init();
+        this.handler=handler;
     }
 
     protected abstract void init();

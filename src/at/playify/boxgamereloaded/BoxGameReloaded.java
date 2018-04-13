@@ -4,8 +4,8 @@ package at.playify.boxgamereloaded;
 import at.playify.boxgamereloaded.block.Blocks;
 import at.playify.boxgamereloaded.exceptions.DrawingException;
 import at.playify.boxgamereloaded.interfaces.Game;
+import at.playify.boxgamereloaded.interfaces.Handler;
 import at.playify.boxgamereloaded.level.Level;
-import at.playify.boxgamereloaded.network.Server;
 import at.playify.boxgamereloaded.network.connection.ConnectionToServer;
 import at.playify.boxgamereloaded.network.packet.PacketSetPauseMode;
 import at.playify.boxgamereloaded.network.packet.PacketSetWorld;
@@ -32,7 +32,6 @@ public class BoxGameReloaded extends Game {
     public float zoom=1.3f;
     public int backgroundState;
     public int vertexcount;
-    public Server server;
     private RectBound buttonbound=new RectBound();
     private RectBound leveldrawbound=new RectBound();
     private float pauseState=0;
@@ -50,6 +49,10 @@ public class BoxGameReloaded extends Game {
 
     {
         dm.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.ENGLISH));
+    }
+
+    public BoxGameReloaded(Handler handler) {
+        super(handler);
     }
 
     //Fingerstatus geändert gedrückt/nicht gedrückt
@@ -485,5 +488,10 @@ public class BoxGameReloaded extends Game {
 
     public void joinWorld(String name){
         connection.sendPacketSoon(new PacketSetWorld(name));
+    }
+
+    public void finishLevel() {
+        //TODO save Level finished to config. (using handler)
+        connection.sendPacket(new PacketSetWorld());
     }
 }

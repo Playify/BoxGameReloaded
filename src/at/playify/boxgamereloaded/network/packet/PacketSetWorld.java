@@ -1,6 +1,7 @@
 package at.playify.boxgamereloaded.network.packet;
 
 import at.playify.boxgamereloaded.BoxGameReloaded;
+import at.playify.boxgamereloaded.level.ServerLevel;
 import at.playify.boxgamereloaded.network.Server;
 import at.playify.boxgamereloaded.network.connection.ConnectionToClient;
 import at.playify.boxgamereloaded.network.connection.ConnectionToServer;
@@ -44,8 +45,16 @@ public class PacketSetWorld extends Packet {
 
     @Override
     public void handle(Server server, ConnectionToClient connectionToClient) {
-        connectionToClient.world=world;
-        connectionToClient.sendPacket(new PacketLevelData(server.getLevel(world).toWorldString()));
+        PacketResetPlayersInWorld packet=new PacketResetPlayersInWorld();
+        packet.player=connectionToClient.name;
+        server.broadcast(packet,connectionToClient.world,connectionToClient);
+        ServerLevel level = server.getLevel(world);
+        if (!connectionToClient.world.equals(world)) {
+            connectionToClient.world=world;
+            connectionToClient.sendPacket(new PacketMove(level.spawnPoint,connectionToClient.name));
+
+        }
+        connectionToClient.sendPacket(new PacketLevelData(level.toWorldString()));
         connectionToClient.sendPacket(new PacketResetPlayersInWorld());
         PacketMove packetMove = new PacketMove(connectionToClient);
         server.broadcast(packetMove,world,connectionToClient);

@@ -21,7 +21,7 @@ public class Main {
         } catch (LWJGLException e) {
             e.printStackTrace();
         }
-        game=new BoxGameReloaded();
+        game=new BoxGameReloaded(new WindowsHandler());
         game.d=new WindowsDrawer(game);
         finger=game.fingers[0];
         game.start();
