@@ -1,6 +1,6 @@
 package at.playify.boxgamereloaded.level;
 
-import at.playify.boxgamereloaded.block.Blocks;
+import at.playify.boxgamereloaded.block.BlockAir;
 
 public class EmptyLevel extends ServerLevel {
     public EmptyLevel(){
@@ -9,7 +9,7 @@ public class EmptyLevel extends ServerLevel {
     }
 
     public char get(int x, int y){
-        return Blocks.getCharacter();
+        return BlockAir.chr;
     }
 
     public int getMeta(int x, int y){
