@@ -2,13 +2,10 @@
 <module type="JAVA_MODULE" version="4">
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
-    <content url="file://$USER_HOME$/AndroidStudioProjects/BoxGameReloaded/app/src/main/java/at/playify/boxgamereloaded">
-      <sourceFolder url="file://$USER_HOME$/AndroidStudioProjects/BoxGameReloaded/app/src/main/java/at/playify/boxgamereloaded" isTestSource="false" packagePrefix="at.playify.boxgamereloaded" />
-      <excludeFolder url="file://$USER_HOME$/AndroidStudioProjects/BoxGameReloaded/app/src/main/java/at/playify/boxgamereloaded/android" />
-    </content>
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/assets" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
+      <excludeFolder url="file://$MODULE_DIR$/src/at/playify/boxgamereloaded/android" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

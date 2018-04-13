@@ -15,7 +15,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 //Verbindung zum Server [WIP]
-public class ConnectionToServer implements Closeable {
+public class ConnectionToServer implements Closeable,Runnable {
     public Player[] players=new Player[0];
     public boolean connected;
     public String servername;
@@ -41,43 +41,7 @@ public class ConnectionToServer implements Closeable {
             closed=true;
             return;
         }
-        Thread thread=new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    String s;
-                    while ((s=in.readLine())!=null) {
-                        try {
-                            int i=s.indexOf(':');
-                            String packetName=i==-1 ? s : s.substring(0, i);
-                            try {
-                                Class<? extends Packet> cls=(Class<? extends Packet>) Class.forName(Packet.class.getName()+packetName);
-                                Packet packet=cls.newInstance();//TODO reuse objects
-                                packet.loadFromString(i==-1 ? "" : s.substring(i+1), game);
-                                packet.handle(game, ConnectionToServer.this);
-                            } catch (ClassNotFoundException cls) {
-                                System.err.println("Unknown Packet received: "+packetName);
-                            } catch (ClassCastException cls) {
-                                System.err.println("Wrong Packet received: "+packetName);
-                            }
-                        }catch (InstantiationException e){
-                            if (e.getCause() instanceof NoSuchMethodException) {
-                                System.err.println("No Constructor available.");
-                                Game.report(e);
-                            }
-                        }catch (Exception e){
-                            Game.report(e);
-                        }
-                    }
-                } catch (SocketException e) {
-                    System.err.println("Connection to Server Closed: "+e.getMessage());
-                    close();
-                } catch (Exception e) {
-                    System.err.println("Error in ConnectionToServer");
-                    Game.report(e);
-                }
-            }
-        });
+        Thread thread=new Thread(this);
         thread.setName("ConnectionToClient");
         thread.start();
     }
@@ -87,8 +51,10 @@ public class ConnectionToServer implements Closeable {
     }
 
     public void sendPacket(Packet packet) {
-        out.println(packet.getClass().getSimpleName().substring(6)+":"+packet.convertToString(game));
-        out.flush();
+        if (out!=null) {
+            out.println(packet.getClass().getSimpleName().substring(6)+":"+packet.convertToString(game));
+            out.flush();
+        }
     }
 
     public void sendPacketSoon(Packet packet) {
@@ -131,6 +97,42 @@ public class ConnectionToServer implements Closeable {
             } else {
                 return false;
             }
+        }
+    }
+    @Override
+    public void run() {
+        try {
+            String s;
+            while ((s=in.readLine())!=null) {
+                try {
+                    int i=s.indexOf(':');
+                    String packetName=i==-1 ? s : s.substring(0, i);
+                    try {
+                        //noinspection unchecked
+                        Class<? extends Packet> cls=(Class<? extends Packet>) Class.forName(Packet.class.getName()+packetName);
+                        Packet packet=cls.newInstance();//TODO reuse objects
+                        packet.loadFromString(i==-1 ? "" : s.substring(i+1), game);
+                        packet.handle(game, ConnectionToServer.this);
+                    } catch (ClassNotFoundException cls) {
+                        System.err.println("Unknown Packet received: "+packetName);
+                    } catch (ClassCastException cls) {
+                        System.err.println("Wrong Packet received: "+packetName);
+                    }
+                }catch (InstantiationException e){
+                    if (e.getCause() instanceof NoSuchMethodException) {
+                        System.err.println("No Constructor available.");
+                        Game.report(e);
+                    }
+                }catch (Exception e){
+                    Game.report(e);
+                }
+            }
+        } catch (SocketException e) {
+            System.err.println("Connection to Server Closed: "+e.getMessage());
+            close();
+        } catch (Exception e) {
+            System.err.println("Error in ConnectionToServer");
+            Game.report(e);
         }
     }
 }
