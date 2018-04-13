@@ -70,6 +70,7 @@ public class ConnectionToServer implements Closeable,Runnable {
             Packet poll=q.poll();
             if (poll==null) {
                 return;
+
             } else {
                 sendPacket(poll);
             }
