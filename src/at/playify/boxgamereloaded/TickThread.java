@@ -19,7 +19,7 @@ public class TickThread extends Thread{
     public void run() {
         try {
             try {
-                game.connection=new ConnectionToServer(game, "192.168.0.123");
+                game.connection=new ConnectionToServer(game, "127.0.0.1");
                 //game.connection=new EmptyConnection();
                 game.connection.sendPacket(new PacketHello());
             }catch (Exception e){
