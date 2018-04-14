@@ -169,8 +169,6 @@ public class BoxGameReloaded extends Game {
                 if (finger.control&&finger.x<=w&&finger.y<=w) {
                     settingsRotate=v;
                     break;
-
-
                 }
             }
         }
