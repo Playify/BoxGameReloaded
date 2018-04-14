@@ -209,6 +209,7 @@ public class BoxGameReloaded extends Game {
             if (((connection == null || connection.userpause) ? backgroundState == 0 : !connection.pause) && player != null && vars.instant_zoom) {
                 zoom_x = Utils.clamp(player.bound.cx(), 0, level.sizeX);
                 zoom_y = Utils.clamp(player.bound.cy(), 0, level.sizeY);
+
                 zoom-=(zoom-(vars.zoom_level))/20f;
             }
             d.scale(zoom);
