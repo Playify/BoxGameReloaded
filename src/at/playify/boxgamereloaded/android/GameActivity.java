@@ -24,7 +24,7 @@ public class GameActivity extends Activity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        game=new BoxGameReloaded();
+        game=new BoxGameReloaded(new AndroidHandler());
         game.start();
         setContentView(view=new GameView(this));
 

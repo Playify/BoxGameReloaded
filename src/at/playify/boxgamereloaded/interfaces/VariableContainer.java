@@ -8,6 +8,7 @@ public class VariableContainer {
     public boolean wallbounce;
     public boolean wallslide;
     public boolean inverted_gravity;
+    public boolean geometry_dash;
     public boolean fly;
     public boolean noclip;
     public boolean god;

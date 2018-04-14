@@ -25,7 +25,8 @@ public class BoxGameReloaded extends Game {
 
     public PlayerSP player=new PlayerSP(this);
     public ConnectionToServer connection=new EmptyConnection();
-    private boolean options;
+    @SuppressWarnings("WeakerAccess")
+    public boolean options;
     public DrawHelper drawer=new DrawHelper(this);
     public float zoom_x;
     public float zoom_y;
@@ -141,13 +142,13 @@ public class BoxGameReloaded extends Game {
             pauseState=Math.max(0, pauseState-1/8f);
         } else {
             optionsState=Math.max(0, optionsState-1/8f);
-            if (paused||connection.isPaused(true)) {
+            if (paused||(connection==null||connection.isPaused(true))) {
                 pauseState=Math.min(1f, pauseState+1/8f);
             } else {
                 pauseState=Math.max(0, pauseState-1/8f);
             }
         }
-        if (paused||options||connection.isPaused(true)) {
+        if (paused||options||(connection==null||connection.isPaused(true)))  {
             backgroundState=Math.min(255, backgroundState+32);
             if (backgroundState!=255) {
                 pause=false;

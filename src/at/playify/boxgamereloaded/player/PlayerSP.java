@@ -92,6 +92,9 @@ public class PlayerSP extends Player {
                 motionX=0;
                 //motionX=Math.abs(this.motionX) <= 0.01f ? 0 : motionX * 0.75f;
             }
+            if (game.vars.geometry_dash){
+                motionX=.11f;
+            }
 
             //bewegen
             move(motionX,game.vars.inverted_gravity?-motionY:motionY);

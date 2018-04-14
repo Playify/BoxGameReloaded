@@ -1,16 +1,16 @@
 package at.playify.boxgamereloaded.network.connection;
 
+import java.io.*;
+import java.net.Socket;
+import java.net.SocketException;
+
 import at.playify.boxgamereloaded.network.Server;
 import at.playify.boxgamereloaded.network.packet.Packet;
 import at.playify.boxgamereloaded.network.packet.PacketResetPlayersInWorld;
 import at.playify.boxgamereloaded.util.bound.RectBound;
 
-import java.io.*;
-import java.net.Socket;
-import java.net.SocketException;
-
 //Verbindung zum Client
-public class ConnectionToClient implements Closeable{
+public class ConnectionToClient extends Thread implements Closeable{
     private final Server server;
     private Socket socket;
     private BufferedReader in;
@@ -31,39 +31,8 @@ public class ConnectionToClient implements Closeable{
             closed = true;
             return;
         }
-        Thread thread = new Thread(() -> {
-            try {
-                String s;
-                while ((s = in.readLine()) != null) {
-                    try {
-                        int i = s.indexOf(':');
-                        String packetName = i == -1 ? s : s.substring(0, i);
-                        try {
-                            @SuppressWarnings("unchecked")
-                            Class<? extends Packet> cls = (Class<? extends Packet>) Class.forName(Packet.class.getName() + packetName);
-                            Packet packet = cls.newInstance();
-                            packet.loadFromString(i == -1 ? "" : s.substring(i + 1), server);
-                            packet.handle(server, this);
-                        } catch (ClassNotFoundException cls) {
-                            System.err.println("Unknown Packet received: " + packetName);
-                        } catch (ClassCastException cls) {
-                            System.err.println("Wrong Packet received: " + packetName);
-                        }
-                    }catch (Exception e){
-                        e.printStackTrace();
-                    }
-                }
-            } catch (SocketException e) {
-                System.err.println("Connection lost to Player \""+name+"\" Reason: "+e.getMessage());
-                close();
-            }catch (Exception e) {
-                System.err.println("Error in ConnectionToClient");
-                e.printStackTrace();
-                close();
-            }
-        });
-        thread.setName("ConnectionToClient");
-        thread.start();
+        setName("ConnectionToClient");
+        start();
         System.out.println("Opened Connection to " + socket.getInetAddress());
     }
 
@@ -103,5 +72,38 @@ public class ConnectionToClient implements Closeable{
             e.printStackTrace();
         }
         server.disconnect(this);
+    }
+
+    @Override
+    public void run() {
+        try {
+            String s;
+            while ((s = in.readLine()) != null) {
+                try {
+                    int i = s.indexOf(':');
+                    String packetName = i == -1 ? s : s.substring(0, i);
+                    try {
+                        @SuppressWarnings("unchecked")
+                        Class<? extends Packet> cls = (Class<? extends Packet>) Class.forName(Packet.class.getName() + packetName);
+                        Packet packet = cls.newInstance();
+                        packet.loadFromString(i == -1 ? "" : s.substring(i + 1), server);
+                        packet.handle(server, this);
+                    } catch (ClassNotFoundException cls) {
+                        System.err.println("Unknown Packet received: " + packetName);
+                    } catch (ClassCastException cls) {
+                        System.err.println("Wrong Packet received: " + packetName);
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        } catch (SocketException e) {
+            System.err.println("Connection lost to Player \""+name+"\" Reason: "+e.getMessage());
+            close();
+        }catch (Exception e) {
+            System.err.println("Error in ConnectionToClient");
+            e.printStackTrace();
+            close();
+        }
     }
 }

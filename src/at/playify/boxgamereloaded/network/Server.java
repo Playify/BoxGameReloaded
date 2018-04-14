@@ -77,7 +77,7 @@ public class Server extends Thread{
 
     public void broadcast(Packet packet) {
         if (last.get()==null) {
-            last.set(new ArrayList<>());
+            last.set(new ArrayList<ConnectionToClient>());
         }
         last.get().clear();
         for (ConnectionToClient connectionToClient : connected) {
