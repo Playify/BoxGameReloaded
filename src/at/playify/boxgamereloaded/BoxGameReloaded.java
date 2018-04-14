@@ -170,6 +170,7 @@ public class BoxGameReloaded extends Game {
                     settingsRotate=v;
                     break;
 
+
                 }
             }
         }
