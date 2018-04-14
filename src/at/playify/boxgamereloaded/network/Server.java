@@ -88,7 +88,7 @@ public class Server extends Thread{
     @SuppressWarnings("WeakerAccess")
     public void broadcastRaw(String s) {
         if (last.get()==null) {
-            last.set(new ArrayList<>());
+            last.set(new ArrayList<ConnectionToClient>());
         }
         last.get().clear();
         for (ConnectionToClient connectionToClient : connected) {
@@ -99,7 +99,7 @@ public class Server extends Thread{
 
     public void broadcast(Packet packet, ConnectionToClient except) {
         if (last.get()==null) {
-            last.set(new ArrayList<>());
+            last.set(new ArrayList<ConnectionToClient>());
         }
         last.get().clear();
         for (ConnectionToClient connectionToClient : connected) {
@@ -112,7 +112,7 @@ public class Server extends Thread{
 
     public void broadcast(Packet packet, String world, ConnectionToClient except) {
         if (last.get()==null) {
-            last.set(new ArrayList<>());
+            last.set(new ArrayList<ConnectionToClient>());
         }
         last.get().clear();
         for (ConnectionToClient connectionToClient : connected) {
