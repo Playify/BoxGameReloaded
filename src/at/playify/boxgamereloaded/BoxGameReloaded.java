@@ -176,6 +176,14 @@ public class BoxGameReloaded extends Game {
         if ((pause&&(optionsState==1||pauseState==1))&&settingsRotate==0&&(prevPauseState==(paused|options))) {
             pauseLock.lock();
         }
+        if (((connection == null || connection.userpause) ? backgroundState == 0 : !connection.pause) && player != null) {
+            float x = Utils.clamp(player.bound.cx(), 0, level.sizeX) - zoom_x;
+            float y = Utils.clamp(player.bound.cy(), 0, level.sizeY) - zoom_y;
+            zoom_x += x / 20f;
+            zoom_y += y / 20f;
+
+            zoom -= (zoom - (vars.zoom_level)) / 20f;
+        }
         ticker.ticks++;
     }
 
@@ -198,11 +206,9 @@ public class BoxGameReloaded extends Game {
             d.scale(1/aspectratio, 1);
             d.pushMatrix();
             d.scale(1/(vars.display_size));
-            if ((connection==null||connection.userpause) ? backgroundState==0 : !connection.pause) {
-                float x=Utils.clamp(player.bound.cx(), 0, level.sizeX)-zoom_x;
-                float y=Utils.clamp(player.bound.cy(), 0, level.sizeY)-zoom_y;
-                zoom_x+=x/20f;
-                zoom_y+=y/20f;
+            if (((connection == null || connection.userpause) ? backgroundState == 0 : !connection.pause) && player != null && vars.instant_zoom) {
+                zoom_x = Utils.clamp(player.bound.cx(), 0, level.sizeX);
+                zoom_y = Utils.clamp(player.bound.cy(), 0, level.sizeY);
 
                 zoom-=(zoom-(vars.zoom_level))/20f;
             }

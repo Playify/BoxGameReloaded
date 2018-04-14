@@ -19,6 +19,7 @@ public class VariableContainer {
     public String playername="TheUser"+System.currentTimeMillis();
     public String world;
     public boolean tickOnDraw;
+    public boolean instant_zoom;
 
     public class Debug {
         public boolean viewback;
