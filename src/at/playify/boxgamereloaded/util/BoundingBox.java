@@ -167,4 +167,8 @@ public class BoundingBox {
     public boolean intersects(BoundingBox b) {
         return this.intersects(b.minX, b.minY, b.maxX, b.maxY);
     }
+
+    public boolean contains(float x, float y) {
+        return x > minX && x < maxX && y > minY && y < maxY;
+    }
 }

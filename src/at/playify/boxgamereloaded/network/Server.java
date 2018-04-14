@@ -6,12 +6,12 @@ import at.playify.boxgamereloaded.network.connection.ConnectionToClient;
 import at.playify.boxgamereloaded.network.packet.Packet;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Scanner;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 //Server wird später auch für singleplayer benutzt
@@ -63,16 +63,16 @@ public class Server extends Thread{
     }
 
     private String file(File file) {
-        String content = "";
-        try
-        {
-            content = new String ( Files.readAllBytes( Paths.get(file.toURI()) ) );
+        StringBuilder fileContents = new StringBuilder((int) file.length());
+
+        try (Scanner scanner = new Scanner(file)) {
+            while (scanner.hasNextLine()) {
+                fileContents.append(scanner.nextLine()).append('\n');
+            }
+            return fileContents.toString();
+        } catch (FileNotFoundException e) {
+            return "";
         }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-        return content;
     }
 
     public void broadcast(Packet packet) {

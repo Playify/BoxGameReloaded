@@ -3,6 +3,7 @@ package at.playify.boxgamereloaded;
 
 import at.playify.boxgamereloaded.block.Blocks;
 import at.playify.boxgamereloaded.exceptions.DrawingException;
+import at.playify.boxgamereloaded.gui.GuiOverlay;
 import at.playify.boxgamereloaded.interfaces.Game;
 import at.playify.boxgamereloaded.interfaces.Handler;
 import at.playify.boxgamereloaded.level.Level;
@@ -22,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 public class BoxGameReloaded extends Game {
-
     public PlayerSP player=new PlayerSP(this);
     public ConnectionToServer connection=new EmptyConnection();
     @SuppressWarnings("WeakerAccess")
@@ -35,18 +35,19 @@ public class BoxGameReloaded extends Game {
     public int vertexcount;
     private RectBound buttonbound=new RectBound();
     private RectBound leveldrawbound=new RectBound();
-    private float pauseState=0;
+    public float pauseState = 0;
     private float optionsState=0;
     private boolean pauseKeyDown;
     private boolean optionsKeyDown;
     private float aspectratio;
-    private int settingsRotate;
+    public int settingsRotate;
     private boolean prevPauseState=false;
     private ArrayList<String> txt=new ArrayList<>();
     private int[] lastframes=new int[10];
     private int lastframeindex;
     private long lastframetime;
     private DecimalFormat dm=new DecimalFormat("0.0");
+    public GuiOverlay gui;
 
     {
         dm.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.ENGLISH));
@@ -61,13 +62,14 @@ public class BoxGameReloaded extends Game {
     public void fingerStateChanged(Finger finger) {
         float w=d.getHeight()/6;
         if (finger.down) {
-            finger.control=finger.collide(buttonbound.set(0, 0, w, w))||finger.collide(buttonbound.set(d.getWidth()-w, 0))||finger.collide(buttonbound.move(-4/3f*w, 0));
+            finger.control = gui.click(finger);
             if (!finger.control) {
                 if (drawer.draw) {
                     drawer.handleFingerState(finger);
                 }
             } else {
-                if (finger.collide(buttonbound.set(0, 0, w, w))) {
+                gui.fingerStateChanged(finger);
+                /*if (finger.collide(buttonbound.set(0, 0, w, w))) {
                     drawer.setDraw(!drawer.draw);
                 }
                 if (finger.collide(buttonbound.set(d.getWidth()-w, 0))) {
@@ -92,11 +94,10 @@ public class BoxGameReloaded extends Game {
                             player.killedByButton();
                         }
                     }
-                }
+                }*/
             }
         } else {
             if (!finger.control) {
-
                 paused=false;
                 pauseLock.unlock();
             }
@@ -109,6 +110,7 @@ public class BoxGameReloaded extends Game {
         if (connection!=null) {
             connection.leaveWorld();
         }
+        gui.openMainMenu();
     }
 
     //Spieltick ausführen
@@ -256,6 +258,13 @@ public class BoxGameReloaded extends Game {
             d.depth(true);
         }
 
+        //Jeder Knopf/Guikomponent sollte in ein Guiobjekt oder Buttonobjekt konvertiert werden anstatt unten dazuzuzeichnen.
+        d.pushMatrix();
+        d.translate(0, 0, -0.025f);
+        gui.draw();
+        d.popMatrix();
+
+
         //Draw Main Menu/Restart Button
         d.pushMatrix();
         final float h=0.025f*6;
@@ -350,49 +359,6 @@ public class BoxGameReloaded extends Game {
             d.vertex(verts, 0xFF005C7A, 1);
             d.popMatrix();
         }
-
-        //Draw Pause Button
-        d.pushMatrix();
-        d.translate(pausex+six/2, up, 0);
-        d.scale(1/6f);
-        d.cube(-1/2f, 0, -h, 1, 1/7f, h, 0xFF005C7A, true, true, true, true);
-        d.cube(-1/2f, 6/7f, -h, 1, 1/7f, h, 0xFF005C7A, true, true, true, true);
-        d.cube(-1/2f, 1/7f, -h, 1/7f, 5/7f, h, 0xFF005C7A, false, true, false, true);
-        d.cube(5/14f, 1/7f, -h, 1/7f, 5/7f, h, 0xFF005C7A, false, true, false, true);
-        if (pauseState==0) {
-            d.cube(-1/10f, 1/5f-1/7f, -h, 1/5f, 3/5f+2/7f, h, 0xFF005C7A, true, true, true, true);
-        } else {
-            d.translate(0, 1/2f);
-            float v=1-.5f*pauseState;
-            for(int i=0; i<2; i++) {
-                d.pushMatrix();
-                d.cube(-1/10f, pauseState/4f, -h, 1/5f, 3/7f*v, h, 0xFF005C7A, true, true, true, true);
-                d.translate(1/7f-1/2f, 1/7f-1/2f);
-                d.rotate(26.565f*pauseState, 0, 0, 1);
-                d.cube(0, -1/7f, -h, 6/7f, 1/7f, h, 0xFF005C7A, true, false, false, false);
-                d.cube(2.9f/7f, -2.2f/7f*pauseState, -h, 2.2f/7f, 1.2f/7f*pauseState, h, 0xFF005C7A, false, false, false, false);
-                d.popMatrix();
-                d.scale(1, -1, 1);
-            }
-        }
-        d.popMatrix();
-
-        //Draw Settings Button
-        d.pushMatrix();
-        d.translate(six/2, up, 0);
-        d.scale(1/6f);
-        d.cube(-1/2f, 0, -h, 1, 1/7f, h, 0xFF005C7A, true, false, true, false);
-        d.cube(-1/2f, 6/7f, -h, 1, 1/7f, h, 0xFF005C7A, true, false, true, false);
-        d.cube(-1/2f, 0, -h, 1/7f, 1, h, 0xFF005C7A, false, true, false, true);
-        d.cube(5/14f, 0, -h, 1/7f, 1, h, 0xFF005C7A, false, true, false, true);
-        d.translate(0, 1/2f);
-        d.rotate(-settingsRotate, 0, 0, 1);
-        for(int i=0; i<4; i++) {
-            d.cube(-3/14f, -3/14f, -h, 1/7f, 3/7f, h, 0xFF005C7A, false, true, false, true);
-            d.rotate(90, 0, 0, 1);
-        }
-
-        d.popMatrix();
     }
     private StringBuilder str=new StringBuilder();
 
@@ -425,6 +391,12 @@ public class BoxGameReloaded extends Game {
         blocks.init(this);
         level=new Level(this);
         level.setSize(20, 20);
+    }
+
+    @Override
+    public void start() {
+        super.start();
+        gui = new GuiOverlay(this);
     }
 
     //Tastaturstatusänderungen

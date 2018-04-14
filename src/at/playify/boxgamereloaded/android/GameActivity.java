@@ -3,15 +3,12 @@ package at.playify.boxgamereloaded.android;
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
-import android.view.KeyEvent;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
+import android.view.*;
+
+import com.crashlytics.android.Crashlytics;
 
 import at.playify.boxgamereloaded.BoxGameReloaded;
 import at.playify.boxgamereloaded.interfaces.Game;
-import com.crashlytics.android.Crashlytics;
 import io.fabric.sdk.android.Fabric;
 
 public class GameActivity extends Activity {
@@ -25,8 +22,8 @@ public class GameActivity extends Activity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         game=new BoxGameReloaded(new AndroidHandler());
-        game.start();
         setContentView(view=new GameView(this));
+        game.start();
 
         super.onCreate(savedInstanceState);
         Fabric.with(this, new Crashlytics());

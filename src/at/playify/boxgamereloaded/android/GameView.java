@@ -15,7 +15,7 @@ public class GameView extends GLSurfaceView implements GLSurfaceView.Renderer, V
 
     public GameView(GameActivity a) {
         super(a);
-        drawer=new SurfaceDrawer((BoxGameReloaded) a.game);
+        a.game.d=drawer=new SurfaceDrawer((BoxGameReloaded) a.game);
         this.a=a;
         setEGLConfigChooser(8,8,8,8,16,0);
         setEGLContextClientVersion(1);
@@ -27,10 +27,9 @@ public class GameView extends GLSurfaceView implements GLSurfaceView.Renderer, V
 
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-        a.game.d=drawer;
         drawer.gl=gl;
         drawer.font=new FontRenderer(a,drawer);
-        a.game.setCanDraw(true);
+        a.game.setCanDraw();
     }
 
     @Override

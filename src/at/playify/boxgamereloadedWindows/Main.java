@@ -28,6 +28,8 @@ public class Main {
         try {
             Display.setDisplayMode(new DisplayMode(1920/2,1080/2));
             Display.create();
+            Display.setVSyncEnabled(false);
+            Display.setResizable(true);
         } catch (LWJGLException e) {
             e.printStackTrace();
         }
@@ -99,8 +101,8 @@ public class Main {
         game.d.setWidth(Display.getWidth());
         game.d.setHeight(Display.getHeight());
         game.draw();
+        Display.sync(500);
         Display.update();
-        Display.setResizable(true);
         //Tastatur
         Keyboard.enableRepeatEvents(true);
         while (Keyboard.next()) {
