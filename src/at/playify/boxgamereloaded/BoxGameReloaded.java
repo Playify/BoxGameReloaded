@@ -180,6 +180,7 @@ public class BoxGameReloaded extends Game {
             float x = Utils.clamp(player.bound.cx(), 0, level.sizeX) - zoom_x;
             float y = Utils.clamp(player.bound.cy(), 0, level.sizeY) - zoom_y;
             zoom_x += x / 20f;
+
             zoom_y += y / 20f;
             zoom -= (zoom - (vars.zoom_level)) / 20f;
         }
