@@ -26,7 +26,7 @@ public class PacketHello extends Packet{
     @Override
     public void handle(BoxGameReloaded game, ConnectionToServer connectionToServer) {
         connectionToServer.servername=name;
-        game.log("Connected to Server "+name);
+        System.out.println("Connected to Server "+name);
     }
 
     @Override

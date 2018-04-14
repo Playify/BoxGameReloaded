@@ -1,6 +1,7 @@
 package at.playify.boxgamereloaded.interfaces;
 
 //Lock wird benutzt um den TickThread zu pausieren und wenn benötigt wieder zu aktivieren
+@SuppressWarnings({"unused", "WeakerAccess"})
 public class Lock {
 
 

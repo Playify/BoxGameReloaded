@@ -9,7 +9,7 @@ public class TickThread extends Thread{
     private BoxGameReloaded game;
     public long ticks;
 
-    public TickThread(BoxGameReloaded game){
+    TickThread(BoxGameReloaded game){
         this.game = game;
         setName("TickThread");
     }
@@ -25,6 +25,7 @@ public class TickThread extends Thread{
             }catch (Exception e){
                 Game.report(e);
             }
+            //noinspection InfiniteLoopStatement
             while (true) {
                 tick();
             }

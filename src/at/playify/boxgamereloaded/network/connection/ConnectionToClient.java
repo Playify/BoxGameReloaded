@@ -2,12 +2,14 @@ package at.playify.boxgamereloaded.network.connection;
 
 import at.playify.boxgamereloaded.network.Server;
 import at.playify.boxgamereloaded.network.packet.Packet;
+import at.playify.boxgamereloaded.network.packet.PacketResetPlayersInWorld;
 import at.playify.boxgamereloaded.util.bound.RectBound;
 
 import java.io.*;
 import java.net.Socket;
+import java.net.SocketException;
 
-//Verbindung zum Client [WIP]
+//Verbindung zum Client
 public class ConnectionToClient implements Closeable{
     private final Server server;
     private Socket socket;
@@ -37,6 +39,7 @@ public class ConnectionToClient implements Closeable{
                         int i = s.indexOf(':');
                         String packetName = i == -1 ? s : s.substring(0, i);
                         try {
+                            @SuppressWarnings("unchecked")
                             Class<? extends Packet> cls = (Class<? extends Packet>) Class.forName(Packet.class.getName() + packetName);
                             Packet packet = cls.newInstance();
                             packet.loadFromString(i == -1 ? "" : s.substring(i + 1), server);
@@ -50,7 +53,10 @@ public class ConnectionToClient implements Closeable{
                         e.printStackTrace();
                     }
                 }
-            } catch (Exception e) {
+            } catch (SocketException e) {
+                System.err.println("Connection lost to Player \""+name+"\" Reason: "+e.getMessage());
+                close();
+            }catch (Exception e) {
                 System.err.println("Error in ConnectionToClient");
                 e.printStackTrace();
                 close();
@@ -91,5 +97,11 @@ public class ConnectionToClient implements Closeable{
         } catch (IOException e) {
             e.printStackTrace();
         }
+        try{
+            server.broadcast(new PacketResetPlayersInWorld(name),world,this);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        server.disconnect(this);
     }
 }

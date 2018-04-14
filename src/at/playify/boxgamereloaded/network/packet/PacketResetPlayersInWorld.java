@@ -8,6 +8,15 @@ import at.playify.boxgamereloaded.player.PlayerMP;
 
 public class PacketResetPlayersInWorld extends Packet {
     public String player;
+
+    @SuppressWarnings("WeakerAccess")
+    public PacketResetPlayersInWorld(String name) {
+        player=name;
+    }
+    @SuppressWarnings("WeakerAccess")
+    public PacketResetPlayersInWorld() {
+    }
+
     @Override
     public String convertToString(BoxGameReloaded game) {
         return player==null?"":player;
@@ -33,11 +42,11 @@ public class PacketResetPlayersInWorld extends Packet {
                 }
                 if (rem) {
                     PlayerMP[] now = new PlayerMP[players.length - 1];
-                    int index = 0;
-                    for (int i = 0; i < players.length; i++) {
-                        if (!player.equals(players[i].name())) {
-                            now[index] = players[i];
-                            index++;
+                    int i = 0;
+                    for (PlayerMP p : players) {
+                        if (!player.equals(p.name())) {
+                            now[i] = p;
+                            i++;
                         }
                     }
                     connectionToServer.players = now;

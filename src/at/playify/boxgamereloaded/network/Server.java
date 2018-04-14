@@ -1,10 +1,9 @@
 package at.playify.boxgamereloaded.network;
 
-import at.playify.boxgamereloaded.level.EmptyLevel;
+import at.playify.boxgamereloaded.level.EmptyServerLevel;
 import at.playify.boxgamereloaded.level.ServerLevel;
 import at.playify.boxgamereloaded.network.connection.ConnectionToClient;
 import at.playify.boxgamereloaded.network.packet.Packet;
-import at.playify.boxgamereloaded.network.packet.PacketSetPauseMode;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,13 +12,13 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 //Server wird später auch für singleplayer benutzt
 public class Server extends Thread{
-    private ArrayList<ConnectionToClient> connected=new ArrayList<ConnectionToClient>();
+    private CopyOnWriteArrayList<ConnectionToClient> connected=new CopyOnWriteArrayList<>();
     private HashMap<String, ServerLevel> levelmap=new HashMap<>();
-    private int pausemode= PacketSetPauseMode.USER;
+    private int pausemode= 2;
 
     private ServerLevel empty;
     private final ThreadLocal<ArrayList<ConnectionToClient>> last = new ThreadLocal<>();
@@ -35,9 +34,10 @@ public class Server extends Thread{
 
     public void run() {
 
-        ServerSocket serverSocket = null;
+        ServerSocket serverSocket;
         try {
             serverSocket = new ServerSocket(45565);
+            //noinspection InfiniteLoopStatement
             while (true) {
                 connected.add(new ConnectionToClient(serverSocket.accept(),this));
             }
@@ -57,7 +57,7 @@ public class Server extends Thread{
                 levelmap.put(world, level);
                 return level;
             }else{
-                return empty==null?empty=new EmptyLevel():empty;
+                return empty==null?empty=new EmptyServerLevel():empty;
             }
         }
     }
@@ -85,6 +85,7 @@ public class Server extends Thread{
                 last.get().add(connectionToClient);
         }
     }
+    @SuppressWarnings("WeakerAccess")
     public void broadcastRaw(String s) {
         if (last.get()==null) {
             last.set(new ArrayList<>());
@@ -123,12 +124,10 @@ public class Server extends Thread{
     }
 
     public void checkConnected() {
-        Iterator<ConnectionToClient> iterator=connected.iterator();
-        while (iterator.hasNext()) {
-            ConnectionToClient next = iterator.next();
+        for (ConnectionToClient next : connected) {
             if (next.isClosed()) {
-                iterator.remove();
-            }else {
+                next.close();
+            } else {
                 last.get().add(next);
             }
         }
@@ -136,5 +135,9 @@ public class Server extends Thread{
 
     public ArrayList<ConnectionToClient> getLastBroadcast() {
         return last.get();
+    }
+
+    public void disconnect(ConnectionToClient connectionToClient) {
+        connected.remove(connectionToClient);
     }
 }

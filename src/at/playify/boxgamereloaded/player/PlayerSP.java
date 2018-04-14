@@ -11,10 +11,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class PlayerSP extends Player {
-    public boolean jump;
+    private boolean jump;
     public int jumps;
     private Block[] arr =new Block[0];
+    @SuppressWarnings("WeakerAccess")
     public boolean collidesVert,collidesHor;
+    @SuppressWarnings("WeakerAccess")
     public boolean jumpKey,leftKey,rightKey;
 
     public PlayerSP(BoxGameReloaded game) {
@@ -104,8 +106,8 @@ public class PlayerSP extends Player {
             out:
             for(Block block : game.blocks.list) {
                 if (block instanceof Collideable) {
-                    for(int j=0; j<arr.length; j++) {
-                        if (arr[j]==block) {
+                    for (Block anArr : arr) {
+                        if (anArr == block) {
                             if (((Collideable) block).onCollide(this)) {
                                 break out;
                             }

@@ -5,6 +5,7 @@ import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 
 //Hilfsmethoden
+@SuppressWarnings({"WeakerAccess", "SameParameterValue", "unused"})
 public class Utils {
     private static final DecimalFormat dm = new DecimalFormat("#.##");
 
@@ -83,6 +84,6 @@ public class Utils {
 
     public static int rgbToString(float r, float g, float b) {
         int rr= (int) (255*r),gg= (int) (255*g),bb= (int) (255*b);
-        return 0xFF000000|(rr<<16)|(gg<<8)|(bb<<0);
+        return 0xFF000000|(rr<<16)|(gg<<8)|(bb);
     }
 }

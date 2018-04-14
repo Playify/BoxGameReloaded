@@ -3,6 +3,7 @@ package at.playify.boxgamereloaded.interfaces;
 import at.playify.boxgamereloaded.exceptions.DrawingException;
 
 //Interface für Zeichner, unterschiedlich für jede Platform
+@SuppressWarnings("SameParameterValue")
 public interface Drawer {
 
     void translate(float x, float y);

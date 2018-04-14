@@ -6,6 +6,7 @@ import at.playify.boxgamereloaded.level.Level;
 import at.playify.boxgamereloaded.util.Finger;
 
 public abstract class Game {
+    @SuppressWarnings("WeakerAccess")
     public final Handler handler;
     protected boolean canDraw = false;
     public boolean[] keys = new boolean[300];
@@ -25,8 +26,8 @@ public abstract class Game {
 
     protected abstract void init();
 
-    public void setCanDraw(boolean b) {
-        canDraw = b;
+    public void setCanDraw() {
+        canDraw = true;
     }
 
     public void setKey(int keyChar, boolean b) {
@@ -45,10 +46,14 @@ public abstract class Game {
     public abstract void fingerStateChanged(Finger finger);
 
 
+    //genutzt von Android
+    @SuppressWarnings("unused")
     public void pause(){
         paused=true;
         pauseLock.lock();
     }
+    //genutzt von Android
+    @SuppressWarnings("unused")
     public void resume(){
         pauseLock.unlock();
     }

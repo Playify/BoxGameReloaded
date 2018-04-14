@@ -6,7 +6,7 @@ public class BoundingBox {
     public float minY;
     public float maxY;
 
-    public BoundingBox(float minX, float minY, float maxX, float maxY) {
+    BoundingBox(float minX, float minY, float maxX, float maxY) {
         this.minX = minX;
         this.minY = minY;
         this.maxX = maxX;
@@ -159,7 +159,7 @@ public class BoundingBox {
         return y;
     }
 
-    public boolean intersects(double minX, double minY, double maxX, double maxY)
+    private boolean intersects(double minX, double minY, double maxX, double maxY)
     {
         return this.minX < maxX && this.maxX > minX && this.minY < maxY && this.maxY > minY;
     }

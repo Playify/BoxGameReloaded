@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 //Packet um die Welt zu setzen
 public class PacketSetWorld extends Packet {
-    public String world;
+    private String world;
     public PacketSetWorld(String world) {
         this.world=world;
     }
@@ -45,8 +45,7 @@ public class PacketSetWorld extends Packet {
 
     @Override
     public void handle(Server server, ConnectionToClient connectionToClient) {
-        PacketResetPlayersInWorld packet=new PacketResetPlayersInWorld();
-        packet.player=connectionToClient.name;
+        PacketResetPlayersInWorld packet=new PacketResetPlayersInWorld(connectionToClient.name);
         server.broadcast(packet,connectionToClient.world,connectionToClient);
         ServerLevel level = server.getLevel(world);
         if (!connectionToClient.world.equals(world)) {

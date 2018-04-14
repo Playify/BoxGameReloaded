@@ -26,12 +26,12 @@ public abstract class Player {
             }else{
                 game.d.rect(bound.x(), bound.y(), bound.w(), bound.h(),color);
             }
-        }else if(skin.equals("glib")){/*
+        }/*else if(skin.equals("glib")){
             game.d.startPath(glib0x,glib0y);
             game.d.addToPath(glib1x,glib1y);
             game.d.addToPath(glib2x,glib2y);
-            game.d.finishPath(glib3x,glib3y,color);*/
-        }
+            game.d.finishPath(glib3x,glib3y,color);
+        }*/
     }
 
     //tick für Spieler ausführen um Animationen auszuführen
@@ -68,8 +68,8 @@ public abstract class Player {
     }
 
     //Kollisionsseite, wenn überhaupt. Benutzt zum wallsliden
-    protected final RectBound collider = new RectBound();
-    protected int side() {
+    final RectBound collider = new RectBound();
+    int side() {
         if (!game.vars.wallslide) {
             return 0;
         }

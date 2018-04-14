@@ -10,10 +10,9 @@ public class WindowsDrawer implements Drawer {
     //Größe vom Fenster
     public int w;
     public int h;
-    public FontRenderer font=new FontRenderer(this);
+    private FontRenderer font=new FontRenderer(this);
     private boolean drawing;//derzeitig am zeichnen
     private BoxGameReloaded game;
-    public boolean back;//Rückseite von Würfeln zeichnen
     //Vertexes um nicht jedes Mal zeichnen neu generieren zu müssen
     private float[] vertexFRONT=new float[]{
             0, 0, 0,
@@ -65,7 +64,7 @@ public class WindowsDrawer implements Drawer {
     };
 
 
-    public WindowsDrawer(BoxGameReloaded game) {
+    WindowsDrawer(BoxGameReloaded game) {
         this.game=game;
     }
 
@@ -121,12 +120,12 @@ public class WindowsDrawer implements Drawer {
     //color erlaubt Alpha z.B. 0xFF00FF00 (grün)   ARGB Alpha Rot GGrün Blau
     @Override
     public void cube(float x, float y, float z, float w, float h, float d, int color) {
-        cube(x, y, z, w, h, d, color, true, true, true, true, true, back);
+        cube(x, y, z, w, h, d, color, true, true, true, true, true, back());
     }
     //Zeichne Würfel wie bei der Methode darüber, jedoch kann editiert werden welche Seiten gezeichnet werden
     @Override
     public void cube(float x, float y, float z, float w, float h, float d, int color, boolean up, boolean left, boolean down, boolean right) {
-        cube(x, y, z, w, h, d, color, up, left, down, right, true, back);
+        cube(x, y, z, w, h, d, color, up, left, down, right, true, back());
     }
     //Zeichne Würfel wie bei der Methode darüber, jedoch kann editiert werden welche Seiten (auch Vorder und Rückwand) gezeichnet werden
     @Override
@@ -176,7 +175,7 @@ public class WindowsDrawer implements Drawer {
     @Override
     public void vertex(float[] vertex, int color, float darken, float alpha) {
         game.vertexcount++;
-        float a=((color>>24)&255)/255f, r=((color>>16)&255)/255f, g=((color>>8)&255)/255f, b=((color>>0)&255)/255f;
+        float a=((color>>24)&255)/255f, r=((color>>16)&255)/255f, g=((color>>8)&255)/255f, b=((color)&255)/255f;
         GL11.glColor4f(r*darken, g*darken, b*darken, a*alpha);
         GL11.glBegin(GL11.GL_TRIANGLES);
         for (int i = 0; i < vertex.length; i+=3) {
@@ -237,7 +236,7 @@ public class WindowsDrawer implements Drawer {
     //genutzt wird
     @Override
     public void fill(int color) {
-        float a=((color>>24)&255)/255f, r=((color>>16)&255)/255f, g=((color>>8)&255)/255f, b=((color>>0)&255)/255f;
+        float a=((color>>24)&255)/255f, r=((color>>16)&255)/255f, g=((color>>8)&255)/255f, b=((color)&255)/255f;
         GL11.glClearColor(r, g, b, a);
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT|GL11.GL_DEPTH_BUFFER_BIT);
     }
@@ -292,7 +291,7 @@ public class WindowsDrawer implements Drawer {
     //ist Rückseite zeichnen eingeschalten?
     @Override
     public boolean back() {
-        return back;
+        return game.vars.debug.drawback;
     }
 
     //Zeichne Text auf den Koordinaten x,y mit Höhe h

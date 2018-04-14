@@ -7,7 +7,7 @@ import at.playify.boxgamereloaded.network.packet.Packet;
 //Verbindung ohne Packets zu senden/empfangen
 public class EmptyConnection extends ConnectionToServer {
 
-    public EmptyConnection() {
+    EmptyConnection() {
     }
 
     @Override

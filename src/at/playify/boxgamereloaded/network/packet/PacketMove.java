@@ -16,6 +16,7 @@ public class PacketMove extends Packet {
     public float w=.8f;
     public float h=.8f;
 
+    @SuppressWarnings("WeakerAccess")
     public PacketMove(ConnectionToClient client) {
         this.player=client.name;
         x=client.bound.x();
@@ -23,7 +24,8 @@ public class PacketMove extends Packet {
         w=client.bound.w();
         h=client.bound.h();
     }
-    public PacketMove(RectBound bound,String player) {
+    @SuppressWarnings("WeakerAccess")
+    public PacketMove(RectBound bound, String player) {
         this.player=player;
         x=bound.x();
         y=bound.y();
@@ -37,6 +39,7 @@ public class PacketMove extends Packet {
         w=bound.w();
         h=bound.h();
     }
+    @SuppressWarnings("unused")
     public PacketMove() {
         player="";
     }

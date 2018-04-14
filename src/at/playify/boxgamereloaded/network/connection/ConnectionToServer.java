@@ -110,7 +110,7 @@ public class ConnectionToServer implements Closeable,Runnable {
                     int i=s.indexOf(':');
                     String packetName=i==-1 ? s : s.substring(0, i);
                     try {
-                        //noinspection unchecked
+                        @SuppressWarnings("unchecked")
                         Class<? extends Packet> cls=(Class<? extends Packet>) Class.forName(Packet.class.getName()+packetName);
                         Packet packet=cls.newInstance();//TODO reuse objects
                         packet.loadFromString(i==-1 ? "" : s.substring(i+1), game);

@@ -25,7 +25,7 @@ public class BoxGameReloaded extends Game {
 
     public PlayerSP player=new PlayerSP(this);
     public ConnectionToServer connection=new EmptyConnection();
-    public boolean options;
+    private boolean options;
     public DrawHelper drawer=new DrawHelper(this);
     public float zoom_x;
     public float zoom_y;
@@ -236,7 +236,6 @@ public class BoxGameReloaded extends Game {
     //draw game gui
     private void drawGui() {
         txt.clear();
-        boolean thin=true;
         d.clearDepth();
         final float six=1/6f, up=1-six, pausex=aspectratio-six;
         if (drawer.draw) {
@@ -263,17 +262,10 @@ public class BoxGameReloaded extends Game {
             d.rect(-1/2f+1/14f, 1/14f, 6/7f, 6/7f, 0xB2FF0000);
             d.depth(true);
         }
-        if (thin) {
-            d.cube(-1/2f, 0, -h, 1, 1/7f, h, 0xFF005C7A, true, true, true, true, true, true);
-            d.cube(-1/2f, 6/7f, -h, 1, 1/7f, h, 0xFF005C7A, true, true, true, true, true, true);
-            d.cube(-1/2f, 1/7f, -h, 1/7f, 5/7f, h, 0xFF005C7A, false, true, false, true, true, true);
-            d.cube(5/14f, 1/7f, -h, 1/7f, 5/7f, h, 0xFF005C7A, false, true, false, true, true, true);
-        } else {
-            d.cube(-1/2f, 0, -h, 1, 1/5f, h, 0xFF005C7A, true, true, true, true, true, true);
-            d.cube(-1/2f, 4/5f, -h, 1, 1/5f, h, 0xFF005C7A, true, true, true, true, true, true);
-            d.cube(-1/2f, 1/5f, -h, 1/5f, 3/5f, h, 0xFF005C7A, false, true, false, true, true, true);
-            d.cube(3/10f, 1/5f, -h, 1/5f, 3/5f, h, 0xFF005C7A, false, true, false, true, true, true);
-        }
+        d.cube(-1/2f, 0, -h, 1, 1/7f, h, 0xFF005C7A, true, true, true, true, true, true);
+        d.cube(-1/2f, 6/7f, -h, 1, 1/7f, h, 0xFF005C7A, true, true, true, true, true, true);
+        d.cube(-1/2f, 1/7f, -h, 1/7f, 5/7f, h, 0xFF005C7A, false, true, false, true, true, true);
+        d.cube(5/14f, 1/7f, -h, 1/7f, 5/7f, h, 0xFF005C7A, false, true, false, true, true, true);
         if (backgroundState>150) {
             d.cube(-1f/2+2f/5, 1f/5-1/7f, -h, 1f/5, 1f/5+1/7f, h, 0xFF005C7A, true, true, false, true, false, true);
             d.cube(-1f/2+2f/5, 3f/5, -h, 1f/5, 1f/5+1/7f, h, 0xFF005C7A, false, true, true, true, false, true);
@@ -357,17 +349,10 @@ public class BoxGameReloaded extends Game {
         d.pushMatrix();
         d.translate(pausex+six/2, up, 0);
         d.scale(1/6f);
-        if (thin) {
-            d.cube(-1/2f, 0, -h, 1, 1/7f, h, 0xFF005C7A, true, true, true, true);
-            d.cube(-1/2f, 6/7f, -h, 1, 1/7f, h, 0xFF005C7A, true, true, true, true);
-            d.cube(-1/2f, 1/7f, -h, 1/7f, 5/7f, h, 0xFF005C7A, false, true, false, true);
-            d.cube(5/14f, 1/7f, -h, 1/7f, 5/7f, h, 0xFF005C7A, false, true, false, true);
-        } else {
-            d.cube(-1/2f, 0, -h, 1, 1/5f, h, 0xFF005C7A, true, true, true, true);
-            d.cube(-1/2f, 4/5f, -h, 1, 1/5f, h, 0xFF005C7A, true, true, true, true);
-            d.cube(-1/2f, 1/5f, -h, 1/5f, 3/5f, h, 0xFF005C7A, false, true, false, true);
-            d.cube(3/10f, 1/5f, -h, 1/5f, 3/5f, h, 0xFF005C7A, false, true, false, true);
-        }
+        d.cube(-1/2f, 0, -h, 1, 1/7f, h, 0xFF005C7A, true, true, true, true);
+        d.cube(-1/2f, 6/7f, -h, 1, 1/7f, h, 0xFF005C7A, true, true, true, true);
+        d.cube(-1/2f, 1/7f, -h, 1/7f, 5/7f, h, 0xFF005C7A, false, true, false, true);
+        d.cube(5/14f, 1/7f, -h, 1/7f, 5/7f, h, 0xFF005C7A, false, true, false, true);
         if (pauseState==0) {
             d.cube(-1/10f, 1/5f-1/7f, -h, 1/5f, 3/5f+2/7f, h, 0xFF005C7A, true, true, true, true);
         } else {
@@ -390,17 +375,10 @@ public class BoxGameReloaded extends Game {
         d.pushMatrix();
         d.translate(six/2, up, 0);
         d.scale(1/6f);
-        if (thin) {
-            d.cube(-1/2f, 0, -h, 1, 1/7f, h, 0xFF005C7A, true, false, true, false);
-            d.cube(-1/2f, 6/7f, -h, 1, 1/7f, h, 0xFF005C7A, true, false, true, false);
-            d.cube(-1/2f, 0, -h, 1/7f, 1, h, 0xFF005C7A, false, true, false, true);
-            d.cube(5/14f, 0, -h, 1/7f, 1, h, 0xFF005C7A, false, true, false, true);
-        } else {
-            d.cube(-1/2f, 0, -h, 1, 1/5f, h, 0xFF005C7A, true, true, true, true);
-            d.cube(-1/2f, 4/5f, -h, 1, 1/5f, h, 0xFF005C7A, true, true, true, true);
-            d.cube(-1/2f, 1/5f, -h, 1/5f, 3/5f, h, 0xFF005C7A, false, true, false, true);
-            d.cube(3/10f, 1/5f, -h, 1/5f, 3/5f, h, 0xFF005C7A, false, true, false, true);
-        }
+        d.cube(-1/2f, 0, -h, 1, 1/7f, h, 0xFF005C7A, true, false, true, false);
+        d.cube(-1/2f, 6/7f, -h, 1, 1/7f, h, 0xFF005C7A, true, false, true, false);
+        d.cube(-1/2f, 0, -h, 1/7f, 1, h, 0xFF005C7A, false, true, false, true);
+        d.cube(5/14f, 0, -h, 1/7f, 1, h, 0xFF005C7A, false, true, false, true);
         d.translate(0, 1/2f);
         d.rotate(-settingsRotate, 0, 0, 1);
         for(int i=0; i<4; i++) {
@@ -481,11 +459,7 @@ public class BoxGameReloaded extends Game {
         }
     }
 
-    //Text zur Konsole ausgeben
-    public void log(String s) {
-        System.out.println(s);
-    }
-
+    @SuppressWarnings("WeakerAccess")
     public void joinWorld(String name){
         connection.sendPacketSoon(new PacketSetWorld(name));
     }

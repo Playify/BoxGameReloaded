@@ -8,14 +8,18 @@ import at.playify.boxgamereloaded.util.Utils;
 
 //Setze Pausezustand
 public class PacketSetPauseMode extends Packet {
-    public static final int UNPAUSED = 0;
-    public static final int PAUSED = 1;
-    public static final int USER=2;
-    public int mode;
+    /*
+    UNPAUSED   = 0,
+    PAUSED     = 1,
+    USER       = 2,
+    USERPAUSED = 3,
+     */
+    private int mode;
 
     public PacketSetPauseMode(int i) {
         mode=i;
     }
+    @SuppressWarnings("unused")
     public PacketSetPauseMode() {
     }
 
@@ -26,7 +30,7 @@ public class PacketSetPauseMode extends Packet {
 
     @Override
     public void loadFromString(String s, BoxGameReloaded game) {
-        this.mode=Utils.parseInt(s,PacketSetPauseMode.UNPAUSED);
+        this.mode=Utils.parseInt(s,0);
     }
 
     @Override

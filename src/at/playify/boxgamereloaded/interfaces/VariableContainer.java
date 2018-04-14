@@ -1,14 +1,12 @@
 package at.playify.boxgamereloaded.interfaces;
 
 public class VariableContainer {
-    public static int STATE_SETTINGS=0b100,STATE_MAINMENU=0b10,STATE_PAUSE=0b1;
     public float tickrate=60;
-    public int state=STATE_MAINMENU;
     public float display_size=10;
     public float zoom_level=1.3f;
     public int jumps=2;
-    public boolean wallbounce=false;
-    public boolean wallslide=false;
+    public boolean wallbounce;
+    public boolean wallslide;
     public boolean inverted_gravity;
     public boolean fly;
     public boolean noclip;
@@ -23,5 +21,6 @@ public class VariableContainer {
 
     public class Debug {
         public boolean viewback;
+        public boolean drawback;//Rückseite von Würfeln zeichnen
     }
 }
