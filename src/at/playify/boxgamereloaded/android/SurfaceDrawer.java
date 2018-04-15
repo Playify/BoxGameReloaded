@@ -2,8 +2,6 @@ package at.playify.boxgamereloaded.android;
 
 import android.opengl.GLU;
 
-import com.crashlytics.android.Crashlytics;
-
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
@@ -72,6 +70,42 @@ public class SurfaceDrawer implements Drawer {
             1, 1, 0,
             1, 1, 1
     };
+    private float[] vertexLineRect=new float[]{
+            0,0,0,
+            0,1,0,
+            0,1,0,
+            1,1,0,
+            1,1,0,
+            1,0,0,
+            1,0,0,
+            0,0,0
+    };
+    private float[] vertexLineCube=new float[]{//Calculated from Windows edition
+            0, 0, 0,
+            0, 0, 1,
+            0, 0, 0,
+            0, 1, 0,
+            0, 0, 0,
+            1, 0, 0,
+            0, 1, 0,
+            0, 1, 1,
+            0, 0, 1,
+            0, 1, 1,
+            0, 1, 0,
+            1, 1, 0,
+            1, 0, 0,
+            1, 0, 1,
+            1, 0, 0,
+            1, 1, 0,
+            0, 0, 1,
+            1, 0, 1,
+            1, 1, 0,
+            1, 1, 1,
+            1, 0, 1,
+            1, 1, 1,
+            0, 1, 1,
+            1, 1, 1
+    };
 
 
     public SurfaceDrawer(BoxGameReloaded game) {
@@ -108,6 +142,15 @@ public class SurfaceDrawer implements Drawer {
         gl.glPopMatrix();
     }
 
+    @Override
+    public void lineRect(float x, float y, float w, float h, int color) {
+        gl.glPushMatrix();
+        gl.glTranslatef(x,y,0);
+        gl.glScalef(w,h,1);
+        vertexLine(vertexLineRect,color);
+        gl.glPopMatrix();
+    }
+
     public void cube(float x, float y, float z, float w, float h, float d, int color) {
         cube(x, y, z, w, h, d, color, true, true, true, true, true, back);
     }
@@ -141,6 +184,16 @@ public class SurfaceDrawer implements Drawer {
             vertex(vertexLEFT, color, 0.9f);
         gl.glPopMatrix();
     }
+
+    @Override
+    public void lineCube(float x, float y, float z, float w, float h, float d, int color) {
+        gl.glPushMatrix();
+        gl.glTranslatef(x,y,z);
+        gl.glScalef(w,h,d);
+        vertexLine(vertexLineCube,color);
+        gl.glPopMatrix();
+    }
+
     private FloatBuffer checkFloatBuffer(int length) {
         if(fb==null||fb.capacity()<length) {
             ByteBuffer vbb=ByteBuffer.allocateDirect(length*4);
@@ -170,34 +223,26 @@ public class SurfaceDrawer implements Drawer {
     }
 
     public void vertex(float[] vertex, int color, float darken, float alpha) {
-        game.vertexcount++;
         FloatBuffer verticesBuffer=checkFloatBuffer(vertex.length);
         verticesBuffer.put(vertex);
         verticesBuffer.position(0);
         gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-        //gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
         float a=((color>>24)&255)/255f, r=((color>>16)&255)/255f, g=((color>>8)&255)/255f, b=((color>>0)&255)/255f;
         gl.glColor4f(r*darken, g*darken, b*darken, a*alpha);
         gl.glVertexPointer(3, GL10.GL_FLOAT, 0, verticesBuffer);
-/*
+        gl.glDrawArrays(GL10.GL_TRIANGLES,0, vertex.length/3);
+        gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
+    }
 
-
-        FloatBuffer colorBuffer=checkFloatBuffer2(vertex.length*4/3);
-        for(int i=0; i<vertex.length/3; i++) {
-            colorBuffer.put(0);
-            colorBuffer.put(0);
-            colorBuffer.put(1);
-            colorBuffer.put(1);
-        }
-        colorBuffer.position(0);
-        gl.glColorPointer(4, GL10.GL_FLOAT, 0, colorBuffer);
-*/
-
-
-        for(int i=0; i<vertex.length/3; i+=3) {
-            gl.glDrawArrays(GL10.GL_TRIANGLES, i, 3);
-        }
-        //gl.glDisableClientState(GL10.GL_COLOR_ARRAY);
+    public void vertexLine(float[] vertex, int color) {
+        FloatBuffer verticesBuffer=checkFloatBuffer(vertex.length);
+        verticesBuffer.put(vertex);
+        verticesBuffer.position(0);
+        gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+        float a=((color>>24)&255)/255f, r=((color>>16)&255)/255f, g=((color>>8)&255)/255f, b=((color>>0)&255)/255f;
+        gl.glColor4f(r, g, b, a);
+        gl.glVertexPointer(3, GL10.GL_FLOAT, 0, verticesBuffer);
+        gl.glDrawArrays(GL10.GL_LINES, 0, vertex.length/3);
         gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
     }
 

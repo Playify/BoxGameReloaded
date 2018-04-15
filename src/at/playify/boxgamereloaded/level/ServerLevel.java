@@ -8,9 +8,9 @@ import at.playify.boxgamereloaded.util.Utils;
 import at.playify.boxgamereloaded.util.bound.RectBound;
 
 public class ServerLevel {
-    public int sizeX,sizeY;
-    protected char[] blocks;
-    protected int[] metas;
+    int sizeX, sizeY;
+    char[] blocks;
+    int[] metas;
     public RectBound spawnPoint=new RectBound(.1f,.1f,.8f,.8f);
     public ServerLevel() {
         blocks=new char[sizeX*sizeY];
@@ -23,26 +23,6 @@ public class ServerLevel {
             return block!=0?block: BlockAir.chr;
         }else{
             return BlockAir.chr;
-        }
-    }
-
-    public int getMeta(int x, int y){
-        if ((x|y)>=0&&x<sizeX&&y<sizeY){
-            return metas[y*sizeX+x];
-        }else{
-            return 0;
-        }
-    }
-    public boolean setMeta(int x, int y,int meta){
-        if ((x|y)>=0&&x<sizeX&&y<sizeY){
-            char block = blocks[y * sizeX + x];
-            if (block==0) {
-                block=BlockAir.chr;
-            }
-            metas[y*sizeX+x]=meta% metaStates(block);
-            return true;
-        }else {
-            return false;
         }
     }
 
@@ -89,14 +69,13 @@ public class ServerLevel {
             if (meta!=0) {
                 str.append(meta);
             }
-            str.append("+");
         }
-        str.append("-").append(sizeX);
-        str.append("-").append(sizeY);
-        str.append("-").append(((int) (Utils.clamp(spawnPoint.x(),0,sizeX-spawnPoint.w())*100)));
-        str.append("-").append(((int) (Utils.clamp(spawnPoint.y(),0,sizeY-spawnPoint.w())*100)));
-        str.append("-").append(((int) (Utils.clamp(spawnPoint.w(),0,sizeX)*100)));
-        str.append("-").append(((int) (Utils.clamp(spawnPoint.h(),0,sizeY)*100)));
+        str.append("+").append(sizeX);
+        str.append("+").append(sizeY);
+        str.append("+").append(((int) spawnPoint.x() * 100));
+        str.append("+").append(((int) spawnPoint.y() * 100));
+        str.append("+").append(((int) spawnPoint.w() * 100));
+        str.append("+").append(((int) spawnPoint.h() * 100));
         return Compresser.compress(str.toString());
     }
     public void loadWorldString(String s) {
@@ -105,7 +84,7 @@ public class ServerLevel {
         StringBuilder stringBuilder = new StringBuilder();
         int index=0;
         for (char c : s.toCharArray()) {
-            if (c=='-'){
+            if (c == '+') {
                 split[index++]=stringBuilder.toString();
                 stringBuilder.setLength(0);
                 if (index>split.length) {

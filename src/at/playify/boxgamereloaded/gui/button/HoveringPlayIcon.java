@@ -30,9 +30,11 @@ public class HoveringPlayIcon extends Button {
             d.pushMatrix();
             d.translate(.5f, .23f);
             d.depth(false);
-            d.drawStringCenter("Paused", 0, -.4f + pauseState * .4f, .15f);
-            if (pauseState == 1 && game.connection.pauseCount != 0) {
-                d.drawStringCenter("by " + game.connection.pauseCount + " Players", 0, -.05f, .05f);
+            if (game.connection.userpause) {
+                d.drawStringCenter("Paused", 0, -.4f + pauseState * .4f, .15f);
+                if (pauseState == 1 && game.connection.pauseCount != 0) {
+                    d.drawStringCenter("by " + game.connection.pauseCount + " Players", 0, -.05f, .05f);
+                }
             }
             d.depth(true);
             d.translate(0, .4f, -.3f);

@@ -12,12 +12,6 @@ public class EmptyServerLevel extends ServerLevel {
         return BlockAir.chr;
     }
 
-    public int getMeta(int x, int y){
-        return 0;
-    }
-    public boolean setMeta(int x, int y,int meta){
-        return x==0&&y==0;
-    }
     public boolean set(int x, int y, char b) {
         return x==0&&y==0;
     }

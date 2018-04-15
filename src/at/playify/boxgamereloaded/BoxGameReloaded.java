@@ -178,16 +178,36 @@ public class BoxGameReloaded extends Game {
             }
             d.scale(zoom);
             d.translate(-zoom_x + (vars.display_size * aspectratio / 2f) / zoom, -zoom_y + (vars.display_size / 2f) / zoom);
-            if (vars.cubic) {
-                d.cube(-1, -1, 0, level.sizeX + 2, 1, 1, 0xFFFFFF00, true, false, true, false);
-                d.cube(-1, -1, 0, 1, level.sizeY + 2, 1, 0xFFFFFF00, false, true, false, true);
-                d.cube(-1, level.sizeY, 0, level.sizeX + 2, 1, 1, 0xFFFFFF00, true, false, true, false);
-                d.cube(level.sizeX, -1, 0, 1, level.sizeY + 2, 1, 0xFFFFFF00, false, true, false, true);
+            if (vars.geometry_dash) {
+                if (vars.cubic) {
+                    float v = vars.display_size;
+                    d.cube(zoom_x - v, -1, 0, 2 * v, 1, 1, 0xFFFFFF00, true, false, true, false);
+                    d.cube(zoom_x - v, level.sizeY, 0, 2 * v, 1, 1, 0xFFFFFF00, true, false, true, false);
+                    if (drawer.draw) {
+                        d.cube(-.1f, 0, .9f, .1f, level.sizeY, .1f, 0xFFFFFF00, false, true, false, true);
+                        d.cube(level.sizeX, 0, .9f, .1f, level.sizeY, .1f, 0xFFFFFF00, false, true, false, true);
+                    }
+                } else {
+                    float v = vars.display_size;
+                    d.rect(zoom_x - v, -1, 2 * v, 1, 0xFFFFFF00);
+                    d.rect(zoom_x - v, level.sizeY, 2 * v, 1, 0xFFFFFF00);
+                    if (drawer.draw) {
+                        d.rect(-.1f, 0, .1f, level.sizeY, 0xFFFFFF00);
+                        d.rect(level.sizeX, 0, .1f, level.sizeY, 0xFFFFFF00);
+                    }
+                }
             } else {
-                d.rect(-1, -1, level.sizeX + 2, 1, 0xFFFFFF00);
-                d.rect(-1, -1, 1, level.sizeY + 2, 0xFFFFFF00);
-                d.rect(-1, level.sizeY, level.sizeX + 2, 1, 0xFFFFFF00);
-                d.rect(level.sizeX, -1, 1, level.sizeY + 2, 0xFFFFFF00);
+                if (vars.cubic) {
+                    d.cube(-1, -1, 0, level.sizeX + 2, 1, 1, 0xFFFFFF00, true, false, true, false);
+                    d.cube(-1, -1, 0, 1, level.sizeY + 2, 1, 0xFFFFFF00, false, true, false, true);
+                    d.cube(-1, level.sizeY, 0, level.sizeX + 2, 1, 1, 0xFFFFFF00, true, false, true, false);
+                    d.cube(level.sizeX, -1, 0, 1, level.sizeY + 2, 1, 0xFFFFFF00, false, true, false, true);
+                } else {
+                    d.rect(-1, -1, level.sizeX + 2, 1, 0xFFFFFF00);
+                    d.rect(-1, -1, 1, level.sizeY + 2, 0xFFFFFF00);
+                    d.rect(-1, level.sizeY, level.sizeX + 2, 1, 0xFFFFFF00);
+                    d.rect(level.sizeX, -1, 1, level.sizeY + 2, 0xFFFFFF00);
+                }
             }
             float mx = vars.display_size / 2f * aspectratio;
             float my = vars.display_size / 2f;
@@ -208,29 +228,16 @@ public class BoxGameReloaded extends Game {
     private void drawGui() {
         txt.clear();
         d.clearDepth();
-        final float six = 1 / 6f, up = 1 - six, pausex = aspectratio - six;
+        //Debug Text anzeigen
         if (drawer.draw) {
             txt.add("Draw:" + drawer.getBlockString());
         }
         logFrame();
 
-        //Jeder Knopf/Guikomponent sollte in ein Guiobjekt oder Buttonobjekt konvertiert werden anstatt unten dazuzuzeichnen.
+        //Gui zeichnen
         d.pushMatrix();
         d.translate(0, 0, -0.025f);
         gui.draw();
-        d.popMatrix();
-
-
-        //Draw Main Menu/Restart Button
-        d.pushMatrix();
-        final float h = 0.025f * 6;
-        d.translate(pausex - 5 / 36f, up, -h / 12f);
-
-        float pauseState = 0;//TODO now
-        if (pauseState != 0) {
-
-        }
-
         d.popMatrix();
     }
 
@@ -314,6 +321,7 @@ public class BoxGameReloaded extends Game {
     }
 
     public void finishLevel() {
+        player.bound.set(level.spawnPoint);
         //TODO save Level finished to config. (using handler)
         //TODO send PacketSetWorld to next level
         //connection.sendPacket(new PacketSetWorld());

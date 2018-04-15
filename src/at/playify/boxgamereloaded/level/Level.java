@@ -29,6 +29,9 @@ public class Level {
         if ((x|y)>=0&&x<sizeX&&y<sizeY){
             Block block = blocks[y * sizeX + x];
             return block!=null?block:game.blocks.AIR;
+        } else if (game.vars.geometry_dash && y >= 0 && y < sizeY) {
+            if (x >= sizeX + 6) return game.blocks.FINISH;
+            return game.blocks.AIR;
         }else{
             return game.blocks.AIR;
         }
@@ -39,6 +42,9 @@ public class Level {
         if ((x|y)>=0&&x<sizeX&&y<sizeY){
             Block block = blocks[y * sizeX + x];
             return block!=null?block:game.blocks.AIR;
+        } else if (game.vars.geometry_dash && y >= 0 && y < sizeY) {
+            if (x == sizeX + 6) return game.blocks.FINISH;
+            return game.blocks.AIR;
         }else{
             return def;
         }
@@ -96,7 +102,6 @@ public class Level {
 
     //Kollision checken
     public boolean collide(Bound b, Player player) {
-        if (!b.inLevel(this)) return true;
         if (game.vars.noclip) return false;//if isplayer
         Block bl;
         rect.sizeOf(b);
@@ -150,12 +155,18 @@ public class Level {
 
     //Level zeichnen
     public void draw(RectBound b) {
+        float d = (spawnPoint.w() + spawnPoint.h()) / 2;
+        if (game.vars.cubic) {
+            game.d.lineCube(spawnPoint.x(), spawnPoint.y(), .5f - d / 2, spawnPoint.w(), spawnPoint.h(), d, 0xFF000000);
+        } else {
+            game.d.lineRect(spawnPoint.x(), spawnPoint.y(), spawnPoint.w(), spawnPoint.h(), 0xFF000000);
+        }
         int minX = (int) Math.floor(b.x()), minY = (int) Math.floor(b.y()), maxX = (int) Math.ceil(b.x()+b.w()), maxY = (int) Math.ceil(b.y()+b.h());
         game.player.draw();
         if (game.connection!=null) {
             Player[] players=game.connection.players;
-            for(int i=0; i<players.length; i++) {
-                players[i].draw();
+            for (Player player : players) {
+                player.draw();
             }
         }
         for (int y = minY; y < maxY; y++) {
@@ -179,10 +190,10 @@ public class Level {
         }
         str.append("-").append(sizeX);
         str.append("-").append(sizeY);
-        str.append("-").append(((int) Utils.clamp(spawnPoint.x(),0,sizeX-spawnPoint.w())*100));
-        str.append("-").append(((int) Utils.clamp(spawnPoint.y(),0,sizeY-spawnPoint.w())*100));
-        str.append("-").append(((int) Utils.clamp(spawnPoint.w(),0,sizeX)*100));
-        str.append("-").append(((int) Utils.clamp(spawnPoint.h(),0,sizeY)*100));
+        str.append("-").append(((int) spawnPoint.x() * 3100));
+        str.append("-").append(((int) spawnPoint.y() * 3100));
+        str.append("-").append(((int) spawnPoint.w() * 100));
+        str.append("-").append(((int) spawnPoint.h() * 100));
         return Compresser.compress(str.toString());
     }
 
@@ -193,7 +204,7 @@ public class Level {
         StringBuilder stringBuilder = new StringBuilder();
         int index=0;
         for (char c : s.toCharArray()) {
-            if (c=='-'){
+            if (c == '+') {
                 split[index++]=stringBuilder.toString();
                 stringBuilder.setLength(0);
                 if (index>split.length) {

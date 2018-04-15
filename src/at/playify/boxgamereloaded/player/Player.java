@@ -22,9 +22,17 @@ public abstract class Player {
     public void draw() {
         if (skin.equals("cube")) {
             if (game.vars.cubic) {
-                game.d.cube(bound.x(), bound.y(), .1f, bound.w(), bound.h(), (bound.w()+bound.h()) / 2, color);
+                float d = (bound.w() + bound.h()) / 2;
+                game.d.cube(bound.x(), bound.y(), .5f - d / 2, bound.w(), bound.h(), d, color);
             }else{
                 game.d.rect(bound.x(), bound.y(), bound.w(), bound.h(),color);
+            }
+        } else if (skin.equals("border")) {
+            if (game.vars.cubic) {
+                float d = (bound.w() + bound.h()) / 2;
+                game.d.lineCube(bound.x(), bound.y(), .5f - d / 2, bound.w(), bound.h(), d, color);
+            } else {
+                game.d.lineRect(bound.x(), bound.y(), bound.w(), bound.h(), color);
             }
         }/*else if(skin.equals("glib")){
             game.d.startPath(glib0x,glib0y);

@@ -116,6 +116,28 @@ public class WindowsDrawer implements Drawer {
         GL11.glPopMatrix();
     }
 
+    @Override
+    public void lineRect(float x, float y, float w, float h, int color) {
+        GL11.glPushMatrix();
+        GL11.glTranslatef(x, y, 0);
+        GL11.glScalef(w, h, 0);
+        GL11.glLineWidth(2.5f);
+        float a = ((color >> 24) & 255) / 255f, r = ((color >> 16) & 255) / 255f, g = ((color >> 8) & 255) / 255f, b = ((color) & 255) / 255f;
+        GL11.glColor4f(r, g, b, a);
+        GL11.glBegin(GL11.GL_LINES);
+        for (int i = 0; i < 4; i++) {
+            //Coords: i/2, i%2, 0 oder 1 so wird für alle 2 kanten in die jeweilige richtung gezeichnet
+            //i>>1 ist /2 nur effizienter
+            //i&1 ist %2 nur effizienter
+            GL11.glVertex3f(i >> 1, 0, 0);
+            GL11.glVertex3f(i >> 1, 1, 0);
+            GL11.glVertex3f(0, i & 1, 0);
+            GL11.glVertex3f(1, i & 1, 0);
+        }
+        GL11.glEnd();
+        GL11.glPopMatrix();
+    }
+
     //Würfel zeichnen bei den Koordinaten x,y,z mit der größe w,h,d mit der Farbe color
     //color erlaubt Alpha z.B. 0xFF00FF00 (grün)   ARGB Alpha Rot GGrün Blau
     @Override
@@ -156,6 +178,32 @@ public class WindowsDrawer implements Drawer {
         GL11.glPopMatrix();
     }
 
+    //Zeichne Würfel wie bei der Methode darüber, jedoch kann editiert werden welche Seiten (auch Vorder und Rückwand) gezeichnet werden
+    @Override
+    public void lineCube(float x, float y, float z, float w, float h, float d, int color) {
+        GL11.glPushMatrix();
+        GL11.glTranslatef(x, y, z);
+        GL11.glScalef(w, h, d);
+        GL11.glLineWidth(2.5f);
+        float a = ((color >> 24) & 255) / 255f, r = ((color >> 16) & 255) / 255f, g = ((color >> 8) & 255) / 255f, b = ((color) & 255) / 255f;
+        GL11.glColor4f(r, g, b, a);
+        GL11.glBegin(GL11.GL_LINES);
+        for (int i = 0; i < 4; i++) {
+            //Coords: i/2, i%2, 0 oder 1 so wird für alle vier kanten in die jeweilige richtung gezeichnet
+            //i>>1 ist /2 nur effizienter
+            //i&1 ist %2 nur effizienter
+            GL11.glVertex3f(i >> 1, i & 1, 0);
+            GL11.glVertex3f(i >> 1, i & 1, 1);
+            GL11.glVertex3f(i >> 1, 0, i & 1);
+            GL11.glVertex3f(i >> 1, 1, i & 1);
+            GL11.glVertex3f(0, i & 1, i >> 1);
+            GL11.glVertex3f(1, i & 1, i >> 1);
+            game.vertexcount += 3;
+        }
+        GL11.glEnd();
+        GL11.glPopMatrix();
+    }
+
 
     //Zeichne Vertex mit Farbe
     //Vertex besteht aus x1,y1,z1,x2,y2,z2,x3,y3,z3,...
@@ -174,13 +222,13 @@ public class WindowsDrawer implements Drawer {
     //alpha multipliziert mit der Transparenz von color
     @Override
     public void vertex(float[] vertex, int color, float darken, float alpha) {
-        game.vertexcount++;
         float a=((color>>24)&255)/255f, r=((color>>16)&255)/255f, g=((color>>8)&255)/255f, b=((color)&255)/255f;
         GL11.glColor4f(r*darken, g*darken, b*darken, a*alpha);
         GL11.glBegin(GL11.GL_TRIANGLES);
         for (int i = 0; i < vertex.length; i+=3) {
             GL11.glColor4f(r*darken, g*darken, b*darken, a*alpha);
             GL11.glVertex3f(vertex[i],vertex[i+1],vertex[i+2]);
+            game.vertexcount++;
         }
         GL11.glEnd();
         GL11.glDisable(GL11.GL_VERTEX_ARRAY);

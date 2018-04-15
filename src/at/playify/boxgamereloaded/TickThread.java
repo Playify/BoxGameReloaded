@@ -36,7 +36,7 @@ public class TickThread extends Thread{
 
 
     //TickThread tick ausführen: Spieltick und gegebenfalls Locken
-    private void tick() throws InterruptedException {
+    private void tick() {
         try {
             if (!game.vars.tickOnDraw) {
                 game.tick();
