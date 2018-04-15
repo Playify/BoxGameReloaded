@@ -9,7 +9,6 @@ public class RespawnButton extends Button {
 
     private float visibleState;
     private float mainState;
-    private int backgroundState;//TODO
 
     public RespawnButton(BoxGameReloaded game) {
         super(game);

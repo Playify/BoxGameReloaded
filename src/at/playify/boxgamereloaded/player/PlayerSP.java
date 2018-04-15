@@ -3,17 +3,18 @@ package at.playify.boxgamereloaded.player;
 import at.playify.boxgamereloaded.BoxGameReloaded;
 import at.playify.boxgamereloaded.block.Block;
 import at.playify.boxgamereloaded.block.Collideable;
+import at.playify.boxgamereloaded.block.MultiCollideable;
 import at.playify.boxgamereloaded.network.packet.PacketMove;
 import at.playify.boxgamereloaded.util.Borrow;
+import at.playify.boxgamereloaded.util.CollisionData;
 import at.playify.boxgamereloaded.util.Finger;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class PlayerSP extends Player {
     private boolean jump;
     public int jumps;
-    private Block[] arr =new Block[0];
+    private ArrayList<Borrow.BorrowedCollisionData> arr = new ArrayList<>();
     @SuppressWarnings("WeakerAccess")
     public boolean collidesVert,collidesHor;
     @SuppressWarnings("WeakerAccess")
@@ -53,6 +54,7 @@ public class PlayerSP extends Player {
                 this.rightKey=right;
                 this.jumpKey=jump;
                 //springen nur beim drücken nicht beim halten
+                motionY /= ((bound.w() + bound.h()) / 2) / 0.8f;
                 if (!game.vars.fly) {
                     if (this.jump!=jump) {
                         this.jump=jump;
@@ -84,6 +86,7 @@ public class PlayerSP extends Player {
                     motionY=-0.05f;//Fallgeschwindigkeit limitieren bei wallslide
                 }
             }
+            motionY *= ((bound.w() + bound.h()) / 2) / 0.8f;
 
             //motionX
             if (left != right) {
@@ -95,24 +98,25 @@ public class PlayerSP extends Player {
             if (game.vars.geometry_dash){
                 motionX=.11f;
             }
+            motionX *= ((bound.w() + bound.h()) / 2) / 0.8f;
 
             //bewegen
             move(motionX,game.vars.inverted_gravity?-motionY:motionY);
 
 
             //Spezialfähigkeiten von Blöcken mit Kollision ausführen
-            if(arr.length<game.blocks.blockscount) {
-                arr=new Block[game.blocks.blockscount];
-            }
-            Arrays.fill(arr,null);
-            game.level.collideList(collider.set(bound),this, arr);
+            Borrow.freeInside(arr);
+            arr = game.level.collideList(collider.set(bound), this, arr);
             out:
             for(Block block : game.blocks.list) {
+                in:
                 if (block instanceof Collideable) {
-                    for (Block anArr : arr) {
-                        if (anArr == block) {
-                            if (((Collideable) block).onCollide(this)) {
+                    for (CollisionData c : arr) {
+                        if (c.blk == block) {
+                            if (((Collideable) block).onCollide(this, game.level, c.x, c.y, c.meta, arr)) {
                                 break out;
+                            } else if (!(block instanceof MultiCollideable)) {
+                                break in;
                             }
                         }
                     }
@@ -124,6 +128,7 @@ public class PlayerSP extends Player {
         if (game.connection!=null) {//Server position updaten
             if (!game.connection.serverbound.equals(bound)) {
                 game.connection.sendPacket(new PacketMove(bound));
+                game.connection.serverbound.set(bound);
             }
         }
     }
@@ -131,49 +136,45 @@ public class PlayerSP extends Player {
     private void move(float moveX, float moveY) {
         float wantX = moveX;
         float wantY = moveY;
-        Borrow.BorrowedBoundingBox bound=Borrow.bound(this.bound.x(), this.bound.y(), this.bound.xw(), this.bound.yh());
-        //Bound erweitern
-        Borrow.BorrowedBoundingBox boundingBox = bound.addCoord(moveX, moveY);
-        ArrayList<Borrow.BorrowedBoundingBox> list1 = game.level.getCollisionBoxes(this, boundingBox);
-        boundingBox.free();
+        synchronized (bound) {
+            Borrow.BorrowedBoundingBox bound = Borrow.bound(this.bound.x(), this.bound.y(), this.bound.xw(), this.bound.yh());
+            //Bound erweitern
+            Borrow.BorrowedBoundingBox boundingBox = bound.addCoord(moveX, moveY);
+            ArrayList<Borrow.BorrowedBoundingBox> list1 = game.level.getCollisionBoxes(this, boundingBox);
+            boundingBox.free();
 
-        //Eigentliche Bewegung anhand der Kollisionsboxen begrenzen
-        if (moveX != 0.0f)
-        {
-            int j5 = 0;
+            //Eigentliche Bewegung anhand der Kollisionsboxen begrenzen
+            if (moveX != 0.0f) {
+                int j5 = 0;
 
-            for (int l5 = list1.size(); j5 < l5; ++j5)
-            {
-                moveX = list1.get(j5).calculateXOffset(bound, moveX);
+                for (int l5 = list1.size(); j5 < l5; ++j5) {
+                    moveX = list1.get(j5).calculateXOffset(bound, moveX);
+                }
+
+                if (moveX != 0.0f) {
+                    bound.offset(moveX, 0.0f);
+                }
             }
 
-            if (moveX != 0.0f)
-            {
-                bound.offset(moveX,0.0f);
+            if (moveY != 0.0f) {
+                int k5 = 0;
+
+                for (int i6 = list1.size(); k5 < i6; ++k5) {
+                    moveY = list1.get(k5).calculateYOffset(bound, moveY);
+                }
+
+                if (moveY != 0.0f) {
+                    bound.offset(0.0f, moveY);
+                } else {
+                    jumps = 0;
+                }
             }
+            //Nach Bewegung limitieren Koordinaten vom Collider zurück zu Bound setzen
+            this.bound.set(bound.minX, bound.minY);
+
+            Borrow.free(list1);
+            Borrow.free(bound);
         }
-
-        if (moveY != 0.0f)
-        {
-            int k5 = 0;
-
-            for (int i6 = list1.size(); k5 < i6; ++k5)
-            {
-                moveY = list1.get(k5).calculateYOffset(bound, moveY);
-            }
-
-            if (moveY != 0.0f)
-            {
-                bound.offset(0.0f,  moveY);
-            }else{
-                jumps=0;
-            }
-        }
-        //Nach Bewegung limitieren Koordinaten vom Collider zurück zu Bound setzen
-        this.bound.set(bound.minX,bound.minY);
-        Borrow.free(list1);
-        Borrow.free(bound);
-
         collidesHor = wantX != moveX;
         collidesVert=wantY != moveY;
 

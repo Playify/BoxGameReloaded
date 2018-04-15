@@ -52,6 +52,7 @@ public class PauseButton extends Button {
 
     @Override
     public boolean click(Finger finger) {
+        game.cheatCode('b');
         if (game.drawer.draw) {
             game.drawer.nextBlock();
         } else {

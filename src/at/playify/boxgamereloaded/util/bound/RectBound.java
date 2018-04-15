@@ -3,9 +3,6 @@ package at.playify.boxgamereloaded.util.bound;
 import at.playify.boxgamereloaded.level.Level;
 import at.playify.boxgamereloaded.util.Utils;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -17,7 +14,7 @@ import java.util.Locale;
 public class RectBound implements Serializable, Cloneable , Bound<RectBound>{
     private static final DecimalFormat dmf = new DecimalFormat("00.00", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
     private static final DecimalFormat dm = new DecimalFormat("#.#", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
-    private static final float FACTOR=100;
+    private static final float FACTOR = 10000;
     int x;
     int y;
     int w;
@@ -107,11 +104,21 @@ public class RectBound implements Serializable, Cloneable , Bound<RectBound>{
     }
 
     public float cx() {
-        return (x+w/2)/FACTOR;
+        return (x() + w() / 2);
     }
 
     public float cy() {
-        return (y+h/2)/FACTOR;
+        return (y() + h() / 2);
+    }
+
+    public float cx(float f) {
+        x(f - w() / 2);
+        return cx();
+    }
+
+    public float cy(float f) {
+        y(f - h() / 2);
+        return cy();
     }
 
     public RectBound set(float x, float y, float w, float h) {
@@ -165,21 +172,6 @@ public class RectBound implements Serializable, Cloneable , Bound<RectBound>{
         x(Utils.round2(x()));
         y(Utils.round2(y()));
         return this;
-    }
-
-    private void writeObject(ObjectOutputStream stream)
-            throws IOException {
-        stream.writeFloat(x());
-        stream.writeFloat(y());
-        stream.writeFloat(w());
-        stream.writeFloat(h());
-    }
-
-    private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
-        x(stream.readFloat());
-        y(stream.readFloat());
-        w(stream.readFloat());
-        h(stream.readFloat());
     }
 
     @Override

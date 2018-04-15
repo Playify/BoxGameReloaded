@@ -159,4 +159,8 @@ public class Server extends Thread{
     public void disconnect(ConnectionToClient connectionToClient) {
         connected.remove(connectionToClient);
     }
+
+    public void connect(ConnectionToClient connectionToClient) {
+        connected.add(connectionToClient);
+    }
 }

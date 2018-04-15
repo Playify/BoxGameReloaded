@@ -10,7 +10,7 @@ import at.playify.boxgamereloaded.util.bound.RectBound;
 
 //Packet um den Client von Spielerbewegungen zu berichten und den Server von Clientbewegungen
 public class PacketMove extends Packet {
-    public String player="";
+    public String player;
     public float x=.1f;
     public float y=.1f;
     public float w=.8f;
@@ -76,14 +76,16 @@ public class PacketMove extends Packet {
     @Override
     public void handle(BoxGameReloaded game, ConnectionToServer connectionToServer) {
         if (player==null||player.isEmpty()||player.equals(game.vars.playername)){
-            game.player.motionX=game.player.motionY=0;
-            game.player.bound.set(x,y,w,h);
-            connectionToServer.serverbound.set(x,y,w,h);
+            synchronized (game.player.bound) {
+                game.player.motionX = game.player.motionY = 0;
+                game.player.bound.set(x, y, w, h);
+                connectionToServer.serverbound.set(x, y, w, h);
+            }
         }else{
             PlayerMP[] p=connectionToServer.players;
-            for(PlayerMP player1 : p) {
-                if (player1.name().equals(player)) {
-                    player1.bound.set(x,y,w,h);
+            for (PlayerMP playerMP : p) {
+                if (playerMP.name().equals(player)) {
+                    playerMP.bound.set(x, y, w, h);
                     return;
                 }
             }

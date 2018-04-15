@@ -26,12 +26,11 @@ public class PacketSetPauseMode extends Packet {
 
     @Override
     public String convertToString(BoxGameReloaded game) {
-        return mode + "0";
+        return mode + "";
     }
 
     @Override
     public void loadFromString(String s, BoxGameReloaded game) {
-        System.out.println(s);
         mode = s.charAt(0) - '0';
         count = Utils.parseInt(s.substring(1), 0);
     }
@@ -62,12 +61,11 @@ public class PacketSetPauseMode extends Packet {
     @Override
     public void loadFromString(String s, Server server) {
         mode = s.charAt(0) - '0';
-        count = Utils.parseInt(s.substring(1), 0);
+        count = 0;
     }
 
     @Override
     public void handle(Server server, ConnectionToClient connectionToClient) {
-        System.out.println(connectionToClient.name + ":" + mode);
         if ((server.getPausemode()&2)!=0) {
             connectionToClient.paused = (mode & 1) != 0;
             server.broadcast(new PacketSetPauseMode(server.getPausemode()));

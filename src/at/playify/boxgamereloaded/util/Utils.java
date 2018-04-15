@@ -62,6 +62,10 @@ public class Utils {
         return val < min ? min : val > max ? max : val;
     }
 
+    public static int clamp(int val, int min, int max) {
+        return val < min ? min : val > max ? max : val;
+    }
+
     public static int hsvToRgb(float hue) {
         float saturation=1,value=1;
         hue%=1;

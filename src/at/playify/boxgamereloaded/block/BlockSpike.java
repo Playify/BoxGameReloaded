@@ -120,7 +120,7 @@ public class BlockSpike extends Block implements Collideable {
 
     }
     @Override
-    public boolean onCollide(PlayerSP player) {
+    public boolean onCollide(PlayerSP player, Level level, int x, int y, int meta, ArrayList<Borrow.BorrowedCollisionData> data) {
         player.killedByBlock();
         return true;
     }

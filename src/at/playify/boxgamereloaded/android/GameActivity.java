@@ -21,8 +21,10 @@ public class GameActivity extends Activity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        game=new BoxGameReloaded(new AndroidHandler());
-        setContentView(view=new GameView(this));
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+        game=new BoxGameReloaded(new AndroidHandler(this));
+        GameView gameView=new GameView(this);
+        setContentView(view=gameView);
         game.start();
 
         super.onCreate(savedInstanceState);
@@ -42,6 +44,19 @@ public class GameActivity extends Activity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         int unicodeChar = event.getUnicodeChar();
+        if (event.getAction()==KeyEvent.ACTION_DOWN)
+            switch (event.getKeyCode()){
+                case KeyEvent.KEYCODE_ESCAPE:game.cheatCode('s');break;
+                case KeyEvent.KEYCODE_P:game.cheatCode('b');break;
+                case KeyEvent.KEYCODE_O:game.cheatCode('a');break;
+                case KeyEvent.KEYCODE_VOLUME_UP:game.cheatCode('u');break;
+                case KeyEvent.KEYCODE_VOLUME_DOWN:game.cheatCode('d');break;
+                case KeyEvent.KEYCODE_SPACE:game.cheatCode('u');break;
+                case KeyEvent.KEYCODE_W:game.cheatCode('u');break;
+                case KeyEvent.KEYCODE_A:game.cheatCode('l');break;
+                case KeyEvent.KEYCODE_S:game.cheatCode('d');break;
+                case KeyEvent.KEYCODE_D:game.cheatCode('r');break;
+            }
         game.setKey(unicodeChar,true);
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             event.startTracking();

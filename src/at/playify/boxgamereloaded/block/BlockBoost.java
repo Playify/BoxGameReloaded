@@ -31,7 +31,7 @@ public class BlockBoost extends Block implements Collideable{
     }
 
     @Override
-    public boolean onCollide(PlayerSP player) {
+    public boolean onCollide(PlayerSP player, Level level, int x, int y, int meta, ArrayList<Borrow.BorrowedCollisionData> data) {
         if (Math.abs(player.motionY) <= 0.02f)
             player.motionY =(player.jumpKey ? 0.2f : 0.02f);
         else
@@ -52,7 +52,7 @@ public class BlockBoost extends Block implements Collideable{
             game.d.cube(-v,-v,0,2*v,2*v,.2f, 0xFF59FF59);
             game.d.popMatrix();
         }else {
-            game.d.rect(x, y, 1, 1,0xFFFFFF00);
+            game.d.rect(x, y, 1, 1, 0xFF00C656);
             game.d.pushMatrix();
             game.d.translate(x+.5f,y+.5f,.9f);
             game.d.rotate(game.vars.inverted_gravity?-1:1,-1,0,0);

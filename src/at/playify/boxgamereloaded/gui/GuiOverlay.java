@@ -2,6 +2,7 @@ package at.playify.boxgamereloaded.gui;
 
 import at.playify.boxgamereloaded.BoxGameReloaded;
 import at.playify.boxgamereloaded.gui.button.*;
+import at.playify.boxgamereloaded.util.Finger;
 
 public class GuiOverlay extends Gui {
 
@@ -24,5 +25,19 @@ public class GuiOverlay extends Gui {
 
     public boolean isMainMenuVisible() {
         return false;
+    }
+
+    @Override
+    public boolean click(Finger finger) {
+        boolean click = super.click(finger);
+        if (!click) {
+            float width = game.d.getWidth();
+            if (finger.x < width / 4) {
+                game.cheatCode('l');
+            } else if (finger.x < width / 2) {
+                game.cheatCode('r');
+            }
+        }
+        return click;
     }
 }

@@ -19,6 +19,7 @@ public class Blocks {
     public BlockBoost BOOST;
     public BlockCheckPoint CHECK;
     public BlockFinish FINISH;
+    public BlockResize RESIZE;
     public int blockscount;
 
     //Block anhand des Zeichens bekommen
@@ -39,5 +40,6 @@ public class Blocks {
         BOOST=new BlockBoost(game,BlockBoost.chr);
         CHECK=new BlockCheckPoint(game,BlockCheckPoint.chr);
         FINISH=new BlockFinish(game,BlockFinish.chr);
+        RESIZE = new BlockResize(game, BlockResize.chr);
     }
 }
