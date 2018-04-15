@@ -63,4 +63,9 @@ public class DrawHelper {
             return name;
         }
     }
+
+    public void nextBlock() {
+        int i = game.blocks.list.indexOf(drawblock) + 1;
+        drawblock = game.blocks.list.size() <= i ? null : game.blocks.list.get(i);
+    }
 }

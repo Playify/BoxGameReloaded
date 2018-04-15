@@ -101,7 +101,6 @@ public class Main {
         game.d.setWidth(Display.getWidth());
         game.d.setHeight(Display.getHeight());
         game.draw();
-        Display.sync(500);
         Display.update();
         //Tastatur
         Keyboard.enableRepeatEvents(true);

@@ -6,6 +6,7 @@ import at.playify.boxgamereloaded.util.BoundingBox3d;
 import at.playify.boxgamereloaded.util.Finger;
 
 public class PauseButton extends Button {
+    private float pauseState;
 
     public PauseButton(BoxGameReloaded game) {
         super(game);
@@ -28,21 +29,21 @@ public class PauseButton extends Button {
     public void draw(Drawer d) {
         int color = color();
         d.cube(0, 0, 0, 1, 1 / 7f, 1, color, true, true, true, true);
-        d.cube(0, 6 / 7f, 0, 1, 1 / 7f, 1, color, true, true, game.pauseState == 0, true);
-        d.cube(0, 1 / 7f, 0, 1 / 7f, 5 / 7f, 1, color, game.pauseState == 0, true, false, true);
+        d.cube(0, 6 / 7f, 0, 1, 1 / 7f, 1, color, true, true, pauseState == 0, true);
+        d.cube(0, 1 / 7f, 0, 1 / 7f, 5 / 7f, 1, color, pauseState == 0, true, false, true);
         d.cube(6 / 7f, 1 / 7f, 0, 1 / 7f, 5 / 7f, 1, color, false, true, false, true);
-        if (game.pauseState == 0) {
+        if (pauseState == 0) {
             d.cube(4 / 10f, 1 / 5f - 1 / 7f, 0, 1 / 5f, 3 / 5f + 2 / 7f, 1, color, false, true, false, true);
         } else {
             d.translate(1 / 2f, 1 / 2f);
-            float v = 1 - .5f * game.pauseState;
+            float v = 1 - .5f * pauseState;
             for (int i = 0; i < 2; i++) {
                 d.pushMatrix();
-                d.cube(-1 / 10f, game.pauseState / 4f, 0, 1 / 5f, 3 / 7f * v, 1, color, true, true, true, true);
+                d.cube(-1 / 10f, pauseState / 4f, 0, 1 / 5f, 3 / 7f * v, 1, color, true, true, true, true);
                 d.translate(1 / 7f - 1 / 2f, 1 / 7f - 1 / 2f);
-                d.rotate(26.565f * game.pauseState, 0, 0, 1);
+                d.rotate(26.565f * pauseState, 0, 0, 1);
                 d.cube(0, -1 / 7f, 0, 6 / 7f, 1 / 7f, 1, color, true, false, false, false);
-                d.cube(2.9f / 7f, -2.2f / 7f * game.pauseState, 0, 2.2f / 7f, 1.2f / 7f * game.pauseState, 1, color, false, false, false, false);
+                d.cube(2.9f / 7f, -2.2f / 7f * pauseState, 0, 2.2f / 7f, 1.2f / 7f * pauseState, 1, color, false, false, false, false);
                 d.popMatrix();
                 d.scale(1, -1, 1);
             }
@@ -51,8 +52,21 @@ public class PauseButton extends Button {
 
     @Override
     public boolean click(Finger finger) {
+        if (game.drawer.draw) {
+            game.drawer.nextBlock();
+        }
         game.paused ^= true;
         return true;
+    }
+
+    @Override
+    public boolean tick() {
+        if (game.paused || (game.connection == null || game.connection.isPaused(true))) {
+            pauseState = Math.min(1f, pauseState + 1 / 8f);
+        } else {
+            pauseState = Math.max(0, pauseState - 1 / 8f);
+        }
+        return pauseState == 0 || pauseState == 1;
     }
 }
 

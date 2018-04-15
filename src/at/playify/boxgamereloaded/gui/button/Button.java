@@ -23,8 +23,8 @@ public abstract class Button implements Comparable<Button> {
 
     public void draw(Drawer d) {
         BoundingBox3d bound = bound();
-        d.cube(bound.minX, bound.minY, bound.minZ, bound.maxX - bound.minX, bound.maxY - bound.minY, bound.maxZ - bound.minZ, color());
-        d.drawStringCenter(text(), (bound.minX + bound.maxX) / 2, (bound.minY + bound.maxY) / 2, .05f);
+        d.cube(0, 0, 0, 1, 1, 1, color());
+        d.drawStringCenter(text(), .5f, .4f, .1f);
     }
 
     @Override
@@ -33,4 +33,10 @@ public abstract class Button implements Comparable<Button> {
     }
 
     public abstract boolean click(Finger finger);
+
+    //Rückgabewert bedeutet: Kann pausiert werden
+    //d.h. während animation false zurückgeben
+    public boolean tick() {
+        return true;
+    }
 }

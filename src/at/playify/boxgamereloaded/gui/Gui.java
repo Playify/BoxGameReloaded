@@ -49,4 +49,12 @@ public abstract class Gui {
         }
         return false;
     }
+
+    public boolean tick() {
+        boolean freeze = true;
+        for (Button button : buttons) {
+            freeze &= button.tick();
+        }
+        return freeze;
+    }
 }

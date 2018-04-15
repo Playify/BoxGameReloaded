@@ -89,6 +89,7 @@ public class ServerLevel {
             if (meta!=0) {
                 str.append(meta);
             }
+            str.append("+");
         }
         str.append("-").append(sizeX);
         str.append("-").append(sizeY);
