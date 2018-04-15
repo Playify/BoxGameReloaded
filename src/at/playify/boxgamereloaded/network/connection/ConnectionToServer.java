@@ -21,6 +21,7 @@ public class ConnectionToServer implements Closeable,Runnable {
     public String servername;
     public boolean pause;
     public boolean userpause;
+    public int pauseCount;
     protected BoxGameReloaded game;
     private Socket socket;
     private boolean closed;

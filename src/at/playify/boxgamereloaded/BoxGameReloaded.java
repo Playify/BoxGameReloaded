@@ -138,7 +138,7 @@ public class BoxGameReloaded extends Game {
             }
         }
         //Pausestates und Optionstates bearbeiten
-        boolean lock = gui.tick();
+        boolean lock = gui == null || gui.tick();
         //wenn nötig locken
         if (pause && (paused || options) && (prevPauseState == (paused | options)) && lock) {
             pauseLock.lock();
@@ -228,64 +228,7 @@ public class BoxGameReloaded extends Game {
 
         float pauseState = 0;//TODO now
         if (pauseState != 0) {
-            d.pushMatrix();
-            d.translate(aspectratio * .5f, .18f);
-            if (connection == null || (connection.userpause && paused && !connection.pause)) {
-                d.depth(false);
-                d.drawStringCenter("Paused", 0, -.4f + pauseState * .4f, .15f);
-                d.depth(true);
-            } else if (connection.pause) {
-                d.depth(false);
-                d.drawStringCenter("Paused", 0, -.4f + pauseState * .4f, .15f);
-                d.drawStringCenter("by Server", 0, -.5f + pauseState * .4f, .10f);
-                d.depth(true);
-            }
-            d.translate(0, .4f, -.3f);
 
-            d.scale(pauseState);
-
-            long angle = (System.currentTimeMillis() / 20) % 720;
-            d.rotate(angle, 0, 1, 0);
-            d.translate(0, ((float) Math.sin(Math.toRadians(angle * 2))) * .04f);
-            d.scale(.15f, .15f);
-            float v = 0.03f;
-            float[] verts = {
-                    -1, -1, v,
-                    -1, 1, v,
-                    1, 0, v
-            };
-            d.vertex(verts, 0xFF005C7A, 1);
-            //bottom
-            verts[4] = -1;
-            verts[5] = -v;
-            d.vertex(verts, 0xFF005C7A, 0.8f);
-            verts[0] = 1;
-            verts[1] = 0;
-            verts[2] = -v;
-            d.vertex(verts, 0xFF005C7A, 0.8f);
-            //top
-            verts[3] = -1;
-            verts[4] = 1;
-            verts[5] = -v;
-            d.vertex(verts, 0xFF005C7A, 0.9f);
-            verts[0] = -1;
-            verts[1] = 1;
-            verts[2] = v;
-            d.vertex(verts, 0xFF005C7A, 0.9f);
-            //wall
-            verts[6] = -1;
-            verts[7] = -1;
-            verts[8] = v;
-            d.vertex(verts, 0xFF005C7A, 0.95f);
-            verts[0] = -1;
-            verts[1] = -1;
-            verts[2] = -v;
-            d.vertex(verts, 0xFF005C7A, 0.95f);
-            verts[6] = 1;
-            verts[7] = 0;
-            verts[8] = -v;
-            d.vertex(verts, 0xFF005C7A, 1);
-            d.popMatrix();
         }
 
         d.popMatrix();

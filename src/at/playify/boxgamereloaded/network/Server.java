@@ -24,6 +24,13 @@ public class Server extends Thread{
     private final ThreadLocal<ArrayList<ConnectionToClient>> last = new ThreadLocal<>();
 
     public int getPausemode() {
+        if ((pausemode & 2) != 0) {
+            for (ConnectionToClient connectionToClient : connected) {
+                if (connectionToClient.paused) {
+                    return 3;
+                }
+            }
+        }
         return pausemode;
     }
 
@@ -124,11 +131,23 @@ public class Server extends Thread{
     }
 
     public void checkConnected() {
-        for (ConnectionToClient next : connected) {
-            if (next.isClosed()) {
-                next.close();
-            } else {
-                last.get().add(next);
+        if (last.get() == null) {
+            last.set(new ArrayList<ConnectionToClient>());
+        }
+        while (true) {
+            boolean done = true;
+            last.get().clear();
+            for (ConnectionToClient next : connected) {
+                if (next.isClosed()) {
+                    next.close();
+                    done = false;
+                    break;
+                } else {
+                    last.get().add(next);
+                }
+            }
+            if (done) {
+                return;
             }
         }
     }

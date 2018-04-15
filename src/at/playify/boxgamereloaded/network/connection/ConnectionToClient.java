@@ -1,13 +1,14 @@
 package at.playify.boxgamereloaded.network.connection;
 
-import java.io.*;
-import java.net.Socket;
-import java.net.SocketException;
-
 import at.playify.boxgamereloaded.network.Server;
 import at.playify.boxgamereloaded.network.packet.Packet;
 import at.playify.boxgamereloaded.network.packet.PacketResetPlayersInWorld;
+import at.playify.boxgamereloaded.network.packet.PacketSetPauseMode;
 import at.playify.boxgamereloaded.util.bound.RectBound;
+
+import java.io.*;
+import java.net.Socket;
+import java.net.SocketException;
 
 //Verbindung zum Client
 public class ConnectionToClient extends Thread implements Closeable{
@@ -19,6 +20,7 @@ public class ConnectionToClient extends Thread implements Closeable{
     public String world="NONE";
     public String name;
     public RectBound bound=new RectBound(.1f,.1f,.8f,.8f);
+    public boolean paused;
 
     public ConnectionToClient(Socket socket, Server server) {
         this.server = server;
@@ -68,6 +70,10 @@ public class ConnectionToClient extends Thread implements Closeable{
         }
         try{
             server.broadcast(new PacketResetPlayersInWorld(name),world,this);
+            if (paused) {
+                paused = false;
+                server.broadcast(new PacketSetPauseMode(server.getPausemode()), this);
+            }
         }catch (Exception e){
             e.printStackTrace();
         }

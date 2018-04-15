@@ -54,14 +54,15 @@ public class PauseButton extends Button {
     public boolean click(Finger finger) {
         if (game.drawer.draw) {
             game.drawer.nextBlock();
+        } else {
+            game.paused ^= true;
         }
-        game.paused ^= true;
         return true;
     }
 
     @Override
     public boolean tick() {
-        if (game.paused || (game.connection == null || game.connection.isPaused(true))) {
+        if (game.paused) {
             pauseState = Math.min(1f, pauseState + 1 / 8f);
         } else {
             pauseState = Math.max(0, pauseState - 1 / 8f);

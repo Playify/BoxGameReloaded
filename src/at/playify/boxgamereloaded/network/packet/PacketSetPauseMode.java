@@ -15,6 +15,7 @@ public class PacketSetPauseMode extends Packet {
     USERPAUSED = 3,
      */
     private int mode;
+    private int count;
 
     public PacketSetPauseMode(int i) {
         mode=i;
@@ -25,36 +26,51 @@ public class PacketSetPauseMode extends Packet {
 
     @Override
     public String convertToString(BoxGameReloaded game) {
-        return mode+"";
+        return mode + "0";
     }
 
     @Override
     public void loadFromString(String s, BoxGameReloaded game) {
-        this.mode=Utils.parseInt(s,0);
+        System.out.println(s);
+        mode = s.charAt(0) - '0';
+        count = Utils.parseInt(s.substring(1), 0);
     }
 
     @Override
     public void handle(BoxGameReloaded game, ConnectionToServer connectionToServer) {
-        connectionToServer.pause=(mode&1)!=0&&!game.paused;
+        connectionToServer.pause = (mode & 1) != 0;
         connectionToServer.userpause=(mode&2)!=0;
+        connectionToServer.pauseCount = count;
         game.pauseLock.unlock();
     }
 
     @Override
     public String convertToString(Server server, ConnectionToClient client) {
-        return mode+"";
+        int count = 0;
+        server.checkConnected();
+        for (ConnectionToClient connectionToClient : server.getLastBroadcast()) {
+            if (connectionToClient.paused) {
+                count++;
+            }
+        }
+        if (count == 1 && client.paused) {
+            count = 0;
+        }
+        return mode + "" + count;
     }
 
     @Override
     public void loadFromString(String s, Server server) {
-        mode= Utils.parseInt(s,0);
+        mode = s.charAt(0) - '0';
+        count = Utils.parseInt(s.substring(1), 0);
     }
 
     @Override
     public void handle(Server server, ConnectionToClient connectionToClient) {
+        System.out.println(connectionToClient.name + ":" + mode);
         if ((server.getPausemode()&2)!=0) {
-            server.setPausemode(2|(mode&1));
-            server.broadcast(new PacketSetPauseMode(server.getPausemode()),connectionToClient);
+            connectionToClient.paused = (mode & 1) != 0;
+            server.broadcast(new PacketSetPauseMode(server.getPausemode()));
         }else{
             nopermission(server,connectionToClient);
         }
