@@ -24,9 +24,9 @@ public class ConnectionToServer implements Closeable,Runnable {
     public int pauseCount;
     protected BoxGameReloaded game;
     private Socket socket;
-    private boolean closed;
-    private BufferedReader in;
-    private PrintStream out;
+    protected BufferedReader in;
+    protected PrintStream out;
+    boolean closed;
     private Queue<Packet> q=new LinkedList<>();
     public RectBound serverbound=new RectBound();
     public final Object playerLock=new Object();
@@ -45,8 +45,12 @@ public class ConnectionToServer implements Closeable,Runnable {
             return;
         }
         Thread thread=new Thread(this);
-        thread.setName("ConnectionToClient");
+        thread.setName("ConnectionToServer");
         thread.start();
+    }
+
+    protected ConnectionToServer(BoxGameReloaded game) {
+        this.game = game;
     }
 
     public void leaveWorld() {
@@ -65,7 +69,7 @@ public class ConnectionToServer implements Closeable,Runnable {
     }
 
     public boolean isClosed() {
-        return closed|socket.isClosed();
+        return closed || socket == null || socket.isClosed();
     }
 
     public void handleSoon() {
@@ -134,7 +138,7 @@ public class ConnectionToServer implements Closeable,Runnable {
             System.err.println("Connection to Server Closed: "+e.getMessage());
             close();
         } catch (Exception e) {
-            System.err.println("Error in ConnectionToServer");
+            System.err.println("Error in " + getClass().getSimpleName());
             Game.report(e);
         }
     }

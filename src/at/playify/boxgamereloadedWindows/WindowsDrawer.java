@@ -10,7 +10,7 @@ public class WindowsDrawer implements Drawer {
     //Größe vom Fenster
     public int w;
     public int h;
-    private FontRenderer font=new FontRenderer(this);
+    FontRenderer font = new FontRenderer(this);
     private boolean drawing;//derzeitig am zeichnen
     private BoxGameReloaded game;
     //Vertexes um nicht jedes Mal zeichnen neu generieren zu müssen
@@ -352,5 +352,10 @@ public class WindowsDrawer implements Drawer {
     @Override
     public void drawStringCenter(String s, float x, float y, float h) {
         font.drawCenter(s, x, y, h);
+    }
+
+    @Override
+    public float getStringWidth(String s) {
+        return font.getWidth(s);
     }
 }

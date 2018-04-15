@@ -1,5 +1,6 @@
 package at.playify.boxgamereloaded.util;
 
+import at.playify.boxgamereloaded.block.Block;
 import at.playify.boxgamereloaded.interfaces.Game;
 
 import java.util.*;
@@ -10,10 +11,14 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 //Dies spart neuerstellen und im Speicher behalten von alten Variablen
 public class Borrow {
     private static long borrowed=0;
+    private static Queue<BorrowedCollisionData> datas = new ConcurrentLinkedQueue<>();
     private static Queue<BorrowedBoundingBox> bounds = new ConcurrentLinkedQueue<>();
     private static Queue<BorrowedBoundingBox3d> bounds3d = new ConcurrentLinkedQueue<>();
-    private static Queue<ArrayList<BorrowedBoundingBox>> boundLists = new ConcurrentLinkedQueue<>();
+    private static Queue<ArrayList<? extends Borrowed>> boundLists = new ConcurrentLinkedQueue<>();
 
+    public static void free(BorrowedCollisionData data) {
+        datas.add(data);
+    }
     public static void free(BorrowedBoundingBox bound) {
         bounds.add(bound);
     }
@@ -22,14 +27,50 @@ public class Borrow {
         bounds3d.add(bound);
     }
 
-    public static void free(ArrayList<BorrowedBoundingBox> list) {
-        Iterator<BorrowedBoundingBox> iterator = list.iterator();
+    public static void free(ArrayList<? extends Borrowed> list) {
+        Iterator<? extends Borrowed> iterator = list.iterator();
         while (iterator.hasNext()) {
-            BorrowedBoundingBox next = iterator.next();
-            free(next);
+            Borrowed next = iterator.next();
+            next.free();
             iterator.remove();
         }
         boundLists.add(list);
+    }
+
+    public static void freeInside(ArrayList<? extends Borrowed> list) {
+        Iterator<? extends Borrowed> iterator = list.iterator();
+        while (iterator.hasNext()) {
+            Borrowed next = iterator.next();
+            next.free();
+            iterator.remove();
+        }
+    }
+
+    public static CollisionData data() {
+        BorrowedCollisionData poll = datas.poll();
+        if (poll == null) {
+            borrowed++;
+            return new BorrowedCollisionData();
+        } else {
+            poll.blk = null;
+            poll.x = poll.y = -1;
+            poll.meta = 0;
+            return poll;
+        }
+    }
+
+    public static BorrowedCollisionData data(Block blk, int x, int y, int meta) {
+        BorrowedCollisionData poll = datas.poll();
+        if (poll == null) {
+            borrowed++;
+            return new BorrowedCollisionData();
+        } else {
+            poll.blk = blk;
+            poll.x = x;
+            poll.y = y;
+            poll.meta = meta;
+            return poll;
+        }
     }
 
     public static BorrowedBoundingBox bound(float minX,float minY,float maxX,float maxY) {
@@ -82,7 +123,7 @@ public class Borrow {
     }
 
     public static ArrayList<BorrowedBoundingBox> boundList() {
-        ArrayList<BorrowedBoundingBox> poll = boundLists.poll();
+        ArrayList<BorrowedBoundingBox> poll = (ArrayList<BorrowedBoundingBox>) boundLists.poll();
         if (poll == null) {
             borrowed++;
             return new ArrayList<>();
@@ -129,8 +170,12 @@ public class Borrow {
         return ret.toString();
     }
 
+    public interface Borrowed {
+        void free();
+    }
+
     //Hier immer free() aufrufen, erst wenn nicht mehr benötigt
-    public static class BorrowedBoundingBox extends BoundingBox{
+    public static class BorrowedBoundingBox extends BoundingBox implements Borrowed {
         public boolean up=true,down=true,left=false,right=true;//mit up,down,left,right können einseitig kollidierbare Wände gemacht werden.
 
         private BorrowedBoundingBox(float minX, float minY, float maxX, float maxY) {
@@ -157,7 +202,7 @@ public class Borrow {
     }
 
     //Hier immer free() aufrufen, erst wenn nicht mehr benötigt
-    public static class BorrowedBoundingBox3d extends BoundingBox3d {
+    public static class BorrowedBoundingBox3d extends BoundingBox3d implements Borrowed {
         public boolean up = true, down = true, left = false, right = true, front = true, back = true;//mit up,down,left,right können einseitig kollidierbare Wände gemacht werden.
 
         private BorrowedBoundingBox3d(float minX, float minY, float minZ, float maxX, float maxY, float maxZ) {
@@ -180,6 +225,12 @@ public class Borrow {
             if (offsetY<0&&!down)return offsetY;
             if (offsetY>0&&!up)return offsetY;
             return super.calculateYOffset(bound, offsetY);
+        }
+    }
+
+    public static class BorrowedCollisionData extends CollisionData implements Borrowed {
+        public void free() {
+            Borrow.free(this);
         }
     }
 }

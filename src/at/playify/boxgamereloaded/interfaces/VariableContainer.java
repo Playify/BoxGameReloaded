@@ -24,5 +24,6 @@ public class VariableContainer {
     public class Debug {
         public boolean viewback;
         public boolean drawback;//Rückseite von Würfeln zeichnen
+        public boolean console;
     }
 }

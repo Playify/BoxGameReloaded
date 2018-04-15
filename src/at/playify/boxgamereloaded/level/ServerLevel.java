@@ -11,7 +11,7 @@ public class ServerLevel {
     int sizeX, sizeY;
     char[] blocks;
     int[] metas;
-    public RectBound spawnPoint=new RectBound(.1f,.1f,.8f,.8f);
+    public RectBound spawnPoint = new RectBound(.1f, 0, .8f, .8f);
     public ServerLevel() {
         blocks=new char[sizeX*sizeY];
         metas=new int[sizeX*sizeY];
@@ -72,10 +72,10 @@ public class ServerLevel {
         }
         str.append("+").append(sizeX);
         str.append("+").append(sizeY);
-        str.append("+").append(((int) spawnPoint.x() * 100));
-        str.append("+").append(((int) spawnPoint.y() * 100));
-        str.append("+").append(((int) spawnPoint.w() * 100));
-        str.append("+").append(((int) spawnPoint.h() * 100));
+        str.append("+").append(((int) (spawnPoint.x() * 100)));
+        str.append("+").append(((int) (spawnPoint.y() * 100)));
+        str.append("+").append(((int) (spawnPoint.w() * 100)));
+        str.append("+").append(((int) (spawnPoint.h() * 100)));
         return Compresser.compress(str.toString());
     }
     public void loadWorldString(String s) {

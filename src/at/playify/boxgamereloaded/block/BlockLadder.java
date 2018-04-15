@@ -41,7 +41,7 @@ public class BlockLadder extends Block implements Collideable{
     }
 
     @Override
-    public boolean onCollide(PlayerSP player) {
+    public boolean onCollide(PlayerSP player, Level level, int x, int y, int meta, ArrayList<Borrow.BorrowedCollisionData> data) {
         if (player.collidesHor) {
             player.motionY=Math.max(.1f,player.motionY);
         }else{

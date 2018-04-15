@@ -1,6 +1,7 @@
 package at.playify.boxgamereloaded;
 
 import at.playify.boxgamereloaded.interfaces.Game;
+import at.playify.boxgamereloaded.network.connection.ConnectionSinglePlayer;
 import at.playify.boxgamereloaded.network.connection.ConnectionToServer;
 import at.playify.boxgamereloaded.network.packet.PacketHello;
 
@@ -20,8 +21,12 @@ public class TickThread extends Thread{
         try {
             try {
                 game.connection=new ConnectionToServer(game, "127.0.0.1");
-                //game.connection=new EmptyConnection();
+                if (game.connection.isClosed()) {
+                    game.connection.close();
+                    game.connection = new ConnectionSinglePlayer(game);
+                }
                 game.connection.sendPacket(new PacketHello());
+                game.joinWorld("Lobby");
             }catch (Exception e){
                 Game.report(e);
             }

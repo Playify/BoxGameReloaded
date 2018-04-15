@@ -41,6 +41,7 @@ public class OptionsButton extends Button {
 
     @Override
     public boolean click(Finger finger) {
+        game.cheatCode('a');
         //game.options ^= true;
         game.drawer.draw ^= true;
         return true;

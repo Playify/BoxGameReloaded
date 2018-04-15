@@ -17,7 +17,7 @@ public class Level {
     protected BoxGameReloaded game;
     private Block[] blocks;//Blöcke im Level
     private int[] metas;//Metadaten der Blöcke
-    public RectBound spawnPoint=new RectBound(.1f,.1f,.8f,.8f);
+    public RectBound spawnPoint = new RectBound(.1f, 0f, .8f, .8f);
     public Level(BoxGameReloaded game) {
         this.game = game;
         blocks=new Block[sizeX*sizeY];
@@ -118,7 +118,7 @@ public class Level {
     }
 
     //Alle Blöcke mit denen kollidiert wird als Array bekommen
-    public void collideList(Bound b, Player player, Block[] lst) {
+    public ArrayList<Borrow.BorrowedCollisionData> collideList(Bound b, Player player, ArrayList<Borrow.BorrowedCollisionData> lst) {
         Block bl;
         rect.sizeOf(b);
         float cx = b.cx();
@@ -126,21 +126,16 @@ public class Level {
         int index=0;
         for (int x=(int) (-1 - rect.w()/ 2); x <= 1 + rect.w()/ 2; x++) {
             for (int y = (int) (-1 - rect.h() / 2); y <= 1 + rect.h() / 2; y++) {
-                bl = get((int) (x + cx), (int) (y + cy));
-                if (bl.collide(b, (int) (x + cx), (int) (y + cy), player, true, getMeta(x, y), this)) {
-                    boolean add = true;
-                    for (int i = 0; i < index; i++) {
-                        if (lst[i] == bl) {
-                            add = false;
-                            break;
-                        }
-                    }
-                    if (add) {
-                        lst[index++] = bl;
-                    }
+                int xx = (int) (x + cx);
+                int yy = (int) (y + cy);
+                bl = get(xx, yy);
+                int meta = getMeta(xx, yy);
+                if (bl.collide(b, xx, yy, player, true, meta, this)) {
+                    lst.add(Borrow.data(bl, x, y, meta));
                 }
             }
         }
+        return lst;
     }
 
     //Größe festlegen
@@ -190,10 +185,10 @@ public class Level {
         }
         str.append("-").append(sizeX);
         str.append("-").append(sizeY);
-        str.append("-").append(((int) spawnPoint.x() * 3100));
-        str.append("-").append(((int) spawnPoint.y() * 3100));
-        str.append("-").append(((int) spawnPoint.w() * 100));
-        str.append("-").append(((int) spawnPoint.h() * 100));
+        str.append("-").append(((int) (spawnPoint.x() * 3100)));
+        str.append("-").append(((int) (spawnPoint.y() * 3100)));
+        str.append("-").append(((int) (spawnPoint.w() * 100)));
+        str.append("-").append(((int) (spawnPoint.h() * 100)));
         return Compresser.compress(str.toString());
     }
 

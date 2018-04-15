@@ -16,7 +16,7 @@ public class Block08 extends Block {
         super(game,c);
     }
     public boolean collide(Bound b, int x, int y, Player player, boolean checkOnly, int meta, Level level) {
-        return b.collide(bound.set(x+.1f,y+.1f,.8f,.8f).round());
+        return b.collide(bound.set(x + .1f, y + .1f, .8f, .8f));
     }
 
     @Override

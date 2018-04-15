@@ -278,10 +278,18 @@ public class BoxGameReloaded extends Game {
         gui = new GuiOverlay(this);
     }
 
+    @Override
+    public void runcmd(String text) {
+        //TODO
+    }
+
     //Tastaturstatusänderungen
     @Override
     protected void keyStateChanged(int keyChar) {
         pauseLock.unlock();
+        if (keyChar == 'c' && vars.debug.console && !handler.isKeyboardVisible()) {
+            handler.setKeyboardVisible(true);
+        }
         if (keyChar == 'p') {
             if (paused != keys['p']) {
                 if (!pauseKeyDown) {

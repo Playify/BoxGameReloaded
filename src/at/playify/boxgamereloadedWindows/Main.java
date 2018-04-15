@@ -22,6 +22,7 @@ public class Main {
     private static int[] chars=new int[Character.MAX_CODE_POINT];
     private static Finger finger;
     private static BoxGameReloaded game;
+    private static WindowsHandler handler;
 
     public static void main(String[] args) {
         loadLibrary();
@@ -33,8 +34,9 @@ public class Main {
         } catch (LWJGLException e) {
             e.printStackTrace();
         }
-        game=new BoxGameReloaded(new WindowsHandler());
-        game.d=new WindowsDrawer(game);
+        game = new BoxGameReloaded(handler = new WindowsHandler());
+        handler.game = game;
+        game.d = handler.d = new WindowsDrawer(game);
         finger=game.fingers[0];
         game.start();
         game.vars.tickOnDraw=false;
@@ -106,7 +108,50 @@ public class Main {
         Keyboard.enableRepeatEvents(true);
         while (Keyboard.next()) {
             int eventKey = Keyboard.getEventKey();
+            if (Keyboard.getEventKeyState()) {
+                switch (eventKey) {
+                    case Keyboard.KEY_ESCAPE:
+                        game.cheatCode('s');
+                        break;
+                    case Keyboard.KEY_P:
+                        game.cheatCode('b');
+                        break;
+                    case Keyboard.KEY_O:
+                        game.cheatCode('a');
+                        break;
+                    case Keyboard.KEY_UP:
+                        game.cheatCode('u');
+                        break;
+                    case Keyboard.KEY_DOWN:
+                        game.cheatCode('d');
+                        break;
+                    case Keyboard.KEY_LEFT:
+                        game.cheatCode('l');
+                        break;
+                    case Keyboard.KEY_RIGHT:
+                        game.cheatCode('r');
+                        break;
+                    case Keyboard.KEY_SPACE:
+                        game.cheatCode('u');
+                        break;
+                    case Keyboard.KEY_W:
+                        game.cheatCode('u');
+                        break;
+                    case Keyboard.KEY_A:
+                        game.cheatCode('l');
+                        break;
+                    case Keyboard.KEY_S:
+                        game.cheatCode('d');
+                        break;
+                    case Keyboard.KEY_D:
+                        game.cheatCode('r');
+                        break;
+                }
+            }
             int eventChar=Keyboard.getEventCharacter();
+            if (Keyboard.getKeyName(eventKey).length() == 1) {
+                eventChar = Keyboard.getKeyName(eventKey).charAt(0);
+            }
             if (eventKey== Keyboard.KEY_ESCAPE)eventChar='p';
             if (eventChar==0){
                 eventChar=chars[eventKey];

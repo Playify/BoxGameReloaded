@@ -27,7 +27,7 @@ public class BlockCheckPoint extends Block implements Collideable{
     }
 
     @Override
-    public boolean onCollide(PlayerSP player) {
+    public boolean onCollide(PlayerSP player, Level level, int x, int y, int meta, ArrayList<Borrow.BorrowedCollisionData> data) {
         game.level.spawnPoint.set(player.bound);
         return false;
     }

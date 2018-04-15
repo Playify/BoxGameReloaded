@@ -17,9 +17,9 @@ public class ConnectionToClient extends Thread implements Closeable{
     private BufferedReader in;
     private PrintStream out;
     private boolean closed;
-    public String world="NONE";
+    public String world = "NULL";
     public String name;
-    public RectBound bound=new RectBound(.1f,.1f,.8f,.8f);
+    public RectBound bound = new RectBound(.1f, 0, .8f, .8f);
     public boolean paused;
 
     public ConnectionToClient(Socket socket, Server server) {
@@ -36,6 +36,15 @@ public class ConnectionToClient extends Thread implements Closeable{
         setName("ConnectionToClient");
         start();
         System.out.println("Opened Connection to " + socket.getInetAddress());
+    }
+
+    public ConnectionToClient(InputStream in, OutputStream out, Server server) {
+        this.server = server;
+        this.in = new BufferedReader(new InputStreamReader(in));
+        this.out = new PrintStream(out);
+        setName("ConnectionToSinglePlayer");
+        start();
+        System.out.println("Opened Connection to SinglePlayer");
     }
 
     public void sendPacket(Packet packet) {
@@ -55,7 +64,7 @@ public class ConnectionToClient extends Thread implements Closeable{
 
 
     public boolean isClosed() {
-        return closed||socket.isClosed();
+        return closed || (socket != null && socket.isClosed());
     }
 
 
