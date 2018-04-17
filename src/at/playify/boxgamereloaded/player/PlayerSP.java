@@ -4,6 +4,7 @@ import at.playify.boxgamereloaded.BoxGameReloaded;
 import at.playify.boxgamereloaded.block.Block;
 import at.playify.boxgamereloaded.block.Collideable;
 import at.playify.boxgamereloaded.block.MultiCollideable;
+import at.playify.boxgamereloaded.block.NoCollideable;
 import at.playify.boxgamereloaded.network.packet.PacketMove;
 import at.playify.boxgamereloaded.util.Borrow;
 import at.playify.boxgamereloaded.util.CollisionData;
@@ -119,6 +120,9 @@ public class PlayerSP extends Player {
                                 break in;
                             }
                         }
+                    }
+                    if (block instanceof NoCollideable) {
+                        ((NoCollideable) block).onNoCollide(this, game.level, arr);
                     }
                 }
             }

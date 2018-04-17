@@ -57,7 +57,7 @@ public class BlockSpike extends Block implements Collideable {
     }
 
     BlockSpike(BoxGameReloaded game, char c) {
-        super(game,c);
+        super(game, c);
     }
 
     @Override
@@ -66,16 +66,16 @@ public class BlockSpike extends Block implements Collideable {
     }
 
     private boolean collide(RectBound b, int x, int y, int meta) {
-        if(meta==2) {
+        if (meta==2) {
             //up
             return (b.x()-x)*2<1+(b.yh()-y)&&(b.xw()-x)*2>1-(b.yh()-y);
-        } else if(meta==3) {
+        } else if (meta==3) {
             //left
             return (b.y()-y)*2<1+(b.xw()-x)&&(b.yh()-y)*2>1-(b.xw()-x);
-        } else if(meta==0) {
+        } else if (meta==0) {
             //down
             return (b.xw()-x)*2>(b.y()-y)&&-(b.x()-x)*2>(b.y()-y-2);
-        } else if(meta==1) {
+        } else if (meta==1) {
             //right
             return (b.yh()-y)*2>(b.x()-x)&&-(b.y()-y)*2>(b.x()-x-2);
         }
@@ -89,13 +89,13 @@ public class BlockSpike extends Block implements Collideable {
         d.pushMatrix();
         d.translate(x+.5f, y+.5f);
         d.rotate(-90*meta, 0, 0, 1);
-        if(game.vars.cubic) {
+        if (game.vars.cubic) {
             d.vertex(vertex1, 0xFFFF0000, 0.95f);
             d.vertex(vertex2, 0xFFFF0000, (meta&1)!=0 ? 0.8f : 0.9f);
             d.vertex(vertex3, 0xFFFF0000, (meta&1)!=0 ? 0.8f : 0.9f);
-            if(d.back()){
-                d.translate(0,0,1);
-                d.scale(1,1,-1);
+            if (d.back()) {
+                d.translate(0, 0, 1);
+                d.scale(1, 1, -1);
                 d.vertex(vertex1, 0xFFFF0000, 0.95f);
             }
             d.cube(-.5f, -.5f, 0, 1, 1, 1, 0xFFFF0000, true, false, false, false, false, false);
@@ -119,6 +119,7 @@ public class BlockSpike extends Block implements Collideable {
     public void getCollisionBox(Level level, int x, int y, Borrow.BorrowedBoundingBox bound, ArrayList<Borrow.BorrowedBoundingBox> list, PlayerSP player) {
 
     }
+
     @Override
     public boolean onCollide(PlayerSP player, Level level, int x, int y, int meta, ArrayList<Borrow.BorrowedCollisionData> data) {
         player.killedByBlock();
