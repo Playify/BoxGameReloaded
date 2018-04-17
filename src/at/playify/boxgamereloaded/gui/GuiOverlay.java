@@ -66,6 +66,7 @@ public class GuiOverlay extends Gui {
             gui.draw();
         }
         super.draw();
+
     }
 
     @Override
