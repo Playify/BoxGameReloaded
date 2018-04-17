@@ -64,6 +64,4 @@ public interface Drawer {
     void drawString(String s, float x, float y, float h);
 
     void drawStringCenter(String s, float x, float y, float h);
-
-    float getStringWidth(String s);
 }

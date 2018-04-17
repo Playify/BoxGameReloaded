@@ -353,9 +353,4 @@ public class WindowsDrawer implements Drawer {
     public void drawStringCenter(String s, float x, float y, float h) {
         font.drawCenter(s, x, y, h);
     }
-
-    @Override
-    public float getStringWidth(String s) {
-        return font.getWidth(s);
-    }
 }

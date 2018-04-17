@@ -19,17 +19,24 @@ public class LevelButton extends Button {
 
     @Override
     public String text() {
+        if (lvl.startsWith("paint_")) {
+            return "Paint " + lvl.substring(6);
+        }
         return lvl;
     }
 
     @Override
     public BoundingBox3d bound() {
-        bound.set(x, y, 0, x + .3f, y + .2f, 0.025f);
+        bound.set(x, y, -0.01f, x + .2f, y + .2f, 0.025f);
         return bound;
     }
 
     @Override
     public boolean click(Finger finger) {
-        return false;
+        game.joinWorld(lvl);
+        game.connection.handleSoon();
+        game.gui.closeMainMenu();
+        game.pauseLock.unlock();
+        return true;
     }
 }
