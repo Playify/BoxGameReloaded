@@ -63,12 +63,13 @@ public class BlockGravity extends Block implements Collideable, NoCollideable {
     }
 
     @Override
+    public int metaStates() {
+        return 2;
+    }
+
+    @Override
     public void onNoCollide(PlayerSP player, Level level, ArrayList<Borrow.BorrowedCollisionData> data) {
         collided=false;
     }
 
-    @Override
-    public int metaStates() {
-        return 2;
-    }
 }
