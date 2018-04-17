@@ -20,6 +20,7 @@ public class Blocks {
     public BlockCheckPoint CHECK;
     public BlockFinish FINISH;
     public BlockResize RESIZE;
+    public BlockGravity GRAVITY;
     public int blockscount;
 
     //Block anhand des Zeichens bekommen
@@ -41,5 +42,7 @@ public class Blocks {
         CHECK=new BlockCheckPoint(game,BlockCheckPoint.chr);
         FINISH=new BlockFinish(game,BlockFinish.chr);
         RESIZE = new BlockResize(game, BlockResize.chr);
+        GRAVITY=new BlockGravity(game, BlockGravity.chr);
+
     }
 }
