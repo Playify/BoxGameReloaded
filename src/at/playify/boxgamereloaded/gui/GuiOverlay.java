@@ -4,7 +4,10 @@ import at.playify.boxgamereloaded.BoxGameReloaded;
 import at.playify.boxgamereloaded.gui.button.*;
 import at.playify.boxgamereloaded.util.Finger;
 
+import java.util.ArrayList;
+
 public class GuiOverlay extends Gui {
+    private ArrayList<Gui> guis = new ArrayList<>();
 
     public GuiOverlay(BoxGameReloaded game) {
         super(game);
@@ -20,16 +23,32 @@ public class GuiOverlay extends Gui {
     }
 
     public void openMainMenu() {
-
+        if (!isMainMenuVisible()) {
+            guis.add(new GuiMainMenu(game));
+        }
     }
 
     public boolean isMainMenuVisible() {
+        for (Gui gui : guis) {
+            if (gui instanceof GuiMainMenu) {
+                return true;
+            }
+        }
         return false;
     }
 
     @Override
     public boolean click(Finger finger) {
-        boolean click = super.click(finger);
+        boolean click = false;
+        for (Gui gui : guis) {
+            if (gui.click(finger)) {
+                click = true;
+                break;
+            }
+        }
+        if (!click) {
+            click = super.click(finger);
+        }
         if (!click) {
             float width = game.d.getWidth();
             if (finger.x < width / 4) {
@@ -39,5 +58,22 @@ public class GuiOverlay extends Gui {
             }
         }
         return click;
+    }
+
+    @Override
+    public void draw() {
+        for (Gui gui : guis) {
+            gui.draw();
+        }
+        super.draw();
+    }
+
+    @Override
+    public boolean tick() {
+        boolean freeze = true;
+        for (Gui gui : guis) {
+            freeze &= gui.tick();
+        }
+        return freeze && super.tick();
     }
 }
