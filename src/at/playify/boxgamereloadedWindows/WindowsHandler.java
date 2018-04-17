@@ -71,7 +71,6 @@ class WindowsHandler implements Handler{
 
                     @Override
                     public void windowClosed(WindowEvent e) {
-
                     }
 
                     @Override
