@@ -4,6 +4,7 @@ import at.playify.boxgamereloaded.BoxGameReloaded;
 import at.playify.boxgamereloaded.network.Server;
 import at.playify.boxgamereloaded.network.connection.ConnectionToClient;
 import at.playify.boxgamereloaded.network.connection.ConnectionToServer;
+import org.json.JSONObject;
 
 //Packet für Leveldaten = Level zu Text,Laden von Text
 public class PacketLevelData extends Packet {
@@ -20,7 +21,7 @@ public class PacketLevelData extends Packet {
 
     @Override
     public String convertToString(BoxGameReloaded game) {
-        return (world==null?game.vars.world:world)+";"+(levelstr==null?game.level.toWorldString():levelstr);
+        return (world!=null ? world+";" : "")+(levelstr==null ? game.level.toWorldString() : levelstr);
     }
 
     @Override
@@ -48,6 +49,20 @@ public class PacketLevelData extends Packet {
 
     @Override
     public void handle(Server server, ConnectionToClient connectionToClient) {
-        System.out.println("Level Data received");//TODO
+        String world=this.world==null ? connectionToClient.world : this.world;
+        if (world.startsWith("paint_")) {
+            try {
+                JSONObject paint=server.handler.read("paint");
+                if (!paint.has(world)) {
+                    paint.put(world, new JSONObject());
+                }
+                JSONObject lvl=paint.getJSONObject(world);
+                lvl.put("data", levelstr);
+                server.handler.write("paint", paint);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        server.broadcast(this, world, connectionToClient);
     }
 }

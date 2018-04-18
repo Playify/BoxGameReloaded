@@ -119,7 +119,7 @@ public abstract class Player {
         } else {
             for (int i = 0; i < tailArray.length; i++) {
                 if (tailArray[i] != null) {
-                    Borrow.free(tailArray[i]);
+                    tailArray[i].free();
                 }
                 tailArray[i] = null;
             }

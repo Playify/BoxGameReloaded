@@ -25,12 +25,6 @@ public class BlockResize extends Block implements Collideable {
 
     @Override
     public void getCollisionBox(Level level, int x, int y, Borrow.BorrowedBoundingBox bound, ArrayList<Borrow.BorrowedBoundingBox> list, PlayerSP player) {
-        if (Math.abs(player.motionY) < 0.015f) {
-            Borrow.BorrowedBoundingBox b = Borrow.bound(x, y, x + 1, y + 1);
-            b.left = b.right = false;
-            b.down = !(b.up = game.vars.inverted_gravity);
-            list.add(b);
-        }
     }
 
     @Override
@@ -76,49 +70,6 @@ public class BlockResize extends Block implements Collideable {
         }
 
         return false;
-    }
-
-    private void move(PlayerSP player, float moveX, float moveY) {
-        float wantX = moveX;
-        float wantY = moveY;
-        Borrow.BorrowedBoundingBox bound = Borrow.bound(player.bound.x(), player.bound.y(), player.bound.xw(), player.bound.yh());
-        //Bound erweitern
-        Borrow.BorrowedBoundingBox boundingBox = bound.addCoord(moveX, moveY);
-        ArrayList<Borrow.BorrowedBoundingBox> list1 = game.level.getCollisionBoxes(player, boundingBox);
-        boundingBox.free();
-
-        //Eigentliche Bewegung anhand der Kollisionsboxen begrenzen
-        if (moveX != 0.0f) {
-            int j5 = 0;
-
-            for (int l5 = list1.size(); j5 < l5; ++j5) {
-                moveX = list1.get(j5).calculateXOffset(bound, moveX);
-            }
-
-            if (moveX != 0.0f) {
-                bound.offset(moveX, 0.0f);
-            }
-        }
-
-        if (moveY != 0.0f) {
-            int k5 = 0;
-
-            for (int i6 = list1.size(); k5 < i6; ++k5) {
-                moveY = list1.get(k5).calculateYOffset(bound, moveY);
-            }
-
-            if (moveY != 0.0f) {
-                if (moveY < 0 ^ wantX < 0) {
-                    bound.minY += moveY;
-                } else {
-                    bound.maxY += moveY;
-                }
-            }
-        }
-        //Nach Bewegung limitieren Koordinaten vom Collider zurück zu Bound setzen
-        player.bound.set(bound.minX, bound.minY, bound.maxX - bound.minX, bound.maxY - bound.minY);
-        Borrow.free(list1);
-        Borrow.free(bound);
     }
 
     @Override

@@ -88,4 +88,13 @@ public class GuiOverlay extends Gui {
             }
         }
     }
+
+    public int backgroundState() {
+        for (Button button : buttons) {
+            if (button instanceof DarkBackground) {
+                return ((DarkBackground) button).backgroundState;
+            }
+        }
+        return 0;
+    }
 }

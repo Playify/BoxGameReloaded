@@ -9,6 +9,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 //Ausborgbares
 //Alles hier sollte sobald nicht mehr benötigt mit free() wieder zurückgegeben werden.
 //Dies spart neuerstellen und im Speicher behalten von alten Variablen
+@SuppressWarnings({"WeakerAccess", "unused"})
 public class Borrow {
     private static long borrowed=0;
     private static Queue<BorrowedCollisionData> datas = new ConcurrentLinkedQueue<>();
@@ -16,24 +17,12 @@ public class Borrow {
     private static Queue<BorrowedBoundingBox3d> bounds3d = new ConcurrentLinkedQueue<>();
     private static Queue<ArrayList<? extends Borrowed>> boundLists = new ConcurrentLinkedQueue<>();
 
-    public static void free(BorrowedCollisionData data) {
-        datas.add(data);
-    }
-    public static void free(BorrowedBoundingBox bound) {
-        bounds.add(bound);
-    }
-
-    public static void free(BorrowedBoundingBox3d bound) {
-        bounds3d.add(bound);
+    public static <T extends Borrowed> void free(T b) {
+        b.free();
     }
 
     public static void free(ArrayList<? extends Borrowed> list) {
-        Iterator<? extends Borrowed> iterator = list.iterator();
-        while (iterator.hasNext()) {
-            Borrowed next = iterator.next();
-            next.free();
-            iterator.remove();
-        }
+        freeInside(list);
         boundLists.add(list);
     }
 
@@ -122,12 +111,15 @@ public class Borrow {
         }
     }
 
-    public static ArrayList<BorrowedBoundingBox> boundList() {
-        ArrayList<BorrowedBoundingBox> poll = (ArrayList<BorrowedBoundingBox>) boundLists.poll();
+    public static <T extends Borrowed> ArrayList<T> boundList() {
+        @SuppressWarnings("unchecked") ArrayList<T> poll=(ArrayList<T>) boundLists.poll();
         if (poll == null) {
             borrowed++;
             return new ArrayList<>();
         } else {
+            if (!poll.isEmpty()) {
+                freeInside(poll);
+            }
             return poll;
         }
     }
@@ -183,7 +175,7 @@ public class Borrow {
         }
 
         public void free() {
-            Borrow.free(this);
+            bounds.add(this);
         }
 
         @Override
@@ -210,7 +202,7 @@ public class Borrow {
         }
 
         public void free() {
-            Borrow.free(this);
+            bounds3d.add(this);
         }
 
         @Override
@@ -230,7 +222,7 @@ public class Borrow {
 
     public static class BorrowedCollisionData extends CollisionData implements Borrowed {
         public void free() {
-            Borrow.free(this);
+            datas.add(this);
         }
     }
 }

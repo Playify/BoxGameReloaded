@@ -6,7 +6,7 @@ import at.playify.boxgamereloaded.util.BoundingBox3d;
 import at.playify.boxgamereloaded.util.Finger;
 
 public class DarkBackground extends Button {
-    private int backgroundState;
+    public int backgroundState;
 
     public DarkBackground(BoxGameReloaded game) {
         super(game);

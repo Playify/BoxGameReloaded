@@ -3,7 +3,9 @@ package at.playify.boxgamereloaded.android;
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.*;
+import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
 
@@ -14,6 +16,7 @@ import io.fabric.sdk.android.Fabric;
 public class GameActivity extends Activity {
     public Game game;
     private GameView view;
+    boolean doubleBackToExitPressedOnce = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,11 +62,26 @@ public class GameActivity extends Activity {
             }
         game.setKey(unicodeChar,true);
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            event.startTracking();
+            if (doubleBackToExitPressedOnce) {
+                super.onBackPressed();
+                return true;
+            }
+
+            this.doubleBackToExitPressedOnce = true;
+            Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
+
+            new Handler().postDelayed(new Runnable() {
+
+                @Override
+                public void run() {
+                    doubleBackToExitPressedOnce=false;
+                }
+            }, 2000);
             return true;
         }
         return unicodeChar!=0;
     }
+
 
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {

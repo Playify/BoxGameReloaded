@@ -88,7 +88,7 @@ public class BlockSpike extends Block implements Collideable {
         Drawer d=game.d;
         d.pushMatrix();
         d.translate(x+.5f, y+.5f);
-        d.rotate(-90*meta, 0, 0, 1);
+        d.rotate(-90*(meta-2), 0, 0, 1);
         if (game.vars.cubic) {
             d.vertex(vertex1, 0xFFFF0000, 0.95f);
             d.vertex(vertex2, 0xFFFF0000, (meta&1)!=0 ? 0.8f : 0.9f);

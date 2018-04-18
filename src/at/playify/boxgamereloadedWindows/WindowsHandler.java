@@ -2,6 +2,8 @@ package at.playify.boxgamereloadedWindows;
 
 import at.playify.boxgamereloaded.BoxGameReloaded;
 import at.playify.boxgamereloaded.interfaces.Handler;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,12 +13,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
 
-class WindowsHandler implements Handler{
+public class WindowsHandler implements Handler {
     BoxGameReloaded game;
     WindowsDrawer d;
     private boolean keybd;
-    private Frame frame;
     private JDialog dialog;
 
     @Override
@@ -120,6 +125,39 @@ class WindowsHandler implements Handler{
     public void setClipboardString(String s) {
         StringSelection ss = new StringSelection(s);
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(ss, ss);
+    }
+
+    @Override
+    public JSONObject read(String filename) {
+        try {
+            File file=new File(Main.base, filename+".json");
+            try (FileInputStream inputStream=new FileInputStream(file)) {
+                JSONTokener tokener=new JSONTokener(inputStream);
+                return new JSONObject(tokener);
+            }
+        } catch (FileNotFoundException e) {
+            return new JSONObject();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new JSONObject();
+        }
+    }
+
+    @Override
+    public void write(String filename, JSONObject o) {
+        File file=new File(Main.base, filename+".json");
+        try {
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try (FileWriter fw=new FileWriter(file)) {
+            fw.write(o.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

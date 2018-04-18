@@ -41,31 +41,36 @@ public class GameView extends GLSurfaceView implements GLSurfaceView.Renderer, V
 
     @Override
     public void onDrawFrame(GL10 gl) {
-        drawer.gl=gl;
-        a.game.draw();
+        try {
+            drawer.gl=gl;
+            a.game.draw();
+        }catch (Exception e){
+            System.err.println("Drawing Error");
+            e.printStackTrace();
+        }
     }
 
-
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent event) {
-        return super.dispatchTouchEvent(event);
-    }
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        int pointercount=event.getPointerCount();
-        for (int i = 0; i < a.game.fingers.length; i++) {
-            boolean d=a.game.fingers[i].down;
-            if (i<pointercount) {
-                a.game.fingers[i].x = event.getX(i);
-                a.game.fingers[i].y = event.getY(i);
-                a.game.fingers[i].down = event.getActionIndex() != i || (event.getActionMasked() != MotionEvent.ACTION_UP && event.getActionMasked() != MotionEvent.ACTION_POINTER_UP);
-            }else {
-                a.game.fingers[i].down=false;
+        try {
+            int pointercount=event.getPointerCount();
+            for(int i=0; i<a.game.fingers.length; i++) {
+                boolean d=a.game.fingers[i].down;
+                if (i<pointercount) {
+                    a.game.fingers[i].x=event.getX(i);
+                    a.game.fingers[i].y=event.getY(i);
+                    a.game.fingers[i].down=event.getActionIndex()!=i||(event.getActionMasked()!=MotionEvent.ACTION_UP&&event.getActionMasked()!=MotionEvent.ACTION_POINTER_UP);
+                } else {
+                    a.game.fingers[i].down=false;
+                }
+                if (a.game.fingers[i].down!=d) {
+                    System.out.println("CHANGED");
+                    a.game.fingerStateChanged(a.game.fingers[i]);
+                }
             }
-            if (a.game.fingers[i].down!=d){
-                System.out.println("CHANGED");
-                a.game.fingerStateChanged(a.game.fingers[i]);
-            }
+        }catch (Exception e){
+            System.err.println("Input Excpetion");
+            e.printStackTrace();
         }
         return true;
     }

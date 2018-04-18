@@ -23,6 +23,7 @@ public class Main {
     private static Finger finger;
     private static BoxGameReloaded game;
     private static WindowsHandler handler;
+    public static File base=new File(System.getenv("APPDATA"), "BoxGameReloaded");
 
     public static void main(String[] args) {
         loadLibrary();
@@ -53,7 +54,7 @@ public class Main {
     //Librarys von Jar-Datei extrahieren um von LWJGL,OpenGL,... genutzt zu werden.
     private static void loadLibrary() {
         try {
-            File base = new File(System.getenv("APPDATA"), "BoxGameReloaded");
+            File base=Main.base;
             File libs = new File(base, "libs");
             if (!libs.exists()) {
                 libs.mkdirs();
@@ -102,78 +103,88 @@ public class Main {
     private static void runTick() {
         game.d.setWidth(Display.getWidth());
         game.d.setHeight(Display.getHeight());
-        game.draw();
-        Display.update();
-        //Tastatur
-        Keyboard.enableRepeatEvents(true);
-        while (Keyboard.next()) {
-            int eventKey = Keyboard.getEventKey();
-            if (Keyboard.getEventKeyState()) {
-                switch (eventKey) {
-                    case Keyboard.KEY_ESCAPE:
-                        game.cheatCode('s');
-                        break;
-                    case Keyboard.KEY_P:
-                        game.cheatCode('b');
-                        break;
-                    case Keyboard.KEY_O:
-                        game.cheatCode('a');
-                        break;
-                    case Keyboard.KEY_UP:
-                        game.cheatCode('u');
-                        break;
-                    case Keyboard.KEY_DOWN:
-                        game.cheatCode('d');
-                        break;
-                    case Keyboard.KEY_LEFT:
-                        game.cheatCode('l');
-                        break;
-                    case Keyboard.KEY_RIGHT:
-                        game.cheatCode('r');
-                        break;
-                    case Keyboard.KEY_SPACE:
-                        game.cheatCode('u');
-                        break;
-                    case Keyboard.KEY_W:
-                        game.cheatCode('u');
-                        break;
-                    case Keyboard.KEY_A:
-                        game.cheatCode('l');
-                        break;
-                    case Keyboard.KEY_S:
-                        game.cheatCode('d');
-                        break;
-                    case Keyboard.KEY_D:
-                        game.cheatCode('r');
-                        break;
+        try {
+            game.draw();
+        } catch (Exception e) {
+            System.err.println("Drawing Error");
+            e.printStackTrace();
+        }
+        try {
+            Display.update();
+            //Tastatur
+            Keyboard.enableRepeatEvents(true);
+            while (Keyboard.next()) {
+                int eventKey=Keyboard.getEventKey();
+                if (Keyboard.getEventKeyState()) {
+                    switch (eventKey) {
+                        case Keyboard.KEY_ESCAPE:
+                            game.cheatCode('s');
+                            break;
+                        case Keyboard.KEY_P:
+                            game.cheatCode('b');
+                            break;
+                        case Keyboard.KEY_O:
+                            game.cheatCode('a');
+                            break;
+                        case Keyboard.KEY_UP:
+                            game.cheatCode('u');
+                            break;
+                        case Keyboard.KEY_DOWN:
+                            game.cheatCode('d');
+                            break;
+                        case Keyboard.KEY_LEFT:
+                            game.cheatCode('l');
+                            break;
+                        case Keyboard.KEY_RIGHT:
+                            game.cheatCode('r');
+                            break;
+                        case Keyboard.KEY_SPACE:
+                            game.cheatCode('u');
+                            break;
+                        case Keyboard.KEY_W:
+                            game.cheatCode('u');
+                            break;
+                        case Keyboard.KEY_A:
+                            game.cheatCode('l');
+                            break;
+                        case Keyboard.KEY_S:
+                            game.cheatCode('d');
+                            break;
+                        case Keyboard.KEY_D:
+                            game.cheatCode('r');
+                            break;
+                    }
+                }
+                int eventChar=Keyboard.getEventCharacter();
+                if (Keyboard.getKeyName(eventKey).length()==1) {
+                    eventChar=Keyboard.getKeyName(eventKey).charAt(0);
+                }
+                if (eventKey==Keyboard.KEY_ESCAPE) eventChar='p';
+                if (eventChar==0) {
+                    eventChar=chars[eventKey];
+                } else {
+                    chars[eventKey]=eventChar;
+                }
+                game.setKey(eventChar, Keyboard.getEventKeyState());
+            }
+            //Maus
+            finger.x=Mouse.getX();//Finger wegen MultiTouch am Handy
+            finger.y=Display.getHeight()-Mouse.getY();
+            while (Mouse.next()) {
+                if (Mouse.getEventButton()==0) {
+                    boolean down=Mouse.getEventButtonState();
+                    finger.x=Mouse.getEventX();
+                    finger.y=Display.getHeight()-Mouse.getEventY();
+                    finger.down=down;
+                    game.fingerStateChanged(finger);
+                } else {
+                    finger.x=Mouse.getEventX();
+                    finger.y=Display.getHeight()-Mouse.getEventY();
                 }
             }
-            int eventChar=Keyboard.getEventCharacter();
-            if (Keyboard.getKeyName(eventKey).length() == 1) {
-                eventChar = Keyboard.getKeyName(eventKey).charAt(0);
-            }
-            if (eventKey== Keyboard.KEY_ESCAPE)eventChar='p';
-            if (eventChar==0){
-                eventChar=chars[eventKey];
-            }else{
-                chars[eventKey]=eventChar;
-            }
-            game.setKey(eventChar,Keyboard.getEventKeyState());
-        }
-        //Maus
-        finger.x=Mouse.getX();//Finger wegen MultiTouch am Handy
-        finger.y=Display.getHeight()-Mouse.getY();
-        while (Mouse.next()) {
-            if (Mouse.getEventButton()==0) {
-                boolean down = Mouse.getEventButtonState();
-                finger.x=Mouse.getEventX();
-                finger.y=Display.getHeight()-Mouse.getEventY();
-                finger.down=down;
-                game.fingerStateChanged(finger);
-            }else{
-                finger.x=Mouse.getEventX();
-                finger.y=Display.getHeight()-Mouse.getEventY();
-            }
+        } catch (Exception e) {
+            System.err.println("Input Exception");
+            e.printStackTrace();
         }
     }
 }
