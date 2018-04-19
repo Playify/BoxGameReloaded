@@ -198,7 +198,6 @@ public class WindowsDrawer implements Drawer {
             GL11.glVertex3f(i >> 1, 1, i & 1);
             GL11.glVertex3f(0, i & 1, i >> 1);
             GL11.glVertex3f(1, i & 1, i >> 1);
-            game.vertexcount += 3;
         }
         GL11.glEnd();
         GL11.glPopMatrix();
@@ -352,10 +351,5 @@ public class WindowsDrawer implements Drawer {
     @Override
     public void drawStringCenter(String s, float x, float y, float h) {
         font.drawCenter(s, x, y, h);
-    }
-
-    @Override
-    public float getStringWidth(String s) {
-        return font.getWidth(s);
     }
 }

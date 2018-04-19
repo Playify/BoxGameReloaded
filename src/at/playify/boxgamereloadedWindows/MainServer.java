@@ -1,11 +1,13 @@
-package at.playify.boxgamereloaded.network;
+package at.playify.boxgamereloadedWindows;
+
+import at.playify.boxgamereloaded.network.Server;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
-public class Main {
+public class MainServer {
     public static void main(String[] args){
-        Server server = new Server();
+        Server server=new Server(new WindowsHandler());
         server.start();
         try {
             BufferedReader br = new BufferedReader(new InputStreamReader(System.in));

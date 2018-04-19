@@ -5,6 +5,7 @@ import at.playify.boxgamereloaded.gui.button.*;
 import at.playify.boxgamereloaded.util.Finger;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class GuiOverlay extends Gui {
     private ArrayList<Gui> guis = new ArrayList<>();
@@ -76,5 +77,24 @@ public class GuiOverlay extends Gui {
             freeze &= gui.tick();
         }
         return freeze && super.tick();
+    }
+
+    public void closeMainMenu() {
+        Iterator<Gui> iterator = guis.iterator();
+        while (iterator.hasNext()) {
+            Gui next = iterator.next();
+            if (next instanceof GuiMainMenu) {
+                iterator.remove();
+            }
+        }
+    }
+
+    public int backgroundState() {
+        for (Button button : buttons) {
+            if (button instanceof DarkBackground) {
+                return ((DarkBackground) button).backgroundState;
+            }
+        }
+        return 0;
     }
 }

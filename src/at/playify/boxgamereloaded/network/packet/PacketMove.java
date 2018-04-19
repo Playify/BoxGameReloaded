@@ -138,6 +138,5 @@ public class PacketMove extends Packet {
         }else{
             nopermission(server,connectionToClient);
         }
-
     }
 }

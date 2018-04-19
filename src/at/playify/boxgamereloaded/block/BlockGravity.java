@@ -33,7 +33,7 @@ public class BlockGravity extends Block implements Collideable, NoCollideable {
     }
 
     public boolean collide(Bound b, int x, int y, Player player, boolean checkOnly, int meta, Level level) {
-        if (meta==0) {
+        if (meta==0&&checkOnly) {
             final float v=.01f;
             return b.collide(bound.set(x-v, y-v, 1+2*v, 1+2*v));
         } else {

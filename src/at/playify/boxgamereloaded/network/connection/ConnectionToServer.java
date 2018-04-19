@@ -28,7 +28,7 @@ public class ConnectionToServer implements Closeable,Runnable {
     protected PrintStream out;
     boolean closed;
     private Queue<Packet> q=new LinkedList<>();
-    public RectBound serverbound=new RectBound();
+    public RectBound serverbound=new RectBound(-1, -1, -1, -1);
     public final Object playerLock=new Object();
 
     public ConnectionToServer() {}
@@ -96,7 +96,7 @@ public class ConnectionToServer implements Closeable,Runnable {
 
     public boolean isPaused(boolean partly) {
         if (userpause) {
-            return game.paused||pause||(!partly&&game.backgroundState!=0);
+            return game.paused||pause||(!partly&&game.gui.backgroundState()!=0);
         } else {
             if (pause) {
                 game.paused=true;

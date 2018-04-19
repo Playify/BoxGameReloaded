@@ -1,27 +1,32 @@
 package at.playify.boxgamereloaded.network;
 
+import at.playify.boxgamereloaded.interfaces.Handler;
 import at.playify.boxgamereloaded.level.EmptyServerLevel;
 import at.playify.boxgamereloaded.level.ServerLevel;
 import at.playify.boxgamereloaded.network.connection.ConnectionToClient;
 import at.playify.boxgamereloaded.network.packet.Packet;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Scanner;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-//Server wird später auch für singleplayer benutzt
+//Server wird auch für SinglePlayer benutzt
 public class Server extends Thread{
     private CopyOnWriteArrayList<ConnectionToClient> connected=new CopyOnWriteArrayList<>();
     private HashMap<String, ServerLevel> levelmap=new HashMap<>();
     private int pausemode= 2;
+    public Handler handler;
 
     private ServerLevel empty;
     private final ThreadLocal<ArrayList<ConnectionToClient>> last = new ThreadLocal<>();
+
+    public Server(Handler handler) {
+        this.handler=handler;
+    }
 
     public int getPausemode() {
         if ((pausemode & 2) != 0) {
@@ -57,28 +62,26 @@ public class Server extends Thread{
         if (levelmap.containsKey(world)) {
             return levelmap.get(world);
         }else {
-            File file = new File("levels", world + ".txt");
-            if (file.exists()) {
-                ServerLevel level = new ServerLevel();
-                level.loadWorldString(file(file));
-                levelmap.put(world, level);
-                return level;
-            }else{
-                return empty==null?empty=new EmptyServerLevel():empty;
+            try {
+                boolean paint=world.startsWith("paint_");
+                JSONObject levels=handler.read(paint ? "paint" : "levels");
+                if (levels.has(world)) {
+                    JSONObject object=levels.getJSONObject(world);
+                    if (object.has("data")) {
+                        ServerLevel level=new ServerLevel();
+                        level.loadWorldString(object.getString("data"));
+                        levelmap.put(world, level);
+                        return level;
+                    }
+                    System.err.println("Level file is incorrect");
+                    return empty==null ? empty=new EmptyServerLevel() : empty;
+                } else {
+                    return empty==null ? empty=new EmptyServerLevel() : empty;
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+                return empty==null ? empty=new EmptyServerLevel() : empty;
             }
-        }
-    }
-
-    private String file(File file) {
-        StringBuilder fileContents = new StringBuilder((int) file.length());
-
-        try (Scanner scanner = new Scanner(file)) {
-            while (scanner.hasNextLine()) {
-                fileContents.append(scanner.nextLine()).append('\n');
-            }
-            return fileContents.toString();
-        } catch (FileNotFoundException e) {
-            return "";
         }
     }
 

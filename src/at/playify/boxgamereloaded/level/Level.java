@@ -185,12 +185,12 @@ public class Level {
                 str.append(meta);
             }
         }
-        str.append("-").append(sizeX);
-        str.append("-").append(sizeY);
-        str.append("-").append(((int) (spawnPoint.x() * 3100)));
-        str.append("-").append(((int) (spawnPoint.y() * 3100)));
-        str.append("-").append(((int) (spawnPoint.w() * 100)));
-        str.append("-").append(((int) (spawnPoint.h() * 100)));
+        str.append("+").append(sizeX);
+        str.append("+").append(sizeY);
+        str.append("+").append(((int) (spawnPoint.x()*100)));
+        str.append("+").append(((int) (spawnPoint.y()*100)));
+        str.append("+").append(((int) (spawnPoint.w()*100)));
+        str.append("+").append(((int) (spawnPoint.h()*100)));
         return Compresser.compress(str.toString());
     }
 

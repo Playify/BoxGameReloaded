@@ -14,6 +14,14 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import org.json.JSONObject;
+import org.json.JSONTokener;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.util.Scanner;
+
 import at.playify.boxgamereloaded.interfaces.Handler;
 
 
@@ -139,5 +147,43 @@ public class AndroidHandler implements Handler {
     @Override
     public void setClipboardString(String s) {
 
+    }
+
+    @Override
+    public JSONObject read(String filename) {
+        try {
+            File file = new File(a.getExternalFilesDir(null), filename + ".json");
+            try(Scanner sc = new Scanner(file)) {
+                StringBuilder str=new StringBuilder();
+                while (sc.hasNextLine()) {
+                    str.append(sc.nextLine()).append("\n");
+                }
+                sc.close();
+                JSONTokener tokener=new JSONTokener(str.toString());
+                return new JSONObject(tokener);
+            }
+        }catch (FileNotFoundException e){
+            return new JSONObject();
+        }catch (Exception e){
+            e.printStackTrace();
+            return new JSONObject();
+        }
+    }
+
+    @Override
+    public void write(String filename, JSONObject o) {
+        File file = new File(a.getExternalFilesDir(null), filename + ".json");
+        try{
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        try (FileWriter fw = new FileWriter(file)){
+            fw.write(o.toString());
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 }

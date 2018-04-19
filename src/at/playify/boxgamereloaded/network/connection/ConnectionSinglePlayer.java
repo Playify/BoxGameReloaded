@@ -14,7 +14,7 @@ public class ConnectionSinglePlayer extends ConnectionToServer implements Closea
 
     public ConnectionSinglePlayer(BoxGameReloaded game) {
         super(game);
-        server = new Server();
+        server=new Server(game.handler);
         PipedInputStream toClient = new PipedInputStream();
         PipedOutputStream fromClient = new PipedOutputStream();
         this.in = new BufferedReader(new InputStreamReader(toClient));

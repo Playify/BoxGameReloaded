@@ -1,14 +1,14 @@
 package at.playify.boxgamereloaded.network.connection;
 
+import at.playify.boxgamereloaded.level.ServerLevel;
 import at.playify.boxgamereloaded.network.Server;
-import at.playify.boxgamereloaded.network.packet.Packet;
-import at.playify.boxgamereloaded.network.packet.PacketResetPlayersInWorld;
-import at.playify.boxgamereloaded.network.packet.PacketSetPauseMode;
+import at.playify.boxgamereloaded.network.packet.*;
 import at.playify.boxgamereloaded.util.bound.RectBound;
 
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.ArrayList;
 
 //Verbindung zum Client
 public class ConnectionToClient extends Thread implements Closeable{
@@ -119,6 +119,25 @@ public class ConnectionToClient extends Thread implements Closeable{
             System.err.println("Error in ConnectionToClient");
             e.printStackTrace();
             close();
+        }
+    }
+
+    public void setWorld(String w) {
+        PacketResetPlayersInWorld packet=new PacketResetPlayersInWorld(this.name);
+        server.broadcast(packet, w, this);
+        ServerLevel level=server.getLevel(w);
+        if (!this.world.equals(w)) {
+            this.world=w;
+            this.sendPacket(new PacketMove(level.spawnPoint, this.name));
+
+        }
+        this.sendPacket(new PacketLevelData(level.toWorldString()));
+        this.sendPacket(new PacketResetPlayersInWorld());
+        PacketMove packetMove=new PacketMove(this);
+        server.broadcast(packetMove, w, this);
+        ArrayList<ConnectionToClient> last=server.getLastBroadcast();
+        for (ConnectionToClient client : last) {
+            this.sendPacket(new PacketMove(client));
         }
     }
 }

@@ -26,7 +26,7 @@ public class HoveringPlayIcon extends Button {
 
     @Override
     public void draw(Drawer d) {
-        if (pauseState != 0) {
+        if (pauseState != 0 && !game.gui.isMainMenuVisible()) {
             d.pushMatrix();
             d.translate(.5f, .23f);
             d.depth(false);

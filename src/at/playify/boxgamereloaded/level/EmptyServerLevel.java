@@ -4,7 +4,7 @@ import at.playify.boxgamereloaded.block.BlockAir;
 
 public class EmptyServerLevel extends ServerLevel {
     public EmptyServerLevel(){
-        super.setSize(5,5);
+        super.setSize(25, 25);
         super.set(0,0,'a',0);
     }
 
