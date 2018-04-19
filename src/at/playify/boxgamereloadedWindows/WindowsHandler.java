@@ -31,38 +31,38 @@ public class WindowsHandler implements Handler {
 
     @Override
     public void setKeyboardVisible(boolean b) {
-        keybd = b;
+        keybd=b;
         //TODO open Command Window
         if (b) {
-            if (dialog != null) return;
+            if (dialog!=null) return;
         } else {
-            if (dialog != null) {
+            if (dialog!=null) {
                 dialog.setVisible(false);
-                dialog = null;
+                dialog=null;
                 return;
             }
         }
-        Thread[] thread = new Thread[1];
-        thread[0] = new Thread(new Runnable() {
+        Thread[] thread=new Thread[1];
+        thread[0]=new Thread(new Runnable() {
             @Override
             public void run() {
-                final JTextField cmd = new JTextField();
+                final JTextField cmd=new JTextField();
                 cmd.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         game.runcmd(cmd.getText());
-                        if (dialog != null) {
+                        if (dialog!=null) {
                             dialog.setVisible(false);
-                            dialog = null;
+                            dialog=null;
                         }
                     }
                 });
-                Object[] message = {"Enter Command", cmd};
+                Object[] message={"Enter Command", cmd};
 
-                JOptionPane pane = new JOptionPane(message,
+                JOptionPane pane=new JOptionPane(message,
                         JOptionPane.PLAIN_MESSAGE,
                         JOptionPane.OK_CANCEL_OPTION);
-                dialog = pane.createDialog(null, "BoxGameReloaded CMD");
+                dialog=pane.createDialog(null, "BoxGameReloaded CMD");
                 dialog.addWindowListener(new WindowListener() {
                     @Override
                     public void windowOpened(WindowEvent e) {
@@ -71,7 +71,7 @@ public class WindowsHandler implements Handler {
 
                     @Override
                     public void windowClosing(WindowEvent e) {
-                        dialog = null;
+                        dialog=null;
                     }
 
                     @Override
@@ -102,9 +102,9 @@ public class WindowsHandler implements Handler {
                 dialog.pack();
                 cmd.requestFocusInWindow();
                 dialog.setVisible(true);
-                if (dialog != null) {
+                if (dialog!=null) {
                     game.runcmd(cmd.getText());
-                    dialog = null;
+                    dialog=null;
                 }
             }
         });
@@ -123,7 +123,7 @@ public class WindowsHandler implements Handler {
 
     @Override
     public void setClipboardString(String s) {
-        StringSelection ss = new StringSelection(s);
+        StringSelection ss=new StringSelection(s);
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(ss, ss);
     }
 
@@ -154,7 +154,7 @@ public class WindowsHandler implements Handler {
             e.printStackTrace();
         }
         try (FileWriter fw=new FileWriter(file)) {
-            fw.write(o.toString());
+            fw.write(o.toString(4));
         } catch (Exception e) {
             e.printStackTrace();
         }

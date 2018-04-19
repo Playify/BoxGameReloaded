@@ -193,14 +193,14 @@ public class PlayerSP extends Player {
 
     //Ausgeführt wenn Spieler von Block gekillt wird
     public void killedByBlock() {
-        this.bound.set(game.level.spawnPoint);
+        game.vars.check.die();
         motionX=motionY=0;
         game.vars.deaths++;
     }
 
     //Ausgeführt wenn Spieler von Respawnbutton gekillt wird
     public void killedByButton() {
-        this.bound.set(game.level.spawnPoint);
+        game.vars.check.die();
         motionX=motionY=0;
         game.vars.deaths++;
     }

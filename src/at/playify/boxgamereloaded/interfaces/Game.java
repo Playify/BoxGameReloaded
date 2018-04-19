@@ -14,7 +14,7 @@ public abstract class Game {
     protected boolean canDraw = false;
     public boolean[] keys = new boolean[300];
     public Finger[] fingers = new Finger[]{new Finger(0),new Finger(1),new Finger(2),new Finger(3),new Finger(4)};
-    public VariableContainer vars=new VariableContainer();
+    public VariableContainer vars=new VariableContainer(this);
     public Lock pauseLock=new Lock();
     public TickThread ticker;
     public Drawer d;

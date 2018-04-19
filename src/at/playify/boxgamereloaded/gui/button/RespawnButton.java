@@ -67,7 +67,7 @@ public class RespawnButton extends Button {
             game.connection.leaveWorld();
             game.gui.openMainMenu();
         } else {
-            game.player.killedByBlock();
+            game.player.killedByButton();
         }
         return true;
     }

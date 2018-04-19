@@ -9,6 +9,7 @@ import at.playify.boxgamereloaded.interfaces.Handler;
 import at.playify.boxgamereloaded.level.Level;
 import at.playify.boxgamereloaded.network.connection.ConnectionToServer;
 import at.playify.boxgamereloaded.network.connection.EmptyConnection;
+import at.playify.boxgamereloaded.network.packet.PacketFinish;
 import at.playify.boxgamereloaded.network.packet.PacketSetPauseMode;
 import at.playify.boxgamereloaded.network.packet.PacketSetWorld;
 import at.playify.boxgamereloaded.player.Player;
@@ -339,6 +340,6 @@ public class BoxGameReloaded extends Game {
         player.bound.set(level.spawnPoint);
         //TODO save Level finished to config. (using handler)
         //TODO send PacketSetWorld to next level
-        //connection.sendPacket(new PacketSetWorld());
+        connection.sendPacket(new PacketFinish());
     }
 }

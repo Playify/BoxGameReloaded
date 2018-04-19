@@ -244,7 +244,6 @@ public class SurfaceDrawer implements Drawer {
         gl.glColor4f(r, g, b, a);
         gl.glVertexPointer(3, GL10.GL_FLOAT, 0, verticesBuffer);
         gl.glDrawArrays(GL10.GL_LINES, 0, vertex.length/3);
-        game.vertexcount+=vertex.length/3;
         gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
     }
 

@@ -198,7 +198,6 @@ public class WindowsDrawer implements Drawer {
             GL11.glVertex3f(i >> 1, 1, i & 1);
             GL11.glVertex3f(0, i & 1, i >> 1);
             GL11.glVertex3f(1, i & 1, i >> 1);
-            game.vertexcount += 3;
         }
         GL11.glEnd();
         GL11.glPopMatrix();
