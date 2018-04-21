@@ -57,7 +57,7 @@ public class PacketResetPlayersInWorld extends Packet {
 
     @Override
     public String convertToString(Server server, ConnectionToClient client) {
-        return "";
+        return player==null ? "" : player;
     }
 
     @Override
@@ -67,6 +67,5 @@ public class PacketResetPlayersInWorld extends Packet {
 
     @Override
     public void handle(Server server, ConnectionToClient connectionToClient) {
-
     }
 }

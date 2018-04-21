@@ -13,6 +13,7 @@ import java.util.ArrayList;
 //Verbindung zum Client
 public class ConnectionToClient extends Thread implements Closeable{
     private final Server server;
+    public String skin;
     private Socket socket;
     private BufferedReader in;
     private PrintStream out;
@@ -122,24 +123,26 @@ public class ConnectionToClient extends Thread implements Closeable{
         }
     }
 
+    private ArrayList<ConnectionToClient> list=new ArrayList<>();
     public void setWorld(String w) {
-        PacketResetPlayersInWorld packet=new PacketResetPlayersInWorld(this.name);
-        server.broadcast(packet, w, this);
+        server.broadcast(new PacketResetPlayersInWorld(this.name), world, this);
         ServerLevel level=server.getLevel(w);
         if (!this.world.equals(w)) {
             this.world=w;
             this.sendPacket(new PacketSetWorld(w));
+            bound.set(level.spawnPoint);
             this.sendPacket(new PacketMove(level.spawnPoint, this.name));
             this.sendPacket(new PacketSpawn(level.spawnPoint));
-
         }
+        server.broadcast(new PacketMove(this), world, this);
+        server.broadcast(new PacketSkin(name, skin), world, this);
         this.sendPacket(new PacketLevelData(level.toWorldString()));
         this.sendPacket(new PacketResetPlayersInWorld());
-        PacketMove packetMove=new PacketMove(this);
-        server.broadcast(packetMove, w, this);
-        ArrayList<ConnectionToClient> last=server.getLastBroadcast();
-        for (ConnectionToClient client : last) {
+        server.getByWorld(world, list);
+        for (int i=list.size()-1;i >= 0;i--) {
+            ConnectionToClient client=list.get(i);
             this.sendPacket(new PacketMove(client));
+            this.sendPacket(new PacketSkin(client.name, client.skin));
         }
     }
 }

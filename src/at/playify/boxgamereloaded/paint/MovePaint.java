@@ -1,14 +1,8 @@
 package at.playify.boxgamereloaded.paint;
 
-import at.playify.boxgamereloaded.BoxGameReloaded;
 import at.playify.boxgamereloaded.util.Finger;
 
 public class MovePaint implements Paintable {
-    private BoxGameReloaded game;
-
-    public MovePaint(BoxGameReloaded game) {
-        this.game=game;
-    }
 
     @Override
     public void draw(int data) {

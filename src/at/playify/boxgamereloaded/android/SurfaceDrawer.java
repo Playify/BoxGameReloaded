@@ -9,18 +9,18 @@ import java.nio.FloatBuffer;
 import javax.microedition.khronos.opengles.GL10;
 
 import at.playify.boxgamereloaded.BoxGameReloaded;
-import at.playify.boxgamereloaded.exceptions.DrawingException;
 import at.playify.boxgamereloaded.interfaces.Drawer;
+import at.playify.boxgamereloaded.interfaces.exceptions.DrawingException;
 
+@SuppressWarnings("WeakerAccess")
 public class SurfaceDrawer implements Drawer {
     public int w;
     public int h;
-    public GL10 gl;
+    GL10 gl;
     public FontRenderer font;
     private boolean drawing;
     private BoxGameReloaded game;
     private FloatBuffer fb=null;
-    private FloatBuffer fb2=null;
     private float[] vertexFRONT=new float[]{
             0, 0, 0,
             0, 1, 0,
@@ -107,7 +107,7 @@ public class SurfaceDrawer implements Drawer {
     };
 
 
-    public SurfaceDrawer(BoxGameReloaded game) {
+    SurfaceDrawer(BoxGameReloaded game) {
         this.game=game;
     }
 
@@ -193,6 +193,23 @@ public class SurfaceDrawer implements Drawer {
         gl.glPopMatrix();
     }
 
+    @Override
+    public void point(float x, float y, float z, int color) {
+        FloatBuffer verticesBuffer=checkFloatBuffer(3);
+        verticesBuffer.put(x);
+        verticesBuffer.put(y);
+        verticesBuffer.put(z);
+        verticesBuffer.position(0);
+        gl.glPointSize(3);
+        gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+        float a=((color>>24)&255)/255f, r=((color>>16)&255)/255f, g=((color>>8)&255)/255f, b=((color)&255)/255f;
+        gl.glColor4f(r, g, b, a);
+        gl.glVertexPointer(3, GL10.GL_FLOAT, 0, verticesBuffer);
+        gl.glDrawArrays(GL10.GL_POINTS, 0, 1);
+        game.vertexcount++;
+        gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
+    }
+
     private FloatBuffer checkFloatBuffer(int length) {
         if(fb==null||fb.capacity()<length) {
             ByteBuffer vbb=ByteBuffer.allocateDirect(length*4);
@@ -201,15 +218,6 @@ public class SurfaceDrawer implements Drawer {
         }
         fb.position(0);
         return fb;
-    }
-    private FloatBuffer checkFloatBuffer2(int length) {
-        if(fb2==null||fb2.capacity()<length) {
-            ByteBuffer vbb=ByteBuffer.allocateDirect(length*4);
-            vbb.order(ByteOrder.nativeOrder());
-            fb2=vbb.asFloatBuffer();
-        }
-        fb2.position(0);
-        return fb2;
     }
 
     public void vertex(float[] vertex, int color) {
@@ -226,7 +234,7 @@ public class SurfaceDrawer implements Drawer {
         verticesBuffer.put(vertex);
         verticesBuffer.position(0);
         gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-        float a=((color>>24)&255)/255f, r=((color>>16)&255)/255f, g=((color>>8)&255)/255f, b=((color>>0)&255)/255f;
+        float a=((color>>24)&255)/255f, r=((color>>16)&255)/255f, g=((color>>8)&255)/255f, b=((color)&255)/255f;
         gl.glColor4f(r*darken, g*darken, b*darken, a*alpha);
         gl.glVertexPointer(3, GL10.GL_FLOAT, 0, verticesBuffer);
         gl.glDrawArrays(GL10.GL_TRIANGLES,0, vertex.length/3);
@@ -239,7 +247,7 @@ public class SurfaceDrawer implements Drawer {
         verticesBuffer.put(vertex);
         verticesBuffer.position(0);
         gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-        float a=((color>>24)&255)/255f, r=((color>>16)&255)/255f, g=((color>>8)&255)/255f, b=((color>>0)&255)/255f;
+        float a=((color>>24)&255)/255f, r=((color>>16)&255)/255f, g=((color>>8)&255)/255f, b=((color)&255)/255f;
         gl.glColor4f(r, g, b, a);
         gl.glVertexPointer(3, GL10.GL_FLOAT, 0, verticesBuffer);
         gl.glDrawArrays(GL10.GL_LINES, 0, vertex.length/3);
@@ -290,7 +298,7 @@ public class SurfaceDrawer implements Drawer {
 
     @Override
     public void fill(int color) {
-        float a=((color>>24)&255)/255f, r=((color>>16)&255)/255f, g=((color>>8)&255)/255f, b=((color>>0)&255)/255f;
+        float a=((color>>24)&255)/255f, r=((color>>16)&255)/255f, g=((color>>8)&255)/255f, b=((color)&255)/255f;
         gl.glClearColor(r, g, b, a);
         gl.glClear(GL10.GL_COLOR_BUFFER_BIT|GL10.GL_DEPTH_BUFFER_BIT);
     }
@@ -343,6 +351,11 @@ public class SurfaceDrawer implements Drawer {
     @Override
     public void drawStringCenter(String s, float x, float y, float h) {
         font.drawCenter(s, x, y, h);
+    }
+
+    @Override
+    public float getStringWidth(String s) {
+        return font.getWidth(s);
     }
 
     @Override

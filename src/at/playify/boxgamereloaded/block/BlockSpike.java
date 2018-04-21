@@ -3,7 +3,6 @@ package at.playify.boxgamereloaded.block;
 import at.playify.boxgamereloaded.BoxGameReloaded;
 import at.playify.boxgamereloaded.interfaces.Drawer;
 import at.playify.boxgamereloaded.level.Level;
-import at.playify.boxgamereloaded.player.Player;
 import at.playify.boxgamereloaded.player.PlayerSP;
 import at.playify.boxgamereloaded.util.Borrow;
 import at.playify.boxgamereloaded.util.bound.Bound;
@@ -12,15 +11,14 @@ import at.playify.boxgamereloaded.util.bound.RectBound;
 import java.util.ArrayList;
 
 public class BlockSpike extends Block implements Collideable {
-    public static char chr='s';
-    private float[] vertex=new float[9];
-    private float[] vertex1=new float[9];
-    private float[] vertex2=new float[9];
-    private float[] vertex3=new float[9];
+    public static final char chr='s';
+    private final float[] vertex=new float[9];
+    private final float[] vertex1=new float[9];
+    private final float[] vertex2=new float[9];
+    private final float[] vertex3=new float[9];
 
     {
         float x=-.5f, y=-.5f;
-        int meta=0;
         vertex[0]=x+1;
         vertex[1]=y+1;
         vertex[2]=0;
@@ -61,7 +59,7 @@ public class BlockSpike extends Block implements Collideable {
     }
 
     @Override
-    public boolean collide(Bound b, int x, int y, Player player, boolean checkOnly, int meta, Level level) {
+    public boolean collide(Bound b, int x, int y, boolean checkOnly, int meta, Level level) {
         return (checkOnly||game.vars.god)&&b.collide(bound.set(x, y, 1, 1))&&collide(bound.sizeOf(b), x, y, meta);
     }
 
@@ -126,7 +124,7 @@ public class BlockSpike extends Block implements Collideable {
     }
 
     @Override
-    public boolean onCollide(PlayerSP player, Level level, int x, int y, int meta, ArrayList<Borrow.BorrowedCollisionData> data) {
+    public boolean onCollide(PlayerSP player, Level level, int meta, ArrayList<Borrow.BorrowedCollisionData> data) {
         player.killedByBlock();
         return true;
     }

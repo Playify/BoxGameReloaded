@@ -39,6 +39,7 @@ public class Server extends Thread{
         return pausemode;
     }
 
+    @SuppressWarnings("unused")
     public void setPausemode(int pausemode) {
         this.pausemode = pausemode;
         System.out.println("Pause Mode changed to "+pausemode);
@@ -155,6 +156,15 @@ public class Server extends Thread{
         }
     }
 
+    public ConnectionToClient getByName(String name) {
+        for (ConnectionToClient connectionToClient : connected) {
+            if (name.equals(connectionToClient.name)) {
+                return connectionToClient;
+            }
+        }
+        return null;
+    }
+
     public ArrayList<ConnectionToClient> getLastBroadcast() {
         return last.get();
     }
@@ -165,5 +175,14 @@ public class Server extends Thread{
 
     public void connect(ConnectionToClient connectionToClient) {
         connected.add(connectionToClient);
+    }
+
+    public void getByWorld(String world, ArrayList<ConnectionToClient> list) {
+        list.clear();
+        for (ConnectionToClient connectionToClient : connected) {
+            if (world.equals(connectionToClient.world)) {
+                list.add(connectionToClient);
+            }
+        }
     }
 }

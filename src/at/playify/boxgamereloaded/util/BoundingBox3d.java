@@ -1,5 +1,6 @@
 package at.playify.boxgamereloaded.util;
 
+@SuppressWarnings("unused")
 public class BoundingBox3d extends BoundingBox {
     public float maxZ;
     public float minZ;

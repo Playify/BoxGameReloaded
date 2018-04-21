@@ -9,9 +9,10 @@ import at.playify.boxgamereloaded.util.Finger;
 import java.util.ArrayList;
 import java.util.Collections;
 
+@SuppressWarnings("WeakerAccess")
 public abstract class Gui {
     protected final BoxGameReloaded game;
-    protected Button[] buttons;
+    protected final Button[] buttons;
 
     public Gui(BoxGameReloaded game) {
         this.game = game;
@@ -23,19 +24,13 @@ public abstract class Gui {
 
     public abstract void initGui(ArrayList<Button> buttons);
 
-    public void fingerStateChanged(Finger finger) {
-
-    }
-
     public void draw() {
         Drawer d = game.d;
-        int size=buttons.length;
-        for (int i=0;i<size;i++) {
-            Button button=buttons[i];
+        for (Button button : buttons) {
             d.pushMatrix();
-            BoundingBox3d bound = button.bound();
+            BoundingBox3d bound=button.bound();
             d.translate(bound.minX, bound.minY, bound.minZ);
-            d.scale(bound.maxX - bound.minX, bound.maxY - bound.minY, bound.maxZ - bound.minZ);
+            d.scale(bound.maxX-bound.minX, bound.maxY-bound.minY, bound.maxZ-bound.minZ);
             button.draw(d);
             d.popMatrix();
         }
@@ -43,10 +38,8 @@ public abstract class Gui {
 
     public boolean click(Finger finger) {
         float x=finger.getX()/game.d.getHeight(), y=1-finger.getY()/game.d.getHeight();
-        int size=buttons.length;
-        for (int i=0;i<size;i++) {
-            Button button=buttons[i];
-            BoundingBox3d bound = button.bound();
+        for (Button button : buttons) {
+            BoundingBox3d bound=button.bound();
             if (bound.contains(x, y)) {
                 if (button.click(finger)) {
                     return true;
@@ -58,10 +51,8 @@ public abstract class Gui {
 
     public boolean tick() {
         boolean freeze = true;
-        int size=buttons.length;
-        for (int i=0;i<size;i++) {
-            Button button=buttons[i];
-            freeze &= button.tick();
+        for (Button button : buttons) {
+            freeze&=button.tick();
         }
         return freeze;
     }

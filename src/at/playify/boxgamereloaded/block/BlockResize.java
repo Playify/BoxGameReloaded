@@ -2,7 +2,6 @@ package at.playify.boxgamereloaded.block;
 
 import at.playify.boxgamereloaded.BoxGameReloaded;
 import at.playify.boxgamereloaded.level.Level;
-import at.playify.boxgamereloaded.player.Player;
 import at.playify.boxgamereloaded.player.PlayerSP;
 import at.playify.boxgamereloaded.util.Borrow;
 import at.playify.boxgamereloaded.util.bound.Bound;
@@ -11,7 +10,7 @@ import at.playify.boxgamereloaded.util.bound.RectBound;
 import java.util.ArrayList;
 
 public class BlockResize extends Block implements Collideable {
-    public static char chr = 'z';
+    public static final char chr='z';
     private final RectBound bnd = new RectBound(0, 0, 1, 1);
 
     BlockResize(BoxGameReloaded game, char c) {
@@ -19,7 +18,7 @@ public class BlockResize extends Block implements Collideable {
     }
 
     @Override
-    public boolean collide(Bound b, int x, int y, Player player, boolean checkOnly, int meta, Level level) {
+    public boolean collide(Bound b, int x, int y, boolean checkOnly, int meta, Level level) {
         return checkOnly && b.collide(bound.set(x, y));
     }
 
@@ -33,7 +32,7 @@ public class BlockResize extends Block implements Collideable {
     }
 
     @Override
-    public boolean onCollide(PlayerSP player, Level level, int x, int y, int meta, ArrayList<Borrow.BorrowedCollisionData> data) {
+    public boolean onCollide(PlayerSP player, Level level, int meta, ArrayList<Borrow.BorrowedCollisionData> data) {
         int count = 0;
         float size = 0;
         for (Borrow.BorrowedCollisionData c : data) {
@@ -65,7 +64,7 @@ public class BlockResize extends Block implements Collideable {
             bnd.w(w - ww);
             bnd.cx(cx);
             bnd.h(h - hh);
-            if (!level.collide(bnd, player)) {
+            if (!level.collide(bnd)) {
                 player.bound.set(bnd);
                 break;
             } else {

@@ -2,7 +2,6 @@ package at.playify.boxgamereloaded.block;
 
 import at.playify.boxgamereloaded.BoxGameReloaded;
 import at.playify.boxgamereloaded.level.Level;
-import at.playify.boxgamereloaded.player.Player;
 import at.playify.boxgamereloaded.player.PlayerSP;
 import at.playify.boxgamereloaded.util.Borrow;
 import at.playify.boxgamereloaded.util.bound.Bound;
@@ -16,7 +15,7 @@ public class BlockBorder extends Block {
         super(game,c);
     }
 
-    public boolean collide(Bound b, int x, int y, Player player, boolean checkOnly, int meta, Level level) {
+    public boolean collide(Bound b, int x, int y, boolean checkOnly, int meta, Level level) {
         return b.collide(bound.set(x, y));
     }
 

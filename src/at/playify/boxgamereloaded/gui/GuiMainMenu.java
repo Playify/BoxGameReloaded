@@ -8,7 +8,7 @@ import at.playify.boxgamereloaded.util.Finger;
 import java.util.ArrayList;
 
 public class GuiMainMenu extends Gui {
-    public GuiMainMenu(BoxGameReloaded game) {
+    GuiMainMenu(BoxGameReloaded game) {
         super(game);
     }
 

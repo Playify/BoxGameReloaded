@@ -6,6 +6,7 @@ import at.playify.boxgamereloaded.util.Finger;
 
 import java.util.ArrayList;
 
+@SuppressWarnings("ForLoopReplaceableByForEach")
 public class GuiOverlay extends Gui {
     private ArrayList<Gui> guis = new ArrayList<>();
     public GuiDraw drawer;
@@ -32,6 +33,11 @@ public class GuiOverlay extends Gui {
 
     public boolean isMainMenuVisible() {
         return main!=null;
+    }
+
+    @SuppressWarnings("unused")
+    void openMenu(Gui g) {
+        guis.add(g);
     }
 
     @Override

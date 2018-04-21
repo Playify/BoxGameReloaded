@@ -2,7 +2,6 @@ package at.playify.boxgamereloaded.block;
 
 import at.playify.boxgamereloaded.BoxGameReloaded;
 import at.playify.boxgamereloaded.level.Level;
-import at.playify.boxgamereloaded.player.Player;
 import at.playify.boxgamereloaded.player.PlayerSP;
 import at.playify.boxgamereloaded.util.Borrow;
 import at.playify.boxgamereloaded.util.bound.Bound;
@@ -11,7 +10,7 @@ import java.util.ArrayList;
 
 //Leiter
 public class BlockLadder extends Block implements Collideable{
-    public static char chr='l';
+    public static final char chr='l';
 
     BlockLadder(BoxGameReloaded game, char c) {
         super(game, c);
@@ -27,7 +26,7 @@ public class BlockLadder extends Block implements Collideable{
         return false;
     }
 
-    public boolean collide(Bound b, int x, int y, Player player, boolean checkOnly, int meta, Level level) {
+    public boolean collide(Bound b, int x, int y, boolean checkOnly, int meta, Level level) {
         final float v=.01f;
         return b.collide(bound.set(x-v,y-v,1+2*v,1+2*v));
     }
@@ -46,7 +45,7 @@ public class BlockLadder extends Block implements Collideable{
     }
 
     @Override
-    public boolean onCollide(PlayerSP player, Level level, int x, int y, int meta, ArrayList<Borrow.BorrowedCollisionData> data) {
+    public boolean onCollide(PlayerSP player, Level level, int meta, ArrayList<Borrow.BorrowedCollisionData> data) {
         if (player.collidesHor) {
             player.motionY=Math.max(.1f,player.motionY);
         }else{

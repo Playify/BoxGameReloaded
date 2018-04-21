@@ -7,6 +7,7 @@ import java.io.*;
 import java.net.Socket;
 
 //Verbindung zum SinglePlayer Server [WIP]
+@SuppressWarnings("WeakerAccess")
 public class ConnectionSinglePlayer extends ConnectionToServer implements Closeable {
 
     private final Server server;
@@ -45,6 +46,7 @@ public class ConnectionSinglePlayer extends ConnectionToServer implements Closea
     }
 
     public void close() {
+        //server.close();
     }
 
 

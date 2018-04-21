@@ -5,10 +5,20 @@ import at.playify.boxgamereloaded.network.packet.PacketMove;
 import at.playify.boxgamereloaded.util.Finger;
 
 public class PlayerMP extends Player {
+    private boolean hasSkin;
     private String name;
     public PlayerMP(BoxGameReloaded game,String s) {
         super(game);
         this.name=s;
+    }
+
+    @Override
+    public String skin() {
+        if (hasSkin) {
+            return super.skin();
+        } else {
+            return null;
+        }
     }
 
     @Override

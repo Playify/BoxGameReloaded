@@ -12,5 +12,4 @@ public interface Bound<T> {
     boolean inLevel(Level level);
     float cx();
     float cy();
-    PointBound center(PointBound b);
 }

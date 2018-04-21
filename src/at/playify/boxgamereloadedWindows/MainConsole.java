@@ -37,8 +37,8 @@ public class MainConsole {
             e.printStackTrace();
         }
         try {
-            System.in.read();
-        } catch (IOException e) {
+            new BufferedReader(new InputStreamReader(System.in)).readLine();
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

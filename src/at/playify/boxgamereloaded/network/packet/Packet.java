@@ -19,6 +19,10 @@ public abstract class Packet {
     public abstract void loadFromString(String s,Server server);
     public abstract void handle(Server server, ConnectionToClient connectionToClient);
     public void onSend(Server server, ConnectionToClient connectionToClient){}
+
+    public void onSend(BoxGameReloaded game, ConnectionToServer connectionToServer) {
+    }
+
     @SuppressWarnings("unused")
     void nopermission(Server server, ConnectionToClient connectionToClient) {
         System.out.println("No Permission");

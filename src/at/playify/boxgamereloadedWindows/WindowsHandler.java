@@ -2,22 +2,21 @@ package at.playify.boxgamereloadedWindows;
 
 import at.playify.boxgamereloaded.BoxGameReloaded;
 import at.playify.boxgamereloaded.interfaces.Handler;
-import org.json.JSONObject;
-import org.json.JSONTokener;
 import org.lwjgl.opengl.Display;
 
 import java.awt.*;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.StringSelection;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.URISyntaxException;
 
-public class WindowsHandler implements Handler {
+public class WindowsHandler extends Handler {
     BoxGameReloaded game;
     WindowsDrawer d;
     private boolean keybd;
@@ -83,7 +82,6 @@ public class WindowsHandler implements Handler {
                 external=true;
             }
         } else {
-            //TODO open Command Window
             if (b) {
                 if (frame!=null) return;
             } else {
@@ -145,51 +143,8 @@ public class WindowsHandler implements Handler {
     }
 
     @Override
-    public String getClipboardString() {
-        try {
-            return (String) Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor);
-        } catch (Exception e) {
-            return "";
-        }
-    }
-
-    @Override
-    public void setClipboardString(String s) {
-        StringSelection ss=new StringSelection(s);
-        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(ss, ss);
-    }
-
-    @Override
-    public JSONObject read(String filename) {
-        try {
-            File file=new File(Main.base, filename+".json");
-            try (FileInputStream inputStream=new FileInputStream(file)) {
-                JSONTokener tokener=new JSONTokener(inputStream);
-                return new JSONObject(tokener);
-            }
-        } catch (FileNotFoundException e) {
-            return new JSONObject();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new JSONObject();
-        }
-    }
-
-    @Override
-    public void write(String filename, JSONObject o) {
-        File file=new File(Main.base, filename+".json");
-        try {
-            if (!file.exists()) {
-                file.createNewFile();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        try (FileWriter fw=new FileWriter(file)) {
-            fw.write(o.toString(4));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public File baseDir() {
+        return Main.base;
     }
 
 }

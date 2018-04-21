@@ -2,7 +2,6 @@ package at.playify.boxgamereloaded.block;
 
 import at.playify.boxgamereloaded.BoxGameReloaded;
 import at.playify.boxgamereloaded.level.Level;
-import at.playify.boxgamereloaded.player.Player;
 import at.playify.boxgamereloaded.player.PlayerSP;
 import at.playify.boxgamereloaded.util.Borrow;
 import at.playify.boxgamereloaded.util.bound.Bound;
@@ -10,7 +9,7 @@ import at.playify.boxgamereloaded.util.bound.Bound;
 import java.util.ArrayList;
 
 public class BlockGravity extends Block implements Collideable, NoCollideable {
-    public static char chr='v';
+    public static final char chr='v';
     private boolean collided;
     private float[] vertex=new float[]{
             0f, -0.3f, 0,
@@ -21,7 +20,7 @@ public class BlockGravity extends Block implements Collideable, NoCollideable {
             -0.3f, 0.3f, 0
     };
 
-    public BlockGravity(BoxGameReloaded game, char c) {
+    BlockGravity(BoxGameReloaded game, char c) {
         super(game, c);
     }
 
@@ -35,7 +34,7 @@ public class BlockGravity extends Block implements Collideable, NoCollideable {
         return false;
     }
 
-    public boolean collide(Bound b, int x, int y, Player player, boolean checkOnly, int meta, Level level) {
+    public boolean collide(Bound b, int x, int y, boolean checkOnly, int meta, Level level) {
         if (checkOnly) {
             final float v=.01f;
             return b.collide(bound.set(x-v, y-v, 1+2*v, 1+2*v));
@@ -71,7 +70,7 @@ public class BlockGravity extends Block implements Collideable, NoCollideable {
     }
 
     @Override
-    public boolean onCollide(PlayerSP player, Level level, int x, int y, int meta, ArrayList<Borrow.BorrowedCollisionData> data) {
+    public boolean onCollide(PlayerSP player, Level level, int meta, ArrayList<Borrow.BorrowedCollisionData> data) {
         if (!collided) {
             game.vars.inverted_gravity^=true;
             game.player.motionY*=-1;

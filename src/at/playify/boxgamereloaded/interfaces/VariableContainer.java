@@ -3,6 +3,9 @@ package at.playify.boxgamereloaded.interfaces;
 import at.playify.boxgamereloaded.BoxGameReloaded;
 import at.playify.boxgamereloaded.util.bound.RectBound;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class VariableContainer {
     public float tickrate=60;
     public float display_size=10;
@@ -24,9 +27,10 @@ public class VariableContainer {
     public boolean instant_zoom;
     public String world="NONE";
     public boolean paintPoints;
+    public List<String> finishedLevels=new ArrayList<>();
     private BoxGameReloaded game;
 
-    public VariableContainer(Game game) {
+    VariableContainer(Game game) {
         if (game instanceof BoxGameReloaded) {
             this.game=(BoxGameReloaded) game;
         }

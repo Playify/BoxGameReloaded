@@ -9,5 +9,5 @@ import java.util.ArrayList;
 //Interface für Blöcke die collidierbar sind
 //Jeden Tick wird das Collide event nur einmal ausgeführt (außer der Block ist MultiCollideable)
 public interface Collideable {
-    boolean onCollide(PlayerSP player, Level level, int x, int y, int meta, ArrayList<Borrow.BorrowedCollisionData> data);
+    boolean onCollide(PlayerSP player, Level level, int meta, ArrayList<Borrow.BorrowedCollisionData> data);
 }

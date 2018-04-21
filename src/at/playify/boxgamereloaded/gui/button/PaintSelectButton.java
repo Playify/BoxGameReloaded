@@ -7,17 +7,19 @@ import at.playify.boxgamereloaded.paint.Paintable;
 import at.playify.boxgamereloaded.util.BoundingBox3d;
 import at.playify.boxgamereloaded.util.Finger;
 
+import java.util.ArrayList;
+
 public class PaintSelectButton extends Button {
     private final int index;
     private final GuiDraw gui;
     public Paintable paint;
 
-    public PaintSelectButton(BoxGameReloaded game, int index, GuiDraw gui) {
+    public PaintSelectButton(BoxGameReloaded game, ArrayList<Paintable> p, int index, GuiDraw gui) {
         super(game);
         this.index=--index;
         this.gui=gui;
-        if (index<game.painter.list.size()) {
-            paint=game.painter.list.get(index);
+        if (index<p.size()) {
+            paint=p.get(index);
         }
     }
 
@@ -39,6 +41,7 @@ public class PaintSelectButton extends Button {
     @Override
     public boolean click(Finger finger) {
         if (gui.state!=1) return false;
+        if (paint==null) return false;
         game.painter.paint(paint);
         game.gui.drawer.quick=false;
         return true;
@@ -46,9 +49,8 @@ public class PaintSelectButton extends Button {
 
     @Override
     public void draw(Drawer d) {
-        if (gui.state==0) {
-            return;
-        }
+        if (gui.state==0) return;
+        if (paint==null) return;
         int color=color();
         final float v=.1f;
         //d.rotate(100,0,1,0);

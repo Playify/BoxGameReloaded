@@ -12,11 +12,10 @@ public class EmptyServerLevel extends ServerLevel {
         return BlockAir.chr;
     }
 
-    public boolean set(int x, int y, char b) {
-        return x==0&&y==0;
+    public void set(int x, int y, char b) {
     }
-    public boolean set(int x, int y, char b,int meta) {
-        return x==0&&y==0;
+
+    public void set(int x, int y, char b, int meta) {
     }
 
     public void setSize(int x, int y) {

@@ -10,10 +10,10 @@ import java.util.ArrayList;
 
 //Zuständig um sich ums zeichnen vom User zu kümmern
 public class PaintHandler {
-    public FakeLevel fakeLevel;
-    public ArrayList<Paintable> list=new ArrayList<>();
+    public final FakeLevel fakeLevel;
+    public final ArrayList<Paintable> list=new ArrayList<>();
     private Paintable paint;
-    private BoxGameReloaded game;
+    private final BoxGameReloaded game;
     public boolean draw;
     private boolean wasdrawing;
 
@@ -21,7 +21,7 @@ public class PaintHandler {
         this.game=game;
         fakeLevel=new FakeLevel(game);
         paint=game.player;
-        list.add(new MovePaint(game));
+        list.add(new MovePaint());
         if (game.vars.scrollPaint) {
             list.add(new ScrollPaint(game));
         }
@@ -73,10 +73,6 @@ public class PaintHandler {
         this.draw=draw;
     }
 
-    public String getBlockString() {
-        return paint.name(0);
-    }
-
     public void paint(Paintable paint) {
         if (paint!=null) {
             this.paint=paint;
@@ -88,6 +84,6 @@ public class PaintHandler {
     }
 
     public boolean pause() {
-        return draw&&!(paint instanceof MovePaint);
+        return draw&&(!(paint instanceof MovePaint)||game.gui.drawer.quick);
     }
 }

@@ -69,11 +69,6 @@ public class PointBound implements Bound<PointBound>{
         return y;
     }
 
-    @Override
-    public PointBound center(PointBound b) {
-        return b.set(x,y);
-    }
-
 
     public float distanceTo(float x, float y) {
         x -= this.x;

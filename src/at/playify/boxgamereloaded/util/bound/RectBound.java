@@ -179,10 +179,6 @@ public class RectBound implements Serializable, Cloneable , Bound<RectBound>{
         return Arrays.hashCode(new float[]{x(), y(), w(), h()});
     }
 
-    public PointBound center(PointBound b) {
-        return b.set(cx(), cy());
-    }
-
     public RectBound sizeOf(Bound b) {
         b.size(this);
         return this;

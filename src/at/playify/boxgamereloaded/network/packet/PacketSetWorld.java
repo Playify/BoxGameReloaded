@@ -11,6 +11,8 @@ public class PacketSetWorld extends Packet {
     public PacketSetWorld(String world) {
         this.world=world;
     }
+
+    @SuppressWarnings("unused")
     public PacketSetWorld() {
     }
 

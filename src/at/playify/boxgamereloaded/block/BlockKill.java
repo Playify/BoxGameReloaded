@@ -2,7 +2,6 @@ package at.playify.boxgamereloaded.block;
 
 import at.playify.boxgamereloaded.BoxGameReloaded;
 import at.playify.boxgamereloaded.level.Level;
-import at.playify.boxgamereloaded.player.Player;
 import at.playify.boxgamereloaded.player.PlayerSP;
 import at.playify.boxgamereloaded.util.Borrow;
 import at.playify.boxgamereloaded.util.bound.Bound;
@@ -10,13 +9,13 @@ import at.playify.boxgamereloaded.util.bound.Bound;
 import java.util.ArrayList;
 
 public class BlockKill extends Block implements Collideable {
-    public static char chr='k';
+    public static final char chr='k';
 
     BlockKill(BoxGameReloaded game, char c) {
         super(game,c);
     }
 
-    public boolean collide(Bound b, int x, int y, Player player, boolean checkOnly, int meta, Level level) {
+    public boolean collide(Bound b, int x, int y, boolean checkOnly, int meta, Level level) {
         return (checkOnly || game.vars.god) && b.collide(bound.set(x,y));
     }
 
@@ -44,7 +43,7 @@ public class BlockKill extends Block implements Collideable {
     }
 
     @Override
-    public boolean onCollide(PlayerSP player, Level level, int x, int y, int meta, ArrayList<Borrow.BorrowedCollisionData> data) {
+    public boolean onCollide(PlayerSP player, Level level, int meta, ArrayList<Borrow.BorrowedCollisionData> data) {
         if (game.vars.god) {
             return false;
         }else {

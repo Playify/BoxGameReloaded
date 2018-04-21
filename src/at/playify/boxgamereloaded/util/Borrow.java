@@ -15,10 +15,10 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 @SuppressWarnings({"WeakerAccess", "unused"})
 public class Borrow {
     private static long borrowed=0;
-    private static Queue<BorrowedCollisionData> datas = new ConcurrentLinkedQueue<>();
-    private static Queue<BorrowedBoundingBox> bounds = new ConcurrentLinkedQueue<>();
-    private static Queue<BorrowedBoundingBox3d> bounds3d = new ConcurrentLinkedQueue<>();
-    private static Queue<ArrayList<? extends Borrowed>> boundLists = new ConcurrentLinkedQueue<>();
+    private static final Queue<BorrowedCollisionData> datas=new ConcurrentLinkedQueue<>();
+    private static final Queue<BorrowedBoundingBox> bounds=new ConcurrentLinkedQueue<>();
+    private static final Queue<BorrowedBoundingBox3d> bounds3d=new ConcurrentLinkedQueue<>();
+    private static final Queue<ArrayList<? extends Borrowed>> boundLists=new ConcurrentLinkedQueue<>();
 
     public static <T extends Borrowed> void free(T b) {
         b.free();
@@ -126,7 +126,7 @@ public class Borrow {
         }
     }
 
-    private static HashMap<Class,ConcurrentLinkedQueue> map=new HashMap<>();
+    private static final HashMap<Class,ConcurrentLinkedQueue> map=new HashMap<>();
 
     public static <T> T obj(Class<T> clazz) {
         ConcurrentLinkedQueue q = map.get(clazz);

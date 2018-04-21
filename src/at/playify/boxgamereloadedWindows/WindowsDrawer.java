@@ -10,7 +10,14 @@ public class WindowsDrawer implements Drawer {
     //Größe vom Fenster
     public int w;
     public int h;
-    FontRenderer font=new FontRenderer(this);
+    private final float[] vertexBACK=new float[]{
+            0, 0, 1,
+            0, 1, 1,
+            1, 1, 1,
+            0, 0, 1,
+            1, 0, 1,
+            1, 1, 1
+    };
     private boolean drawing;//derzeitig am zeichnen
     private BoxGameReloaded game;
     //Vertexes um nicht jedes Mal zeichnen neu generieren zu müssen
@@ -22,14 +29,7 @@ public class WindowsDrawer implements Drawer {
             1, 0, 0,
             1, 1, 0
     };
-    private float[] vertexBACK=new float[]{
-            0, 0, 1,
-            0, 1, 1,
-            1, 1, 1,
-            0, 0, 1,
-            1, 0, 1,
-            1, 1, 1
-    };
+    private FontRenderer font=new FontRenderer(this);
     private float[] vertexDOWN=new float[]{
             0, 0, 0,
             0, 0, 1,
@@ -215,7 +215,7 @@ public class WindowsDrawer implements Drawer {
         GL11.glVertex3f(x, y, z);
         game.vertexcount++;
         GL11.glEnd();
-        GL11.glDisable(GL11.GL_VERTEX_ARRAY);
+        GL11.glDisable(GL11.GL_POINTS);
     }
 
 
@@ -370,5 +370,10 @@ public class WindowsDrawer implements Drawer {
     @Override
     public void drawStringCenter(String s, float x, float y, float h) {
         font.drawCenter(s, x, y, h);
+    }
+
+    @Override
+    public float getStringWidth(String s) {
+        return font.getWidth(s);
     }
 }

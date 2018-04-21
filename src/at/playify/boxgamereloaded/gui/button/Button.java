@@ -7,7 +7,7 @@ import at.playify.boxgamereloaded.util.Finger;
 
 public abstract class Button implements Comparable<Button> {
     protected final BoxGameReloaded game;
-    protected BoundingBox3d bound = new BoundingBox3d(0, 0, 0, 0, 0, 0);
+    protected final BoundingBox3d bound=new BoundingBox3d(0, 0, 0, 0, 0, 0);
 
     public Button(BoxGameReloaded game) {
         this.game = game;
@@ -22,7 +22,6 @@ public abstract class Button implements Comparable<Button> {
     public abstract BoundingBox3d bound();
 
     public void draw(Drawer d) {
-        BoundingBox3d bound = bound();
         d.cube(0, 0, 0, 1, 1, 1, color());
         d.drawStringCenter(text(), .5f, .4f, .1f);
     }

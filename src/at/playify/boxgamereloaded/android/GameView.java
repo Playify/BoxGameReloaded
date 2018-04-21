@@ -1,5 +1,6 @@
 package at.playify.boxgamereloaded.android;
 
+import android.annotation.SuppressLint;
 import android.opengl.GLSurfaceView;
 import android.view.MotionEvent;
 import android.view.View;
@@ -9,6 +10,7 @@ import javax.microedition.khronos.opengles.GL10;
 
 import at.playify.boxgamereloaded.BoxGameReloaded;
 
+@SuppressLint("ViewConstructor")
 public class GameView extends GLSurfaceView implements GLSurfaceView.Renderer, View.OnTouchListener {
     private final GameActivity a;
     private SurfaceDrawer drawer;
@@ -57,8 +59,7 @@ public class GameView extends GLSurfaceView implements GLSurfaceView.Renderer, V
             for(int i=0; i<a.game.fingers.length; i++) {
                 boolean d=a.game.fingers[i].down;
                 if (i<pointercount) {
-                    a.game.fingers[i].x=event.getX(i);
-                    a.game.fingers[i].y=event.getY(i);
+                    a.game.fingers[i].set(event.getX(i),event.getY(i));
                     a.game.fingers[i].down=event.getActionIndex()!=i||(event.getActionMasked()!=MotionEvent.ACTION_UP&&event.getActionMasked()!=MotionEvent.ACTION_POINTER_UP);
                 } else {
                     a.game.fingers[i].down=false;

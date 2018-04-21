@@ -56,6 +56,8 @@ public interface Drawer {
 
     void drawStringCenter(String s, float x, float y, float h);
 
+    float getStringWidth(String s);
+
     void startDrawing() throws DrawingException;
 
     void stopDrawing();

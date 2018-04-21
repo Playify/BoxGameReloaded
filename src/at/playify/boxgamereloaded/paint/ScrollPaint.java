@@ -5,10 +5,10 @@ import at.playify.boxgamereloaded.util.Finger;
 import at.playify.boxgamereloaded.util.Utils;
 
 public class ScrollPaint implements Paintable, Tickable {
-    private BoxGameReloaded game;
+    private final BoxGameReloaded game;
     private float x, y;
 
-    public ScrollPaint(BoxGameReloaded game) {
+    ScrollPaint(BoxGameReloaded game) {
         this.game=game;
     }
 

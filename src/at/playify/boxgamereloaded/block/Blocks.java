@@ -4,10 +4,10 @@ import at.playify.boxgamereloaded.BoxGameReloaded;
 
 import java.util.ArrayList;
 
-@SuppressWarnings("WeakerAccess")
+@SuppressWarnings({"WeakerAccess", "unused"})
 public class Blocks {
-    public Block[] map=new Block[Character.MAX_VALUE];
-    public ArrayList<Block> list=new ArrayList<>();
+    public final Block[] map=new Block[Character.MAX_VALUE];
+    public final ArrayList<Block> list=new ArrayList<>();
     public BlockAir AIR;
     public BlockGround GROUND;
     public BlockBorder BORDER;

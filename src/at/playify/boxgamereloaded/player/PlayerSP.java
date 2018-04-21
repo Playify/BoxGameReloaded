@@ -23,6 +23,7 @@ public class PlayerSP extends Player {
 
     public PlayerSP(BoxGameReloaded game) {
         super(game);
+        display=game.vars.playername;
     }
 
     //Spielertick bewegung,...
@@ -99,14 +100,14 @@ public class PlayerSP extends Player {
 
             //Spezialfähigkeiten von Blöcken mit Kollision ausführen
             Borrow.freeInside(arr);
-            arr=game.level.collideList(bound, this, arr);
+            arr=game.level.collideList(bound, arr);
             out:
             for (Block block : game.blocks.list) {
                 in:
                 if (block instanceof Collideable) {
                     for (CollisionData c : arr) {
                         if (c.blk==block) {
-                            if (((Collideable) block).onCollide(this, game.level, c.x, c.y, c.meta, arr)) {
+                            if (((Collideable) block).onCollide(this, game.level, c.meta, arr)) {
                                 break out;
                             } else if (!(block instanceof MultiCollideable)) {
                                 break in;

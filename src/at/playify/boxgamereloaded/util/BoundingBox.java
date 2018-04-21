@@ -40,62 +40,48 @@ public class BoundingBox {
         return Borrow.bound(miX,miY,maX,maY);
     }
 
+    @SuppressWarnings("WeakerAccess")
     public float calculateXOffset(BoundingBox bound, float offsetX) {
-        if (bound.maxY > this.minY && bound.minY < this.maxY)
-        {
-            if (offsetX > 0.0f && bound.maxX <= this.minX)
-            {
+        if (bound.maxY>this.minY&&bound.minY<this.maxY) {
+            if (offsetX>0.0f&&bound.maxX<=this.minX) {
                 float d1 = this.minX - bound.maxX;
 
-                if (d1 < offsetX)
-                {
+                if (d1<offsetX) {
                     offsetX = d1;
                 }
-            }
-            else if (offsetX < 0.0f && bound.minX >= this.maxX)
-            {
+            } else if (offsetX<0.0f&&bound.minX >= this.maxX) {
                 float d0 = this.maxX - bound.minX;
 
-                if (d0 > offsetX)
-                {
+                if (d0>offsetX) {
                     offsetX = d0;
                 }
             }
 
             return offsetX;
-        }
-        else
-        {
+        } else {
             return offsetX;
         }
     }
 
+    @SuppressWarnings("WeakerAccess")
     public float calculateYOffset(BoundingBox bound, float offsetY) {
-        if (bound.maxX > this.minX && bound.minX < this.maxX)
-        {
-            if (offsetY > 0.0f && bound.maxY <= this.minY)
-            {
+        if (bound.maxX>this.minX&&bound.minX<this.maxX) {
+            if (offsetY>0.0f&&bound.maxY<=this.minY) {
                 float d1 = this.minY - bound.maxY;
 
-                if (d1 < offsetY)
-                {
+                if (d1<offsetY) {
                     offsetY = d1;
                 }
-            }
-            else if (offsetY < 0.0f && bound.minY >= this.maxY)
-            {
+            } else if (offsetY<0.0f&&bound.minY >= this.maxY) {
                 float d0 = this.maxY - bound.minY;
 
-                if (d0 > offsetY)
-                {
+                if (d0>offsetY) {
                     offsetY = d0;
                 }
             }
 
             return offsetY;
-        }
-        else
-        {
+        } else {
             return offsetY;
         }
     }
@@ -105,14 +91,6 @@ public class BoundingBox {
         maxX+=x;
         minY+=y;
         maxY+=y;
-    }
-
-    public BoundingBox copyFrom(BoundingBox bound) {
-        minX=bound.minX;
-        minY=bound.minY;
-        maxX=bound.maxX;
-        maxY=bound.maxY;
-        return this;
     }
 
     public String toString() {

@@ -58,50 +58,44 @@ public class Level {
             return 0;
         }
     }
+
+    private final RectBound rect=new RectBound();
+
     //Metadata auf position setzen
-    public boolean setMeta(int x, int y,int meta){
+    public void setMeta(int x, int y, int meta) {
         if ((x|y)>=0&&x<sizeX&&y<sizeY){
             Block block = blocks[y * sizeX + x];
             if (block==null) {
                 block=game.blocks.AIR;
             }
             metas[y*sizeX+x]=meta% block.metaStates();
-            return true;
-        }else {
-            return false;
         }
     }
+
     //Setze Block auf Koordinaten
-    public boolean set(int x, int y, Block b) {
+    public void set(int x, int y, Block b) {
         if ((x|y)>=0&&x<sizeX&&y<sizeY){
             Block block = blocks[y * sizeX + x];
             if (b==null)b=game.blocks.AIR;
             if(block!=(blocks[y*sizeX+x]=b)) {
                 metas[y * sizeX + x] = 0;
             }
-            return true;
-        }else{
-            return false;
         }
     }
+
     //Setze Block und Metadaten auf Koordinaten
-    public boolean set(int x, int y, Block b,int meta) {
+    public void set(int x, int y, Block b, int meta) {
         if ((x|y)>=0&&x<sizeX&&y<sizeY){
             if (b==null) {
                 b=game.blocks.AIR;
             }
             blocks[y * sizeX + x]=b;
             metas[y*sizeX+x]=meta%b.metaStates();
-            return true;
-        }else{
-            return false;
         }
     }
 
-    private RectBound rect=new RectBound();
-
     //Kollision checken
-    public boolean collide(Bound b, Player player) {
+    public boolean collide(Bound b) {
         if (game.vars.noclip) return false;//if isplayer
         Block bl;
         rect.sizeOf(b);
@@ -112,7 +106,7 @@ public class Level {
                 int xx = (int) (x + cx);
                 int yy = (int) (y + cy);
                 bl = get(xx, yy);
-                if (bl.collide(b, xx, yy, player, false, getMeta(xx, yy), this))
+                if (bl.collide(b, xx, yy, false, getMeta(xx, yy), this))
                     return true;
             }
 
@@ -120,7 +114,7 @@ public class Level {
     }
 
     //Alle Blöcke mit denen kollidiert wird als Array bekommen
-    public ArrayList<Borrow.BorrowedCollisionData> collideList(Bound b, Player player, ArrayList<Borrow.BorrowedCollisionData> lst) {
+    public ArrayList<Borrow.BorrowedCollisionData> collideList(Bound b, ArrayList<Borrow.BorrowedCollisionData> lst) {
         Block bl;
         rect.sizeOf(b);
         float cx = b.cx();
@@ -131,7 +125,7 @@ public class Level {
                 int yy = (int) (y + cy);
                 bl = get(xx, yy);
                 int meta = getMeta(xx, yy);
-                if (bl.collide(b, xx, yy, player, true, meta, this)) {
+                if (bl.collide(b, xx, yy, true, meta, this)) {
                     lst.add(Borrow.data(bl, x, y, meta));
                 }
             }

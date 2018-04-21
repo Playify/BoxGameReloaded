@@ -14,7 +14,7 @@ import java.net.SocketException;
 import java.util.LinkedList;
 import java.util.Queue;
 
-//Verbindung zum Server [WIP]
+//Verbindung zum Server
 public class ConnectionToServer implements Closeable,Runnable {
     public PlayerMP[] players=new PlayerMP[0];
     public boolean connected;
@@ -27,8 +27,8 @@ public class ConnectionToServer implements Closeable,Runnable {
     protected BufferedReader in;
     protected PrintStream out;
     boolean closed;
-    private Queue<Packet> q=new LinkedList<>();
-    public RectBound serverbound=new RectBound(-1, -1, -1, -1);
+    public final RectBound serverbound=new RectBound(-1, -1, -1, -1);
+    private final Queue<Packet> q=new LinkedList<>();
     public final Object playerLock=new Object();
 
     public ConnectionToServer() {}
@@ -61,6 +61,7 @@ public class ConnectionToServer implements Closeable,Runnable {
         if (out!=null) {
             out.println(packet.getClass().getSimpleName().substring(6)+":"+packet.convertToString(game));
             out.flush();
+            packet.onSend(game, this);
         }
     }
 

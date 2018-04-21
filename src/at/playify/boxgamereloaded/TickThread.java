@@ -7,8 +7,8 @@ import at.playify.boxgamereloaded.network.packet.PacketHello;
 
 //TickThread ist zuständig um die Ticks vom Spiel zu bestimmen und zu berechnen
 public class TickThread extends Thread{
-    private BoxGameReloaded game;
-    public long ticks;
+    private final BoxGameReloaded game;
+    long ticks;
 
     TickThread(BoxGameReloaded game){
         this.game = game;

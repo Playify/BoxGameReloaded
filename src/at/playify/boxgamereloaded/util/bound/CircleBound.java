@@ -4,6 +4,7 @@ import at.playify.boxgamereloaded.level.Level;
 import at.playify.boxgamereloaded.util.Utils;
 
 //Kreisförmige KollisionsBox
+@SuppressWarnings("WeakerAccess")
 public class CircleBound implements Bound<CircleBound>{
     public float x;
     public float y;
@@ -33,11 +34,6 @@ public class CircleBound implements Bound<CircleBound>{
         x -= this.x;
         y -= this.y;
         return (float) Math.sqrt(x * x + y * y);
-    }
-
-    @Override
-    public PointBound center(PointBound b) {
-        return b.set(x,y);
     }
 
     public CircleBound set(CircleBound b) {
@@ -72,12 +68,6 @@ public class CircleBound implements Bound<CircleBound>{
     @Override
     public float cy() {
         return y;
-    }
-
-    public CircleBound round() {
-        x=Utils.round2(x);
-        y=Utils.round2(y);
-        return this;
     }
 
     public CircleBound set(float x, float y, float r) {

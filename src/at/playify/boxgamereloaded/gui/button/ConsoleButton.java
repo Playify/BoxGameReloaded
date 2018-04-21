@@ -17,7 +17,7 @@ public class ConsoleButton extends Button {
 
     @Override
     public BoundingBox3d bound() {
-        float z=.1f;
+        float z=1/7f;
         bound.set(0, 0, 0, z, z, z);
         return bound;
     }

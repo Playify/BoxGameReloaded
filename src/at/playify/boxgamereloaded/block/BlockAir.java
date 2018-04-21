@@ -2,7 +2,6 @@ package at.playify.boxgamereloaded.block;
 
 import at.playify.boxgamereloaded.BoxGameReloaded;
 import at.playify.boxgamereloaded.level.Level;
-import at.playify.boxgamereloaded.player.Player;
 import at.playify.boxgamereloaded.player.PlayerSP;
 import at.playify.boxgamereloaded.util.Borrow;
 import at.playify.boxgamereloaded.util.bound.Bound;
@@ -11,13 +10,13 @@ import java.util.ArrayList;
 
 //Luft
 public class BlockAir extends Block {
-    public static char chr='a';
+    public static final char chr='a';
     BlockAir(BoxGameReloaded game, char c) {
         super(game,c);
     }
 
     @Override
-    public boolean collide(Bound b, int x, int y, Player player, boolean checkOnly, int meta, Level level) {
+    public boolean collide(Bound b, int x, int y, boolean checkOnly, int meta, Level level) {
         return false;
     }
 

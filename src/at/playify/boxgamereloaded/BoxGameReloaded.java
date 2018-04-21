@@ -26,7 +26,7 @@ import java.util.Arrays;
 import java.util.Locale;
 
 public class BoxGameReloaded extends Game {
-    public PlayerSP player = new PlayerSP(this);
+    public final PlayerSP player=new PlayerSP(this);
     public ConnectionToServer connection = new EmptyConnection();
     public PaintHandler painter=new PaintHandler(this);
     public float zoom_x;
@@ -39,9 +39,11 @@ public class BoxGameReloaded extends Game {
     private RectBound leveldrawbound = new RectBound();
     private boolean prevPauseState = false;
     private ArrayList<String> txt = new ArrayList<>();
+    @SuppressWarnings("CanBeFinal")
     private int[] lastframes = new int[10];
     private int lastframeindex;
     private long lastframetime;
+    @SuppressWarnings("CanBeFinal")
     private int[] lastticks=new int[10];
     private int lasttickindex;
     private long lastticktime;
@@ -64,9 +66,7 @@ public class BoxGameReloaded extends Game {
     public void fingerStateChanged(Finger finger) {
         if (finger.down) {
             finger.control = gui.click(finger);
-            if (finger.control) {
-                gui.fingerStateChanged(finger);
-            } else {
+            if (!finger.control) {
                 if (painter.draw) {
                     painter.handleFingerState(finger);
                 }
@@ -258,7 +258,7 @@ public class BoxGameReloaded extends Game {
         txt.add(str.toString());
         float h=.94f;
         for (String s : txt) {
-            d.drawString(s, .18f, h, .05f);
+            d.drawString(s, .19f, h, .05f);
             h -= .06f;
         }
         vertexcount = 0;
@@ -275,8 +275,8 @@ public class BoxGameReloaded extends Game {
 
     @Override
     public void start() {
-        super.start();
         gui = new GuiOverlay(this);
+        super.start();
     }
 
     @Override
@@ -347,6 +347,7 @@ public class BoxGameReloaded extends Game {
 
     public void finishLevel() {
         player.bound.set(level.spawnPoint);
+        vars.finishedLevels.add(vars.world);
         //TODO save Level finished to config. (using handler)
         //TODO send PacketSetWorld to next level
         connection.sendPacket(new PacketFinish());

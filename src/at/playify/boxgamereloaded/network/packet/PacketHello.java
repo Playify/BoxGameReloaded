@@ -46,4 +46,9 @@ public class PacketHello extends Packet{
         connectionToClient.sendPacket(new PacketHello());
         connectionToClient.sendPacket(new PacketSetPauseMode(server.getPausemode()));
     }
+
+    @Override
+    public void onSend(BoxGameReloaded game, ConnectionToServer connectionToServer) {
+        connectionToServer.sendPacket(new PacketSkin(game.player));
+    }
 }

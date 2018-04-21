@@ -98,6 +98,7 @@ public class PacketMove extends Packet {
                 players[players.length - 1]= playerMP;
                 connectionToServer.players= players;
             }
+            connectionToServer.sendPacket(new PacketSkin(player, null));
         }
     }
 

@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 public class GuiOptions extends Gui {
 
-    public GuiOptions(BoxGameReloaded game) {
+    GuiOptions(BoxGameReloaded game) {
         super(game);
     }
 

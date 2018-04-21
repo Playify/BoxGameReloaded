@@ -81,6 +81,7 @@ public class PauseButton extends Button {
             visibleState=Math.min(1f, visibleState+1/8f);
         } else {
             visibleState=Math.max(0, visibleState-1/8f);
+            game.paused=false;
         }
         if (game.paused) {
             pauseState=Math.min(1f, pauseState+1/8f);

@@ -1,9 +1,9 @@
 package at.playify.boxgamereloaded.block;
 
 import at.playify.boxgamereloaded.BoxGameReloaded;
+import at.playify.boxgamereloaded.level.FakeLevel;
 import at.playify.boxgamereloaded.level.Level;
 import at.playify.boxgamereloaded.paint.Paintable;
-import at.playify.boxgamereloaded.player.Player;
 import at.playify.boxgamereloaded.player.PlayerSP;
 import at.playify.boxgamereloaded.util.Borrow;
 import at.playify.boxgamereloaded.util.Finger;
@@ -15,7 +15,7 @@ import java.util.ArrayList;
 //Blöcke müssen bei Blocks registriert werden.
 public abstract class Block implements Paintable {
     final RectBound bound = new RectBound(0, 0, 1, 1);//Standard Bound, dies wird von Blöcken benutzt zur Kollision
-    protected BoxGameReloaded game;//Referenz zum Spiel in dem es Registriert ist
+    final BoxGameReloaded game;//Referenz zum Spiel in dem es Registriert ist
     private final char chr;//Zeichen um es zu einem Text zu machen wenn das Level als Text versandt wird.
 
 
@@ -32,16 +32,10 @@ public abstract class Block implements Paintable {
     }
 
     //Kollision detecten
-    public boolean collide(Bound b, int x, int y, Player player, boolean checkOnly, int meta, Level level) {
-        return b.collide(bound.set(x,y));
-    }
+    public abstract boolean collide(Bound b, int x, int y, boolean checkOnly, int meta, Level level);
 
     //Zeichne Block bei den Koordinaten x,y
-    public void draw(int x, int y, Level level) {
-        game.d.rect(x,y,.5f,.5f,0xFFFF00FF);
-        game.d.rect(x+.5f,y+.5f,.5f,.5f,0xFFFF00FF);
-        game.d.rect(x,y,1,1,0xFF000000);
-    }
+    public abstract void draw(int x, int y, Level level);
 
     //Anzahl Metadatenzustände z.B. rotation
     public int metaStates(){
@@ -49,8 +43,9 @@ public abstract class Block implements Paintable {
     }
 
     //Wenn der Block als Solide
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean isSolid() {
-        return true;
+        return false;
     }
 
     //Zeichen für Level zu Text bekommen
@@ -60,9 +55,7 @@ public abstract class Block implements Paintable {
 
 
     //KollisionsBoxen vom Block für die angegebenen Koordinaten zur Liste hinzufügen
-    public abstract void getCollisionBox(Level level, int x, int y, Borrow.BorrowedBoundingBox bound, ArrayList<Borrow.BorrowedBoundingBox> list, PlayerSP player); /*{
-        list.add(Borrow.bound(x,y,x+1,y+1));
-    }*/
+    public abstract void getCollisionBox(Level level, int x, int y, Borrow.BorrowedBoundingBox bound, ArrayList<Borrow.BorrowedBoundingBox> list, PlayerSP player);
 
     @Override
     public void draw(int meta) {
@@ -76,7 +69,9 @@ public abstract class Block implements Paintable {
             game.d.rotate(angle, 0, 1, 0);
             game.d.translate(-.5f, -.5f, -.5f);
         }
-        draw(0, 0, game.painter.fakeLevel);
+        FakeLevel fakeLevel=game.painter.fakeLevel;
+        fakeLevel.set(this, meta);
+        draw(0, 0, fakeLevel);
         game.d.popMatrix();
     }
 

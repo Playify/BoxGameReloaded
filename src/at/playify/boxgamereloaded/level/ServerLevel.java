@@ -11,7 +11,7 @@ public class ServerLevel {
     int sizeX, sizeY;
     char[] blocks;
     int[] metas;
-    public RectBound spawnPoint = new RectBound(.1f, 0, .8f, .8f);
+    public final RectBound spawnPoint=new RectBound(.1f, 0, .8f, .8f);
     public ServerLevel() {
         blocks=new char[sizeX*sizeY];
         metas=new int[sizeX*sizeY];
@@ -27,28 +27,23 @@ public class ServerLevel {
     }
 
 
-    public boolean set(int x, int y, char b) {
+    public void set(int x, int y, char b) {
         if ((x|y)>=0&&x<sizeX&&y<sizeY){
             char block = blocks[y * sizeX + x];
             if (b==0)b=BlockAir.chr;
             if(block!=(blocks[y*sizeX+x]=b)) {
                 metas[y * sizeX + x] = 0;
             }
-            return true;
-        }else{
-            return false;
         }
     }
-    public boolean set(int x, int y, char b,int meta) {
+
+    public void set(int x, int y, char b, int meta) {
         if ((x|y)>=0&&x<sizeX&&y<sizeY){
             if (b==0) {
                 b=BlockAir.chr;
             }
             blocks[y * sizeX + x]=b;
             metas[y*sizeX+x]=meta%metaStates(b);
-            return true;
-        }else{
-            return false;
         }
     }
 
