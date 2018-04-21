@@ -26,7 +26,7 @@ public class HoveringPlayIcon extends Button {
 
     @Override
     public void draw(Drawer d) {
-        if (pauseState != 0 && !game.gui.isMainMenuVisible()) {
+        if (pauseState!=0&&!game.gui.isMainMenuVisible()&&!game.gui.isOptionsVisible()) {
             d.pushMatrix();
             d.translate(.5f, .23f);
             d.depth(false);
@@ -93,7 +93,7 @@ public class HoveringPlayIcon extends Button {
 
     @Override
     public boolean tick() {
-        if (game.paused || (game.connection == null || game.connection.isPaused(true))) {
+        if ((game.paused||(game.connection==null||game.connection.pauseCount>0))&&!game.gui.isOptionsVisible()) {
             pauseState = Math.min(1f, pauseState + 1 / 8f);
         } else {
             pauseState = Math.max(0, pauseState - 1 / 8f);

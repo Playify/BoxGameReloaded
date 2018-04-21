@@ -47,7 +47,6 @@ public abstract class Game {
     private String konami = "uuddlrlrbas";
     private String skin = "uuudd";
     private String tail = "uuddd";
-    private String console = "udud";
 
     public static void report(Exception e) {
         e.printStackTrace();
@@ -110,12 +109,6 @@ public abstract class Game {
         if (s.endsWith(tail)) {
             player.tail ^= true;
             System.out.println("Tail toggled");
-            str.setLength(0);
-        }
-        if (s.endsWith(console)) {
-            handler.setKeyboardVisible(true);
-
-            System.out.println("Console toggled");
             str.setLength(0);
         }
     }

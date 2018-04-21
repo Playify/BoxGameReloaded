@@ -125,7 +125,6 @@ public class Level {
         rect.sizeOf(b);
         float cx = b.cx();
         float cy = b.cy();
-        int index=0;
         for (int x=(int) (-1 - rect.w()/ 2); x <= 1 + rect.w()/ 2; x++) {
             for (int y = (int) (-1 - rect.h() / 2); y <= 1 + rect.h() / 2; y++) {
                 int xx = (int) (x + cx);
@@ -152,11 +151,20 @@ public class Level {
 
     //Level zeichnen
     public void draw(RectBound b) {
-        float d = (spawnPoint.w() + spawnPoint.h()) / 2;
+        if (game.painter.draw) {
+            float d=(spawnPoint.w()+spawnPoint.h())/2;
+            if (game.vars.cubic) {
+                game.d.lineCube(spawnPoint.x(), spawnPoint.y(), .5f-d/2, spawnPoint.w(), spawnPoint.h(), d, 0xFFFF0000);
+            } else {
+                game.d.lineRect(spawnPoint.x(), spawnPoint.y(), spawnPoint.w(), spawnPoint.h(), 0xFFFF0000);
+            }
+        }
+        RectBound bound=game.vars.check.bound;
+        float d=(bound.w()+bound.h())/2;
         if (game.vars.cubic) {
-            game.d.lineCube(spawnPoint.x(), spawnPoint.y(), .5f - d / 2, spawnPoint.w(), spawnPoint.h(), d, 0xFF000000);
+            game.d.lineCube(bound.x(), bound.y(), .5f-d/2, bound.w(), bound.h(), d, 0xFF000000);
         } else {
-            game.d.lineRect(spawnPoint.x(), spawnPoint.y(), spawnPoint.w(), spawnPoint.h(), 0xFF000000);
+            game.d.lineRect(bound.x(), bound.y(), bound.w(), bound.h(), 0xFF000000);
         }
         int minX = (int) Math.floor(b.x()), minY = (int) Math.floor(b.y()), maxX = (int) Math.ceil(b.x()+b.w()), maxY = (int) Math.ceil(b.y()+b.h());
         game.player.draw();
@@ -168,6 +176,8 @@ public class Level {
         }
         for (int y = minY; y < maxY; y++) {
             for (int x = minX; x < maxX; x++) {
+                if (game.painter.draw&&game.vars.paintPoints&&x>0&&y>0&&x<sizeX&&y<sizeY)
+                    game.d.point(x, y, 0, 0xFF000000);
                 Block block= get(x, y);
                 block.draw(x,y,this);
             }

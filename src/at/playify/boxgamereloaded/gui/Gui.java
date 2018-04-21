@@ -11,15 +11,17 @@ import java.util.Collections;
 
 public abstract class Gui {
     protected final BoxGameReloaded game;
-    protected ArrayList<Button> buttons = new ArrayList<>();
+    protected Button[] buttons;
 
     public Gui(BoxGameReloaded game) {
         this.game = game;
-        initGui();
+        ArrayList<Button> buttons=new ArrayList<>();
+        initGui(buttons);
         Collections.sort(buttons);
+        this.buttons=buttons.toArray(new Button[0]);
     }
 
-    public abstract void initGui();
+    public abstract void initGui(ArrayList<Button> buttons);
 
     public void fingerStateChanged(Finger finger) {
 
@@ -27,7 +29,9 @@ public abstract class Gui {
 
     public void draw() {
         Drawer d = game.d;
-        for (Button button : buttons) {
+        int size=buttons.length;
+        for (int i=0;i<size;i++) {
+            Button button=buttons[i];
             d.pushMatrix();
             BoundingBox3d bound = button.bound();
             d.translate(bound.minX, bound.minY, bound.minZ);
@@ -38,8 +42,10 @@ public abstract class Gui {
     }
 
     public boolean click(Finger finger) {
-        float x = finger.x / game.d.getHeight(), y = 1 - finger.y / game.d.getHeight();
-        for (Button button : buttons) {
+        float x=finger.getX()/game.d.getHeight(), y=1-finger.getY()/game.d.getHeight();
+        int size=buttons.length;
+        for (int i=0;i<size;i++) {
+            Button button=buttons[i];
             BoundingBox3d bound = button.bound();
             if (bound.contains(x, y)) {
                 if (button.click(finger)) {
@@ -52,7 +58,9 @@ public abstract class Gui {
 
     public boolean tick() {
         boolean freeze = true;
-        for (Button button : buttons) {
+        int size=buttons.length;
+        for (int i=0;i<size;i++) {
+            Button button=buttons[i];
             freeze &= button.tick();
         }
         return freeze;

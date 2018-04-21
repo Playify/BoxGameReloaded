@@ -22,6 +22,11 @@ public class BlockLadder extends Block implements Collideable{
         list.add(Borrow.bound(x,y,x+1,y+1));
     }
 
+    @Override
+    protected boolean isBackGround(int meta) {
+        return false;
+    }
+
     public boolean collide(Bound b, int x, int y, Player player, boolean checkOnly, int meta, Level level) {
         final float v=.01f;
         return b.collide(bound.set(x-v,y-v,1+2*v,1+2*v));

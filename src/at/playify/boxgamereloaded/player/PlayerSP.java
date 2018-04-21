@@ -29,13 +29,12 @@ public class PlayerSP extends Player {
     @Override
     public void tick() {
         //Wenn zeichnen dann nicht bewegen
-        if (game.drawer.draw) {
+        if (game.painter.pause()) {
             super.tick();
             return;
         }
         if (game.d!=null) {
             boolean left=false, right=false;
-            int side=game.vars.wallbounce ? side() : 0;
             //wenn nicht spiel pausiert ist
             if (!game.paused) {
                 //Tasten abfragen
@@ -45,7 +44,7 @@ public class PlayerSP extends Player {
                 float w=game.d.getWidth();
                 for (Finger finger : game.fingers) {
                     if (finger.down&&!finger.control) {
-                        float x=finger.x/w;
+                        float x=finger.getX()/w;
                         if (x<0.25) left=true;
                         else if (x<0.5) right=true;
                         else jump=true;
@@ -63,10 +62,6 @@ public class PlayerSP extends Player {
                 } else {
                     this.jump=jump;
                 }
-                //bei wallbounce sprünge zurücksetzen
-                if (game.vars.wallbounce&&side!=0) {
-                    jumps=0;
-                }
                 //Springen
                 if (jump&&jumps<game.vars.jumps) {
                     motionY=0.21f;
@@ -83,9 +78,6 @@ public class PlayerSP extends Player {
                 }
             } else {
                 motionY-=0.01f;//Fallbeschleunigung
-                if (game.vars.wallslide&&side!=0&&motionY<=-0.05f) {
-                    motionY=-0.05f;//Fallgeschwindigkeit limitieren bei wallslide
-                }
             }
             motionY*=((bound.w()+bound.h())/2)/0.8f;
 
@@ -107,7 +99,7 @@ public class PlayerSP extends Player {
 
             //Spezialfähigkeiten von Blöcken mit Kollision ausführen
             Borrow.freeInside(arr);
-            arr=game.level.collideList(collider.set(bound), this, arr);
+            arr=game.level.collideList(bound, this, arr);
             out:
             for (Block block : game.blocks.list) {
                 in:
@@ -208,5 +200,16 @@ public class PlayerSP extends Player {
     @Override
     public String name() {
         return game.vars.playername;
+    }
+
+    @Override
+    public String name(int data) {
+        return "Player";
+    }
+
+    @Override
+    public void paint(float x, float y, boolean click, Finger finger) {
+        game.player.bound.setCenter(x, y);
+        game.player.motionX=game.player.motionY=0;
     }
 }

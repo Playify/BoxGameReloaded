@@ -39,6 +39,11 @@ public class BlockKill extends Block implements Collideable {
     }
 
     @Override
+    protected boolean isBackGround(int meta) {
+        return false;
+    }
+
+    @Override
     public boolean onCollide(PlayerSP player, Level level, int x, int y, int meta, ArrayList<Borrow.BorrowedCollisionData> data) {
         if (game.vars.god) {
             return false;

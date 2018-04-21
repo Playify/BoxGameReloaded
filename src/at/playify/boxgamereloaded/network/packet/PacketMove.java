@@ -135,8 +135,16 @@ public class PacketMove extends Packet {
             player=connectionToClient.name;
             connectionToClient.bound.set(x,y,w,h);
             server.broadcast(this,connectionToClient.world,connectionToClient);
-        }else{
-            nopermission(server,connectionToClient);
+        } else {//Draw other players
+            //nopermission(server,connectionToClient);
+
+            server.checkConnected();
+            for (ConnectionToClient con : server.getLastBroadcast()) {
+                if (con.world.equals(connectionToClient.world)&&con.name.equals(player)) {
+                    con.bound.set(x, y, w, h);
+                }
+            }
+            server.broadcast(this, connectionToClient.world, connectionToClient);
         }
     }
 }

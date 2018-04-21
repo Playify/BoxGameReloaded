@@ -159,7 +159,7 @@ public class Main {
                 if (Keyboard.getKeyName(eventKey).length()==1) {
                     eventChar=Keyboard.getKeyName(eventKey).charAt(0);
                 }
-                if (eventKey==Keyboard.KEY_ESCAPE) eventChar='p';
+                if (eventKey==Keyboard.KEY_ESCAPE) eventChar=257;
                 if (eventChar==0) {
                     eventChar=chars[eventKey];
                 } else {
@@ -168,18 +168,17 @@ public class Main {
                 game.setKey(eventChar, Keyboard.getEventKeyState());
             }
             //Maus
-            finger.x=Mouse.getX();//Finger wegen MultiTouch am Handy
-            finger.y=Display.getHeight()-Mouse.getY();
+            //finger.set(Mouse.getX(),Display.getHeight()-Mouse.getY());//Finger wegen MultiTouch am Handy
             while (Mouse.next()) {
                 if (Mouse.getEventButton()==0) {
                     boolean down=Mouse.getEventButtonState();
-                    finger.x=Mouse.getEventX();
-                    finger.y=Display.getHeight()-Mouse.getEventY();
+                    finger.set(Mouse.getEventX(), Display.getHeight()-Mouse.getEventY());
+                    if (down)
+                        finger.setDown(Mouse.getEventX(), Display.getHeight()-Mouse.getEventY(), game);
                     finger.down=down;
                     game.fingerStateChanged(finger);
                 } else {
-                    finger.x=Mouse.getEventX();
-                    finger.y=Display.getHeight()-Mouse.getEventY();
+                    finger.set(Mouse.getEventX(), Display.getHeight()-Mouse.getEventY());
                 }
             }
         } catch (Exception e) {

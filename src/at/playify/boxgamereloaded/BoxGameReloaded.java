@@ -2,19 +2,19 @@ package at.playify.boxgamereloaded;
 
 
 import at.playify.boxgamereloaded.block.Blocks;
-import at.playify.boxgamereloaded.exceptions.DrawingException;
 import at.playify.boxgamereloaded.gui.GuiOverlay;
 import at.playify.boxgamereloaded.interfaces.Game;
 import at.playify.boxgamereloaded.interfaces.Handler;
+import at.playify.boxgamereloaded.interfaces.exceptions.DrawingException;
 import at.playify.boxgamereloaded.level.Level;
 import at.playify.boxgamereloaded.network.connection.ConnectionToServer;
 import at.playify.boxgamereloaded.network.connection.EmptyConnection;
 import at.playify.boxgamereloaded.network.packet.PacketFinish;
 import at.playify.boxgamereloaded.network.packet.PacketSetPauseMode;
 import at.playify.boxgamereloaded.network.packet.PacketSetWorld;
+import at.playify.boxgamereloaded.paint.PaintHandler;
 import at.playify.boxgamereloaded.player.Player;
 import at.playify.boxgamereloaded.player.PlayerSP;
-import at.playify.boxgamereloaded.util.DrawHelper;
 import at.playify.boxgamereloaded.util.Finger;
 import at.playify.boxgamereloaded.util.Utils;
 import at.playify.boxgamereloaded.util.bound.RectBound;
@@ -28,9 +28,7 @@ import java.util.Locale;
 public class BoxGameReloaded extends Game {
     public PlayerSP player = new PlayerSP(this);
     public ConnectionToServer connection = new EmptyConnection();
-    @SuppressWarnings("WeakerAccess")
-    public boolean options;
-    public DrawHelper drawer = new DrawHelper(this);
+    public PaintHandler painter=new PaintHandler(this);
     public float zoom_x;
     public float zoom_y;
     public float zoom = 1.3f;
@@ -64,31 +62,27 @@ public class BoxGameReloaded extends Game {
     //Fingerstatus geändert gedrückt/nicht gedrückt
     @Override
     public void fingerStateChanged(Finger finger) {
-        float w = d.getHeight() / 6;
         if (finger.down) {
             finger.control = gui.click(finger);
-            if (!finger.control) {
-                if (drawer.draw) {
-                    drawer.handleFingerState(finger);
-                }
-            } else {
+            if (finger.control) {
                 gui.fingerStateChanged(finger);
+            } else {
+                if (painter.draw) {
+                    painter.handleFingerState(finger);
+                }
             }
         } else {
             if (!finger.control) {
-                paused = false;
+                if (gui.isOptionsVisible()) {
+                    gui.closeOptions();
+                } else {
+                    paused=false;
+                }
                 pauseLock.unlock();
             }
             finger.control = false;
         }
         pauseLock.unlock();
-    }
-
-    private void mainMenu() {
-        if (connection != null) {
-            connection.leaveWorld();
-        }
-        gui.openMainMenu();
     }
 
     //Spieltick ausführen
@@ -97,10 +91,10 @@ public class BoxGameReloaded extends Game {
         boolean pause = false;
         if (connection != null) {
             pause = connection.isPaused(false);
-            if (prevPauseState != (paused | options)) {
-                prevPauseState = (paused | options);
+            if (prevPauseState!=(paused||gui.isOptionsVisible())) {
+                prevPauseState=(paused||gui.isOptionsVisible());
                 if (connection.userpause) {
-                    connection.sendPacket(new PacketSetPauseMode((paused | options) ? 3 : 2));
+                    connection.sendPacket(new PacketSetPauseMode((paused||gui.isOptionsVisible()) ? 3 : 2));
                 }
             }
             connection.handleSoon();
@@ -109,7 +103,7 @@ public class BoxGameReloaded extends Game {
                 for (Player player1 : players) {
                     player1.tick();
                 }
-                drawer.handleDrawFingers();
+                painter.handleDrawFingers();
                 if (player != null) {
                     player.tick();
                 }
@@ -119,25 +113,31 @@ public class BoxGameReloaded extends Game {
         //Pausestatus bekommen
         boolean lock=gui.tick();
 
-        if (((connection==null||connection.userpause) ? gui.backgroundState()==0 : !connection.pause)&&player!=null) {
-            float x = Utils.clamp(player.bound.cx(), 0, level.sizeX) - zoom_x;
-            float y = Utils.clamp(player.bound.cy(), 0, level.sizeY) - zoom_y;
+        if (((connection==null||connection.userpause) ? gui.backgroundState()==0 : !connection.pause)&&player!=null&&(!vars.scrollPaint||!painter.pause())) {
+            float shouldX=Utils.clamp(player.bound.cx(), 0, level.sizeX);
+            float x=shouldX-zoom_x;
+            float shouldY=Utils.clamp(player.bound.cy(), 0, level.sizeY);
+            float y=shouldY-zoom_y;
             if (Math.abs(x)<0.01f) {
                 zoom_x+=x;
             } else {
-                zoom_x+=x/20f;
+                float v=aspectratio*(vars.display_size-2-player.bound.w())/(2*zoom);
+                zoom_x=Utils.clamp(zoom_x+x/20f, shouldX-v, shouldX+v);
                 lock=false;
             }
             if (Math.abs(y)<0.01f) {
                 zoom_y+=y;
             } else {
-                zoom_y+=y/20f;
+                float v=(vars.display_size-2-player.bound.h())/(2*zoom);
+                zoom_y=Utils.clamp(zoom_y+y/20f, shouldY-v, shouldY+v);
                 lock=false;
             }
-            if (Math.abs(zoom-vars.zoom_level)<0.01f) {
-                zoom=vars.zoom_level;
+
+            float shouldZoom=vars.zoom_level*0.8f/((player.bound.w()+player.bound.h())/2);
+            if (Math.abs(this.zoom-shouldZoom)<0.01f) {
+                this.zoom=shouldZoom;
             } else {
-                zoom+=(vars.zoom_level-zoom)/20f;
+                this.zoom+=(shouldZoom-this.zoom)/20f;
                 lock=false;
             }
         }
@@ -152,7 +152,7 @@ public class BoxGameReloaded extends Game {
         tps=lastframes.length*1000000000d/l;
 
         //wenn nötig locken
-        if (pause&&(prevPauseState==(paused||options))&&lock) {
+        if (pause&&(prevPauseState==(paused||gui.isOptionsVisible()))&&lock) {
             Arrays.fill(lastticks, 0);
             tps=0;
             pauseLock.lock();
@@ -171,14 +171,12 @@ public class BoxGameReloaded extends Game {
         try {
             d.startDrawing();
             d.fill(0xFF33B5E5);
-            if (vars.debug.viewback) {
-                d.scale(1, 1, -1);
-            }
+            if (vars.debug.viewback) d.scale(1, 1, -1);
             aspectratio = d.getWidth() / d.getHeight();
             d.scale(1 / aspectratio, 1);
             d.pushMatrix();
             d.scale(1 / (vars.display_size));
-            if (((connection==null||connection.userpause) ? gui.backgroundState()==0 : !connection.pause)&&player!=null&&vars.instant_zoom) {
+            if (((connection==null||connection.userpause) ? gui.backgroundState()==0 : !connection.pause)&&vars.instant_zoom&&(!vars.scrollPaint||!painter.pause())) {
                 zoom_x = Utils.clamp(player.bound.cx(), 0, level.sizeX);
                 zoom_y = Utils.clamp(player.bound.cy(), 0, level.sizeY);
             }
@@ -189,7 +187,7 @@ public class BoxGameReloaded extends Game {
                     float v = vars.display_size;
                     d.cube(zoom_x - v, -1, 0, 2 * v, 1, 1, 0xFFFFFF00, true, false, true, false);
                     d.cube(zoom_x - v, level.sizeY, 0, 2 * v, 1, 1, 0xFFFFFF00, true, false, true, false);
-                    if (drawer.draw) {
+                    if (painter.draw) {
                         d.cube(-.1f, 0, .9f, .1f, level.sizeY, .1f, 0xFFFFFF00, false, true, false, true);
                         d.cube(level.sizeX, 0, .9f, .1f, level.sizeY, .1f, 0xFFFFFF00, false, true, false, true);
                     }
@@ -197,7 +195,7 @@ public class BoxGameReloaded extends Game {
                     float v = vars.display_size;
                     d.rect(zoom_x - v, -1, 2 * v, 1, 0xFFFFFF00);
                     d.rect(zoom_x - v, level.sizeY, 2 * v, 1, 0xFFFFFF00);
-                    if (drawer.draw) {
+                    if (painter.draw) {
                         d.rect(-.1f, 0, .1f, level.sizeY, 0xFFFFFF00);
                         d.rect(level.sizeX, 0, .1f, level.sizeY, 0xFFFFFF00);
                     }
@@ -215,8 +213,8 @@ public class BoxGameReloaded extends Game {
                     d.rect(level.sizeX, -1, 1, level.sizeY + 2, 0xFFFFFF00);
                 }
             }
-            float mx = vars.display_size / 2f * aspectratio;
-            float my = vars.display_size / 2f;
+            float mx=(vars.display_size/zoom)/2f*aspectratio+1;
+            float my=(vars.display_size/zoom)/2f+1;
             level.draw(leveldrawbound.set(zoom_x - mx, zoom_y - my, mx * 2, my * 2));
 
             d.popMatrix();
@@ -232,17 +230,12 @@ public class BoxGameReloaded extends Game {
 
     //draw game gui
     private void drawGui() {
-        txt.clear();
         d.clearDepth();
         //Debug Text anzeigen
-        if (drawer.draw) {
-            txt.add("Draw:" + drawer.getBlockString());
-        }
         logFrame();
 
         //Gui zeichnen
         d.pushMatrix();
-        d.translate(0, 0, -0.025f);
         gui.draw();
         d.popMatrix();
     }
@@ -255,6 +248,7 @@ public class BoxGameReloaded extends Game {
         for (int lastframe : lastframes) {
             l += lastframe;
         }
+        txt.clear();
         str.setLength(0);
         str.append(dm.format(tps)).append("TPS,");
         str.append(dm.format(lastframes.length * 1000000000d / l)).append("FPS,").append(vertexcount).append("Verts");
@@ -262,7 +256,7 @@ public class BoxGameReloaded extends Game {
         str.setLength(0);
         str.append("POS:").append(player.bound.toSimpleString(",", true));
         txt.add(str.toString());
-        float h = .95f;
+        float h=.94f;
         for (String s : txt) {
             d.drawString(s, .18f, h, .05f);
             h -= .06f;
@@ -295,6 +289,13 @@ public class BoxGameReloaded extends Game {
     @Override
     protected void keyStateChanged(int keyChar) {
         pauseLock.unlock();
+        if (keyChar==257) {//ESC key
+            if (painter.draw) keyChar='o';
+            else if (paused) keyChar='p';
+            else if (gui.isOptionsVisible()) keyChar='o';
+            else keyChar='p';
+            keys[keyChar]=keys[257];
+        }
         if (keyChar == 'c' && vars.debug.console && !handler.isKeyboardVisible()) {
             handler.setKeyboardVisible(true);
         }
@@ -312,10 +313,15 @@ public class BoxGameReloaded extends Game {
             }
         }
         if (keyChar == 'o') {
-            if (options != keys['o']) {
+            if (gui.isOptionsVisible()!=keys['o']) {
                 if (!optionsKeyDown) {
-                    options ^= true;
-                    optionsKeyDown = options;
+                    if (gui.isOptionsVisible()) {
+                        gui.closeOptions();
+                        optionsKeyDown=false;
+                    } else {
+                        gui.openOptions();
+                        optionsKeyDown=true;
+                    }
                     pauseLock.unlock();
                 } else {
                     optionsKeyDown = false;
@@ -324,9 +330,12 @@ public class BoxGameReloaded extends Game {
                 optionsKeyDown = false;
             }
         }
+        if (keyChar=='c'&&!keys['c']&&vars.debug.console) {
+            handler.setKeyboardVisible(true);
+        }
         if (keys[keyChar]) {
             if (Character.isDigit(keyChar)) {
-                joinWorld("" + ((char) keyChar));
+                joinWorld("paint_"+((char) keyChar));
             }
         }
     }

@@ -27,8 +27,13 @@ public class BlockCheckPoint extends Block implements Collideable{
     }
 
     @Override
+    protected boolean isBackGround(int meta) {
+        return true;
+    }
+
+    @Override
     public boolean onCollide(PlayerSP player, Level level, int x, int y, int meta, ArrayList<Borrow.BorrowedCollisionData> data) {
-        game.level.spawnPoint.set(player.bound);
+        game.vars.check.check();
         return false;
     }
 

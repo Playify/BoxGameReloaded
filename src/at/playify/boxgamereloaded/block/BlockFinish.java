@@ -28,6 +28,11 @@ public class BlockFinish extends Block implements Collideable{
     }
 
     @Override
+    protected boolean isBackGround(int meta) {
+        return true;
+    }
+
+    @Override
     public boolean onCollide(PlayerSP player, Level level, int x, int y, int meta, ArrayList<Borrow.BorrowedCollisionData> data) {
         game.finishLevel();
         return true;
@@ -36,7 +41,7 @@ public class BlockFinish extends Block implements Collideable{
     @Override
     public void draw(int x, int y, Level level) {
         int v=640;
-        float rotate=(game.ticker.ticks%v)/(float)v;
+        float rotate=((System.currentTimeMillis()/17)%v)/(float) v;
         int rect=Utils.hsvToRgb(rotate);
         int base= Utils.hsvToRgb(rotate+.05f);
         if (game.vars.cubic) {

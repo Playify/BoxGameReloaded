@@ -19,7 +19,6 @@ public class SurfaceDrawer implements Drawer {
     public FontRenderer font;
     private boolean drawing;
     private BoxGameReloaded game;
-    public boolean back;//todo set if cube should draw back side
     private FloatBuffer fb=null;
     private FloatBuffer fb2=null;
     private float[] vertexFRONT=new float[]{
@@ -152,11 +151,11 @@ public class SurfaceDrawer implements Drawer {
     }
 
     public void cube(float x, float y, float z, float w, float h, float d, int color) {
-        cube(x, y, z, w, h, d, color, true, true, true, true, true, back);
+        cube(x, y, z, w, h, d, color, true, true, true, true, true, back());
     }
 
     public void cube(float x, float y, float z, float w, float h, float d, int color, boolean up, boolean left, boolean down, boolean right) {
-        cube(x, y, z, w, h, d, color, up, left, down, right, true, back);
+        cube(x, y, z, w, h, d, color, up, left, down, right, true, back());
     }
     public void cube(float x, float y, float z, float w, float h, float d, int color, boolean up, boolean left, boolean down, boolean right, boolean front, boolean back) {
         gl.glPushMatrix();
@@ -272,7 +271,7 @@ public class SurfaceDrawer implements Drawer {
             gl.glClear(GL10.GL_COLOR_BUFFER_BIT|GL10.GL_DEPTH_BUFFER_BIT);
             gl.glMatrixMode(GL10.GL_MODELVIEW);
             gl.glLoadIdentity();
-            GLU.gluLookAt(gl, 0, 0, -3.05f, 0f, 0f, 0f, 0f, 10.0f, 2.0f);
+            GLU.gluLookAt(gl, 0, 0, -3, 0f, 0f, 0f, 0f, 10.0f, 2.0f);
             gl.glTranslatef(1, -1, 0);
             gl.glScalef(-2f, 2f, 2);
             gl.glEnable(GL10.GL_DEPTH_TEST);
@@ -333,7 +332,7 @@ public class SurfaceDrawer implements Drawer {
 
     @Override
     public boolean back() {
-        return back;
+        return game.vars.debug.viewback;
     }
 
     @Override
@@ -344,5 +343,10 @@ public class SurfaceDrawer implements Drawer {
     @Override
     public void drawStringCenter(String s, float x, float y, float h) {
         font.drawCenter(s, x, y, h);
+    }
+
+    @Override
+    public void back(boolean b) {
+        game.vars.debug.viewback=b;
     }
 }

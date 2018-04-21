@@ -8,8 +8,6 @@ public class VariableContainer {
     public float display_size=10;
     public float zoom_level=1.3f;
     public int jumps=2;
-    public boolean wallbounce;
-    public boolean wallslide;
     public boolean inverted_gravity;
     public boolean geometry_dash;
     public boolean fly;
@@ -21,9 +19,11 @@ public class VariableContainer {
     public Debug debug=new Debug();
     public Checkpoint check=new Checkpoint();
     public String playername="TheUser"+System.currentTimeMillis();
-    public String world;
+    public final boolean scrollPaint=false;
     public boolean tickOnDraw;
     public boolean instant_zoom;
+    public String world="NONE";
+    public boolean paintPoints;
     private BoxGameReloaded game;
 
     public VariableContainer(Game game) {
@@ -44,16 +44,10 @@ public class VariableContainer {
         private boolean inverted_gravity;
         private float motionX;
         private float motionY;
-        private RectBound bound=new RectBound();
+        public RectBound bound=new RectBound();
 
         public void check() {
-            VariableContainer vars=VariableContainer.this;
-            geometry_dash=vars.geometry_dash;
-            inverted_gravity=vars.inverted_gravity;
-            jumps=game.player.jumps;
-            motionX=game.player.motionX;
-            motionY=game.player.motionY;
-            bound.set(game.player.bound);
+            check(game.player.bound);
         }
 
         public void die() {
@@ -64,6 +58,16 @@ public class VariableContainer {
             game.player.motionX=motionX;
             game.player.motionY=motionY;
             game.player.bound.set(bound);
+        }
+
+        public void check(RectBound spawnPoint) {
+            VariableContainer vars=VariableContainer.this;
+            geometry_dash=vars.geometry_dash;
+            inverted_gravity=vars.inverted_gravity;
+            jumps=game.player.jumps;
+            motionX=game.player.motionX;
+            motionY=game.player.motionY;
+            bound.set(spawnPoint);
         }
     }
 }

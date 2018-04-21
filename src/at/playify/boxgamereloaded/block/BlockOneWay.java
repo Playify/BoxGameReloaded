@@ -89,6 +89,11 @@ public class BlockOneWay extends Block {
     }
 
     @Override
+    protected boolean isBackGround(int meta) {
+        return true;
+    }
+
+    @Override
     public void draw(int x, int y, Level level) {
         if (game.vars.cubic) {
             game.d.cube(x, y, 0.9f, 1, 1, .1f, 0xFF009DFF);

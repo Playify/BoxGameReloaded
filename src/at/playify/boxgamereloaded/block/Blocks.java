@@ -21,6 +21,7 @@ public class Blocks {
     public BlockFinish FINISH;
     public BlockResize RESIZE;
     public BlockGravity GRAVITY;
+    public BlockGravityPad GRAVITY_PAD;
     public int blockscount;
 
     //Block anhand des Zeichens bekommen
@@ -32,7 +33,7 @@ public class Blocks {
     public void init(BoxGameReloaded game) {
         AIR = new BlockAir(game,BlockAir.chr);
         GROUND = new BlockGround(game,BlockGround.chr);
-        BORDER = new BlockBorder(game,BlockBorder.chr);
+        //BORDER = new BlockBorder(game,BlockBorder.chr);
         SPIKE=new BlockSpike(game,BlockSpike.chr);
         KILL=new BlockKill(game,BlockKill.chr);
         BLOCK08=new Block08(game,Block08.chr);
@@ -43,6 +44,7 @@ public class Blocks {
         FINISH=new BlockFinish(game,BlockFinish.chr);
         RESIZE = new BlockResize(game, BlockResize.chr);
         GRAVITY=new BlockGravity(game, BlockGravity.chr);
+        GRAVITY_PAD=new BlockGravityPad(game, BlockGravityPad.chr);
 
     }
 }

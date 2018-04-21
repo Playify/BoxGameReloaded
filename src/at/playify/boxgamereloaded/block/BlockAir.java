@@ -23,7 +23,17 @@ public class BlockAir extends Block {
 
     @Override
     public void draw(int x, int y, Level level) {
-
+        if (level==game.painter.fakeLevel) {
+            if (game.vars.cubic) {
+                if (game.vars.cubic_check) {
+                    game.d.cube(x, y, 0, 1, 1, 1, 0xFF30ABD9, !level.get(x, y+1).isSolid(), !level.get(x+1, y).isSolid(), !level.get(x, y-1).isSolid(), !level.get(x-1, y).isSolid());
+                } else {
+                    game.d.cube(x, y, 0, 1, 1, 1, 0xFF30ABD9);
+                }
+            } else {
+                game.d.rect(x, y, 1, 1, 0xFF30ABD9);
+            }
+        }
     }
 
     @Override
@@ -34,5 +44,10 @@ public class BlockAir extends Block {
     @Override
     public void getCollisionBox(Level level, int x, int y, Borrow.BorrowedBoundingBox bound, ArrayList<Borrow.BorrowedBoundingBox> list, PlayerSP player) {
 
+    }
+
+    @Override
+    protected boolean isBackGround(int meta) {
+        return false;
     }
 }

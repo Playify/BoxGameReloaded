@@ -6,7 +6,6 @@ import at.playify.boxgamereloaded.util.BoundingBox3d;
 import at.playify.boxgamereloaded.util.Finger;
 
 public class RespawnButton extends Button {
-
     private float visibleState;
     private float mainState;
 
@@ -28,18 +27,26 @@ public class RespawnButton extends Button {
 
     @Override
     public void draw(Drawer d) {
+        if (visibleState==0) return;
         int color = color();
         d.translate(0.5f, 0, 0);
         float z = (bound.maxX - bound.minX) / (bound.maxZ - bound.minZ);
         d.scale(1, 1, z);
         float zz = (bound.maxZ - bound.minZ) * 2;
         d.translate(0, 0, zz);
+
+        d.translate(0, 1, 0);
+        d.scale(visibleState, visibleState, visibleState);
+        d.translate(0, -.5f, 0);
+        d.rotate((float) Math.sin(Math.toRadians((1-visibleState)*500))*10f, 0, 0, 1);
+        d.translate(0, -.5f, 0);
+
         d.rotate(180 * mainState, 0, 1, 0);
         d.translate(0, 0, -zz);
         d.scale(1, 1, 1 / z);
-        if (mainState <= 150 / 255f) {
-            //d.cube(-1/2f+1/14f, 1/14f,1, 6/7f, 6/7f,1,0xB2FF0000,false,false,false,false,true,false);
-        }
+        /*if (mainState <= 150 / 255f) {
+            d.cube(-1/2f+1/14f, 1/14f,1, 6/7f, 6/7f,1,0xB2FF0000,false,false,false,false,true,false);
+        }*/
         d.cube(-1 / 2f, 0, 0, 1, 1 / 7f, 1, color, true, true, true, true, true, true);
         d.cube(-1 / 2f, 6 / 7f, 0, 1, 1 / 7f, 1, color, true, true, true, true, true, true);
         d.cube(-1 / 2f, 1 / 7f, 0, 1 / 7f, 5 / 7f, 1, color, false, true, false, true, true, true);
@@ -63,19 +70,21 @@ public class RespawnButton extends Button {
 
     @Override
     public boolean click(Finger finger) {
-        if (mainState > 150 / 255f) {
-            game.connection.leaveWorld();
-            game.gui.openMainMenu();
-        } else {
-            game.player.killedByButton();
-        }
-        return true;
+        if (visibleState==1) {
+            if (mainState>150/255f) {
+                game.connection.leaveWorld();
+                game.gui.openMainMenu();
+            } else {
+                game.player.killedByButton();
+            }
+            return true;
+        } else return false;
     }
 
     @Override
     public boolean tick() {
-        boolean visible = !game.options && !game.gui.isMainMenuVisible();
-        boolean main = game.gui.isMainMenuVisible() || game.paused || (game.connection == null || game.connection.isPaused(true));
+        boolean visible=!game.gui.isOptionsVisible()&&!game.gui.isMainMenuVisible()&&!(game.gui.drawer.quick&&!game.gui.isOptionsVisible());
+        boolean main=game.gui.isMainMenuVisible()||game.paused||game.connection==null||game.connection.pauseCount>0;
         if (visible) {
             visibleState = Math.min(1f, visibleState + 1 / 8f);
         } else {

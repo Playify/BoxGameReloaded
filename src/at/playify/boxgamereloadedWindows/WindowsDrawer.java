@@ -1,8 +1,8 @@
 package at.playify.boxgamereloadedWindows;
 
 import at.playify.boxgamereloaded.BoxGameReloaded;
-import at.playify.boxgamereloaded.exceptions.DrawingException;
 import at.playify.boxgamereloaded.interfaces.Drawer;
+import at.playify.boxgamereloaded.interfaces.exceptions.DrawingException;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.GLU;
 
@@ -10,7 +10,7 @@ public class WindowsDrawer implements Drawer {
     //Größe vom Fenster
     public int w;
     public int h;
-    FontRenderer font = new FontRenderer(this);
+    FontRenderer font=new FontRenderer(this);
     private boolean drawing;//derzeitig am zeichnen
     private BoxGameReloaded game;
     //Vertexes um nicht jedes Mal zeichnen neu generieren zu müssen
@@ -85,6 +85,7 @@ public class WindowsDrawer implements Drawer {
     public void scale(float x, float y) {
         GL11.glScalef(x, y, 1);
     }
+
     //Zeichenbereich skalieren x=? y=? z=?
     @Override
     public void scale(float x, float y, float z) {
@@ -98,7 +99,6 @@ public class WindowsDrawer implements Drawer {
     }
 
 
-
     //Rotieren angle sind die Grad x,y,z sind Faktoren (meist 0,1,-1)
     @Override
     public void rotate(float angle, float x, float y, float z) {
@@ -110,8 +110,8 @@ public class WindowsDrawer implements Drawer {
     @Override
     public void rect(float x, float y, float w, float h, int color) {
         GL11.glPushMatrix();
-        GL11.glTranslatef(x,y,0);
-        GL11.glScalef(w,h,0);
+        GL11.glTranslatef(x, y, 0);
+        GL11.glScalef(w, h, 0);
         vertex(vertexFRONT, color);
         GL11.glPopMatrix();
     }
@@ -122,17 +122,17 @@ public class WindowsDrawer implements Drawer {
         GL11.glTranslatef(x, y, 0);
         GL11.glScalef(w, h, 0);
         GL11.glLineWidth(2.5f);
-        float a = ((color >> 24) & 255) / 255f, r = ((color >> 16) & 255) / 255f, g = ((color >> 8) & 255) / 255f, b = ((color) & 255) / 255f;
+        float a=((color >> 24)&255)/255f, r=((color >> 16)&255)/255f, g=((color >> 8)&255)/255f, b=((color)&255)/255f;
         GL11.glColor4f(r, g, b, a);
         GL11.glBegin(GL11.GL_LINES);
-        for (int i = 0; i < 4; i++) {
+        for (int i=0;i<4;i++) {
             //Coords: i/2, i%2, 0 oder 1 so wird für alle 2 kanten in die jeweilige richtung gezeichnet
             //i>>1 ist /2 nur effizienter
             //i&1 ist %2 nur effizienter
             GL11.glVertex3f(i >> 1, 0, 0);
             GL11.glVertex3f(i >> 1, 1, 0);
-            GL11.glVertex3f(0, i & 1, 0);
-            GL11.glVertex3f(1, i & 1, 0);
+            GL11.glVertex3f(0, i&1, 0);
+            GL11.glVertex3f(1, i&1, 0);
         }
         GL11.glEnd();
         GL11.glPopMatrix();
@@ -144,36 +144,38 @@ public class WindowsDrawer implements Drawer {
     public void cube(float x, float y, float z, float w, float h, float d, int color) {
         cube(x, y, z, w, h, d, color, true, true, true, true, true, back());
     }
+
     //Zeichne Würfel wie bei der Methode darüber, jedoch kann editiert werden welche Seiten gezeichnet werden
     @Override
     public void cube(float x, float y, float z, float w, float h, float d, int color, boolean up, boolean left, boolean down, boolean right) {
         cube(x, y, z, w, h, d, color, up, left, down, right, true, back());
     }
+
     //Zeichne Würfel wie bei der Methode darüber, jedoch kann editiert werden welche Seiten (auch Vorder und Rückwand) gezeichnet werden
     @Override
     public void cube(float x, float y, float z, float w, float h, float d, int color, boolean up, boolean left, boolean down, boolean right, boolean front, boolean back) {
         GL11.glPushMatrix();
-        GL11.glTranslatef(x,y,z);
-        GL11.glScalef(w,h,d);
+        GL11.glTranslatef(x, y, z);
+        GL11.glScalef(w, h, d);
 
 
         //front
-        if(front)
+        if (front)
             vertex(vertexFRONT, color);
         //back
-        if(back)
+        if (back)
             vertex(vertexBACK, color);
         //down
-        if(down)
+        if (down)
             vertex(vertexDOWN, color, 0.8f);
         //up
-        if(up)
+        if (up)
             vertex(vertexUP, color, 0.8f);
         //right
-        if(right)
+        if (right)
             vertex(vertexRIGHT, color, 0.9f);
         //left
-        if(left)
+        if (left)
             vertex(vertexLEFT, color, 0.9f);
         GL11.glPopMatrix();
     }
@@ -185,22 +187,35 @@ public class WindowsDrawer implements Drawer {
         GL11.glTranslatef(x, y, z);
         GL11.glScalef(w, h, d);
         GL11.glLineWidth(2.5f);
-        float a = ((color >> 24) & 255) / 255f, r = ((color >> 16) & 255) / 255f, g = ((color >> 8) & 255) / 255f, b = ((color) & 255) / 255f;
+        float a=((color >> 24)&255)/255f, r=((color >> 16)&255)/255f, g=((color >> 8)&255)/255f, b=((color)&255)/255f;
         GL11.glColor4f(r, g, b, a);
         GL11.glBegin(GL11.GL_LINES);
-        for (int i = 0; i < 4; i++) {
+        for (int i=0;i<4;i++) {
             //Coords: i/2, i%2, 0 oder 1 so wird für alle vier kanten in die jeweilige richtung gezeichnet
             //i>>1 ist /2 nur effizienter
             //i&1 ist %2 nur effizienter
-            GL11.glVertex3f(i >> 1, i & 1, 0);
-            GL11.glVertex3f(i >> 1, i & 1, 1);
-            GL11.glVertex3f(i >> 1, 0, i & 1);
-            GL11.glVertex3f(i >> 1, 1, i & 1);
-            GL11.glVertex3f(0, i & 1, i >> 1);
-            GL11.glVertex3f(1, i & 1, i >> 1);
+            GL11.glVertex3f(i >> 1, i&1, 0);
+            GL11.glVertex3f(i >> 1, i&1, 1);
+            GL11.glVertex3f(i >> 1, 0, i&1);
+            GL11.glVertex3f(i >> 1, 1, i&1);
+            GL11.glVertex3f(0, i&1, i >> 1);
+            GL11.glVertex3f(1, i&1, i >> 1);
         }
         GL11.glEnd();
         GL11.glPopMatrix();
+    }
+
+    @Override
+    public void point(float x, float y, float z, int color) {
+
+        GL11.glPointSize(3);
+        float a=((color >> 24)&255)/255f, r=((color >> 16)&255)/255f, g=((color >> 8)&255)/255f, b=((color)&255)/255f;
+        GL11.glColor4f(r, g, b, a);
+        GL11.glBegin(GL11.GL_POINTS);
+        GL11.glVertex3f(x, y, z);
+        game.vertexcount++;
+        GL11.glEnd();
+        GL11.glDisable(GL11.GL_VERTEX_ARRAY);
     }
 
 
@@ -209,24 +224,24 @@ public class WindowsDrawer implements Drawer {
     //Alle 9 Koordinaten in vertex zeichnen 1 Dreieck, es können mehrere Dreiecke in vertex übergeben werden
     @Override
     public void vertex(float[] vertex, int color) {
-        vertex(vertex,color,1,1);
+        vertex(vertex, color, 1, 1);
     }
 
     //darken ist ein Wert nahe 1 z.B. 0.9 macht color etwas dunkle, 1.1 macht color etwas heller
     @Override
     public void vertex(float[] vertex, int color, float darken) {
-        vertex(vertex,color,darken,1);
+        vertex(vertex, color, darken, 1);
     }
 
     //alpha multipliziert mit der Transparenz von color
     @Override
     public void vertex(float[] vertex, int color, float darken, float alpha) {
-        float a=((color>>24)&255)/255f, r=((color>>16)&255)/255f, g=((color>>8)&255)/255f, b=((color)&255)/255f;
+        float a=((color >> 24)&255)/255f, r=((color >> 16)&255)/255f, g=((color >> 8)&255)/255f, b=((color)&255)/255f;
         GL11.glColor4f(r*darken, g*darken, b*darken, a*alpha);
         GL11.glBegin(GL11.GL_TRIANGLES);
-        for (int i = 0; i < vertex.length; i+=3) {
+        for (int i=0;i<vertex.length;i+=3) {
             GL11.glColor4f(r*darken, g*darken, b*darken, a*alpha);
-            GL11.glVertex3f(vertex[i],vertex[i+1],vertex[i+2]);
+            GL11.glVertex3f(vertex[i], vertex[i+1], vertex[i+2]);
             game.vertexcount++;
         }
         GL11.glEnd();
@@ -240,17 +255,28 @@ public class WindowsDrawer implements Drawer {
         return w;
     }
 
+    //Breite festlegen
+    @Override
+    public void setWidth(int width) {
+        w=width;
+    }
+
     //Fensterhöhe
     @Override
     public float getHeight() {
         return h;
     }
 
+    //Höhe festlegen
+    @Override
+    public void setHeight(int height) {
+        h=height;
+    }
 
     //Zeichnen starten
     @Override
     public void startDrawing() throws DrawingException {
-        if(drawing) {
+        if (drawing) {
             throw new DrawingException("Already drawing");
         } else {
             GL11.glViewport(0, 0, w, h);
@@ -262,7 +288,7 @@ public class WindowsDrawer implements Drawer {
             GL11.glClear(GL11.GL_COLOR_BUFFER_BIT|GL11.GL_DEPTH_BUFFER_BIT);
             GL11.glMatrixMode(GL11.GL_MODELVIEW);
             GL11.glLoadIdentity();
-            GLU.gluLookAt( 0, 0, -3.05f, 0f, 0f, 0f, 0f, 10.0f, 2.0f);
+            GLU.gluLookAt(0, 0, -3, 0f, 0f, 0f, 0f, 10.0f, 2.0f);
             GL11.glTranslatef(1, -1, 0);
             GL11.glScalef(-2f, 2f, 2);
             GL11.glEnable(GL11.GL_DEPTH_TEST);
@@ -283,7 +309,7 @@ public class WindowsDrawer implements Drawer {
     //genutzt wird
     @Override
     public void fill(int color) {
-        float a=((color>>24)&255)/255f, r=((color>>16)&255)/255f, g=((color>>8)&255)/255f, b=((color)&255)/255f;
+        float a=((color >> 24)&255)/255f, r=((color >> 16)&255)/255f, g=((color >> 8)&255)/255f, b=((color)&255)/255f;
         GL11.glClearColor(r, g, b, a);
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT|GL11.GL_DEPTH_BUFFER_BIT);
     }
@@ -300,14 +326,13 @@ public class WindowsDrawer implements Drawer {
         GL11.glPopMatrix();
     }
 
-
     //Tiefeberechnung aktivieren
     //Wenn dies aktiv ist (standard) dann ist das sichtbar was näher ist
     //Wenn dies deaktiviert ist dann wird das letzte gezeichnete Objekt oben gezeichnet
     //Dies kann mitten während dem zeichnen umgeschalten werden um z.B. Objekte erzeugen zu können die eigentlich hinter etwas anderem währen trotzdem zu Zeichnen.
     @Override
     public void depth(boolean b) {
-        if(b) {
+        if (b) {
             GL11.glEnable(GL11.GL_DEPTH_TEST);
         } else {
             GL11.glDisable(GL11.GL_DEPTH_TEST);
@@ -323,22 +348,16 @@ public class WindowsDrawer implements Drawer {
         GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
     }
 
-    //Breite festlegen
-    @Override
-    public void setWidth(int width) {
-        w=width;
-    }
-
-    //Höhe festlegen
-    @Override
-    public void setHeight(int height) {
-        h=height;
-    }
-
     //ist Rückseite zeichnen eingeschalten?
     @Override
     public boolean back() {
         return game.vars.debug.drawback;
+    }
+
+    //setzt Rückseite zeichnen
+    @Override
+    public void back(boolean b) {
+        game.vars.debug.drawback=b;
     }
 
     //Zeichne Text auf den Koordinaten x,y mit Höhe h

@@ -1,4 +1,4 @@
-package at.playify.boxgamereloaded.exceptions;
+package at.playify.boxgamereloaded.interfaces.exceptions;
 
 //Fehler beim Zeichnen
 public class DrawingException extends Exception {

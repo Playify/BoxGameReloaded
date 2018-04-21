@@ -2,16 +2,18 @@ package at.playify.boxgamereloaded.block;
 
 import at.playify.boxgamereloaded.BoxGameReloaded;
 import at.playify.boxgamereloaded.level.Level;
+import at.playify.boxgamereloaded.paint.Paintable;
 import at.playify.boxgamereloaded.player.Player;
 import at.playify.boxgamereloaded.player.PlayerSP;
 import at.playify.boxgamereloaded.util.Borrow;
+import at.playify.boxgamereloaded.util.Finger;
 import at.playify.boxgamereloaded.util.bound.Bound;
 import at.playify.boxgamereloaded.util.bound.RectBound;
 
 import java.util.ArrayList;
 
 //Blöcke müssen bei Blocks registriert werden.
-public abstract class Block {
+public abstract class Block implements Paintable {
     final RectBound bound = new RectBound(0, 0, 1, 1);//Standard Bound, dies wird von Blöcken benutzt zur Kollision
     protected BoxGameReloaded game;//Referenz zum Spiel in dem es Registriert ist
     private final char chr;//Zeichen um es zu einem Text zu machen wenn das Level als Text versandt wird.
@@ -61,4 +63,41 @@ public abstract class Block {
     public abstract void getCollisionBox(Level level, int x, int y, Borrow.BorrowedBoundingBox bound, ArrayList<Borrow.BorrowedBoundingBox> list, PlayerSP player); /*{
         list.add(Borrow.bound(x,y,x+1,y+1));
     }*/
+
+    @Override
+    public void draw(int meta) {
+        game.d.pushMatrix();
+        if (isBackGround(meta)) {
+            game.d.translate(0, 0, -.4f);
+        } else {
+            game.d.translate(.5f, .5f, .5f);
+            final int v=50;
+            float angle=System.currentTimeMillis()%(360*v)/(float) v;
+            game.d.rotate(angle, 0, 1, 0);
+            game.d.translate(-.5f, -.5f, -.5f);
+        }
+        draw(0, 0, game.painter.fakeLevel);
+        game.d.popMatrix();
+    }
+
+    @Override
+    public String name(int data) {
+        String name=getClass().getSimpleName();
+        if (name.startsWith("Block")) {
+            name=name.substring(5);
+        }
+        return name;
+    }
+
+    @Override
+    public void paint(float x, float y, boolean click, Finger finger) {
+        int bx=(int) x, by=(int) y;
+        if (game.level.get(bx, by)==this&&click) {
+            game.level.setMeta(bx, by, game.level.getMeta(bx, by)+1);
+        } else {
+            game.level.set(bx, by, this);
+        }
+    }
+
+    protected abstract boolean isBackGround(int meta);
 }

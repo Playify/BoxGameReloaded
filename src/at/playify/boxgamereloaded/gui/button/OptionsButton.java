@@ -42,8 +42,11 @@ public class OptionsButton extends Button {
     @Override
     public boolean click(Finger finger) {
         game.cheatCode('a');
-        //game.options ^= true;
-        game.drawer.draw ^= true;
+        if (game.gui.isOptionsVisible()) {
+            game.gui.closeOptions();
+        } else {
+            game.gui.openOptions();
+        }
         return true;
     }
 
@@ -53,12 +56,12 @@ public class OptionsButton extends Button {
         if (settingsRotate > 0) {
             settingsRotate += v;
             if (settingsRotate >= 90) settingsRotate = 0;
-        } else if (game.keys['o'] || game.keys['O']) {
+        } else if (game.keys['o']) {
             settingsRotate = v;
         } else {
             BoundingBox3d bound = bound();
             for (Finger finger : game.fingers) {
-                float x = finger.x / game.d.getHeight(), y = 1 - finger.y / game.d.getHeight();
+                float x=finger.getX()/game.d.getHeight(), y=1-finger.getY()/game.d.getHeight();
                 if (finger.control && bound.contains(x, y)) {
                     settingsRotate = v;
                     break;

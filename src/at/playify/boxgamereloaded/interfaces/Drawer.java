@@ -1,10 +1,23 @@
 package at.playify.boxgamereloaded.interfaces;
 
-import at.playify.boxgamereloaded.exceptions.DrawingException;
+import at.playify.boxgamereloaded.interfaces.exceptions.DrawingException;
 
 //Interface für Zeichner, unterschiedlich für jede Platform
 @SuppressWarnings("SameParameterValue")
 public interface Drawer {
+
+    float getWidth();
+
+    void setWidth(int width);
+
+    float getHeight();
+
+    void setHeight(int height);
+
+
+    void back(boolean b);
+
+    boolean back();
 
     void translate(float x, float y);
 
@@ -15,6 +28,8 @@ public interface Drawer {
     void scale(float x, float y, float z);
 
     void scale(float v);
+
+    void rotate(float angle, float x, float y, float z);
 
     void rect(float x, float y, float w, float h, int color);
 
@@ -29,15 +44,17 @@ public interface Drawer {
 
     void lineCube(float x, float y, float z, float w, float h, float d, int color);
 
+    void point(float x, float y, float z, int color);
+
     void vertex(float[] vertex, int color);
 
     void vertex(float[] vertex, int color, float darken);
 
     void vertex(float[] vertex, int color, float darken, float alpha);
 
-    float getWidth();
+    void drawString(String s, float x, float y, float h);
 
-    float getHeight();
+    void drawStringCenter(String s, float x, float y, float h);
 
     void startDrawing() throws DrawingException;
 
@@ -51,17 +68,8 @@ public interface Drawer {
 
     void depth(boolean b);
 
-    void rotate(float angle, float x, float y, float z);
 
     void clearDepth();
 
-    void setWidth(int width);
 
-    void setHeight(int height);
-
-    boolean back();
-
-    void drawString(String s, float x, float y, float h);
-
-    void drawStringCenter(String s, float x, float y, float h);
 }

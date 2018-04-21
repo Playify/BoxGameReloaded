@@ -4,25 +4,27 @@ import at.playify.boxgamereloaded.BoxGameReloaded;
 import at.playify.boxgamereloaded.interfaces.Handler;
 import org.json.JSONObject;
 import org.json.JSONTokener;
+import org.lwjgl.opengl.Display;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
+import java.io.*;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.SocketException;
+import java.net.URISyntaxException;
 
 public class WindowsHandler implements Handler {
     BoxGameReloaded game;
     WindowsDrawer d;
     private boolean keybd;
-    private JDialog dialog;
+    private Frame frame;
+    private boolean external=true;
+    private ServerSocket server;
+    private Thread thr;
 
     @Override
     public boolean isKeyboardVisible() {
@@ -32,84 +34,114 @@ public class WindowsHandler implements Handler {
     @Override
     public void setKeyboardVisible(boolean b) {
         keybd=b;
-        //TODO open Command Window
-        if (b) {
-            if (dialog!=null) return;
-        } else {
-            if (dialog!=null) {
-                dialog.setVisible(false);
-                dialog=null;
-                return;
+        if (external) {
+            if (server==null||server.isClosed()) {
+                try {
+                    server=new ServerSocket(0);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
-        }
-        Thread[] thread=new Thread[1];
-        thread[0]=new Thread(new Runnable() {
-            @Override
-            public void run() {
-                final JTextField cmd=new JTextField();
-                cmd.addActionListener(new ActionListener() {
+            if (server!=null) {
+                if (thr!=null) {
+                    thr.interrupt();
+                }
+                thr=new Thread(new Runnable() {
                     @Override
-                    public void actionPerformed(ActionEvent e) {
-                        game.runcmd(cmd.getText());
-                        if (dialog!=null) {
-                            dialog.setVisible(false);
-                            dialog=null;
+                    public void run() {
+                        try {
+                            Socket accept=server.accept();
+                            thr=null;
+                            BufferedReader br=new BufferedReader(new InputStreamReader(accept.getInputStream()));
+                            String s;
+                            while ((s=br.readLine())!=null) {
+                                if (!s.equals("\b\b")) {
+                                    game.runcmd(s);
+                                }
+                            }
+                        } catch (SocketException ignored) {
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
                     }
                 });
-                Object[] message={"Enter Command", cmd};
+                thr.start();
+                int port=server.getLocalPort();
+                try {
+                    File file=new File(WindowsHandler.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath());
+                    Runtime.getRuntime().exec(new String[]{"cmd", "/c", "start", "cmd", "/c",
+                            "title BoxGameReloaded Console&&java.exe -cp \""+file+"\" "+MainConsole.class.getName()+" "+port});
+                } catch (IOException|URISyntaxException e) {
+                    e.printStackTrace();
+                }
 
-                JOptionPane pane=new JOptionPane(message,
-                        JOptionPane.PLAIN_MESSAGE,
-                        JOptionPane.OK_CANCEL_OPTION);
-                dialog=pane.createDialog(null, "BoxGameReloaded CMD");
-                dialog.addWindowListener(new WindowListener() {
-                    @Override
-                    public void windowOpened(WindowEvent e) {
 
-                    }
-
-                    @Override
-                    public void windowClosing(WindowEvent e) {
-                        dialog=null;
-                    }
-
-                    @Override
-                    public void windowClosed(WindowEvent e) {
-                    }
-
-                    @Override
-                    public void windowIconified(WindowEvent e) {
-
-                    }
-
-                    @Override
-                    public void windowDeiconified(WindowEvent e) {
-
-                    }
-
-                    @Override
-                    public void windowActivated(WindowEvent e) {
-
-                    }
-
-                    @Override
-                    public void windowDeactivated(WindowEvent e) {
-
-                    }
-                });
-                dialog.setAlwaysOnTop(true);
-                dialog.pack();
-                cmd.requestFocusInWindow();
-                dialog.setVisible(true);
-                if (dialog!=null) {
-                    game.runcmd(cmd.getText());
-                    dialog=null;
+            } else {
+                System.err.println("Error initializing Server");
+                external=false;
+                setKeyboardVisible(true);
+                external=true;
+            }
+        } else {
+            //TODO open Command Window
+            if (b) {
+                if (frame!=null) return;
+            } else {
+                if (frame!=null) {
+                    frame.setVisible(false);
+                    frame=null;
+                    return;
                 }
             }
-        });
-        thread[0].setName("CMD");
-        thread[0].start();
+            frame=new Frame("BoxGame CMD");
+            TextField txt=new TextField();
+            frame.add(txt);
+            frame.setAlwaysOnTop(true);
+            int h=60;
+            frame.setSize(new Dimension(200, h));
+            frame.setPreferredSize(new Dimension(200, h));
+            frame.setMinimumSize(new Dimension(200, h));
+            frame.setMaximumSize(new Dimension(Integer.MAX_VALUE, h+1));
+            frame.addWindowListener(new WindowListener() {
+                @Override
+                public void windowOpened(WindowEvent e) {
+
+                }
+
+                @Override
+                public void windowClosing(WindowEvent e) {
+                    frame.setVisible(false);
+                    frame=null;
+                }
+
+                @Override
+                public void windowClosed(WindowEvent e) {
+
+                }
+
+                @Override
+                public void windowIconified(WindowEvent e) {
+
+                }
+
+                @Override
+                public void windowDeiconified(WindowEvent e) {
+
+                }
+
+                @Override
+                public void windowActivated(WindowEvent e) {
+
+                }
+
+                @Override
+                public void windowDeactivated(WindowEvent e) {
+
+                }
+            });
+            frame.setLocation(Display.getX()+Display.getWidth()/2-100, Display.getY()+Display.getHeight()/2-h/2);
+            frame.setVisible(true);
+        }
     }
 
     @Override

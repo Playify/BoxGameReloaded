@@ -5,17 +5,20 @@ import at.playify.boxgamereloaded.gui.button.*;
 import at.playify.boxgamereloaded.util.Finger;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 public class GuiOverlay extends Gui {
     private ArrayList<Gui> guis = new ArrayList<>();
+    public GuiDraw drawer;
+    private GuiMainMenu main;
+    private GuiOptions options;
 
     public GuiOverlay(BoxGameReloaded game) {
         super(game);
+        drawer=new GuiDraw(this.game);
     }
 
     @Override
-    public void initGui() {
+    public void initGui(ArrayList<Button> buttons) {
         buttons.add(new DarkBackground(game));
         buttons.add(new HoveringPlayIcon(game));
         buttons.add(new OptionsButton(game));
@@ -24,37 +27,41 @@ public class GuiOverlay extends Gui {
     }
 
     public void openMainMenu() {
-        if (!isMainMenuVisible()) {
-            guis.add(new GuiMainMenu(game));
-        }
+        main=new GuiMainMenu(game);
     }
 
     public boolean isMainMenuVisible() {
-        for (Gui gui : guis) {
-            if (gui instanceof GuiMainMenu) {
-                return true;
-            }
-        }
-        return false;
+        return main!=null;
     }
 
     @Override
     public boolean click(Finger finger) {
         boolean click = false;
-        for (Gui gui : guis) {
+        int size=guis.size();
+        for (int i=0;i<size;i++) {
+            Gui gui=guis.get(i);
             if (gui.click(finger)) {
-                click = true;
+                click=true;
                 break;
             }
+        }
+        if (!click&&options!=null) {
+            click=options.click(finger);
+        }
+        if (!click&&main!=null) {
+            click=main.click(finger);
+        }
+        if (!click) {
+            click=drawer.click(finger);
         }
         if (!click) {
             click = super.click(finger);
         }
         if (!click) {
             float width = game.d.getWidth();
-            if (finger.x < width / 4) {
+            if (finger.getX()<width/4) {
                 game.cheatCode('l');
-            } else if (finger.x < width / 2) {
+            } else if (finger.getX()<width/2) {
                 game.cheatCode('r');
             }
         }
@@ -63,9 +70,14 @@ public class GuiOverlay extends Gui {
 
     @Override
     public void draw() {
-        for (Gui gui : guis) {
+        int size=guis.size();
+        for (int i=0;i<size;i++) {
+            Gui gui=guis.get(i);
             gui.draw();
         }
+        if (options!=null) options.draw();
+        if (main!=null) main.draw();
+        if (drawer!=null) drawer.draw();
         super.draw();
 
     }
@@ -73,28 +85,40 @@ public class GuiOverlay extends Gui {
     @Override
     public boolean tick() {
         boolean freeze = true;
-        for (Gui gui : guis) {
-            freeze &= gui.tick();
+        int size=guis.size();
+        for (int i=0;i<size;i++) {
+            Gui gui=guis.get(i);
+            freeze&=gui.tick();
         }
+        if (options!=null&&!options.tick()) freeze=false;
+        if (main!=null&&!main.tick()) freeze=false;
+        if (drawer!=null&&!drawer.tick()) freeze=false;
         return freeze && super.tick();
     }
 
     public void closeMainMenu() {
-        Iterator<Gui> iterator = guis.iterator();
-        while (iterator.hasNext()) {
-            Gui next = iterator.next();
-            if (next instanceof GuiMainMenu) {
-                iterator.remove();
-            }
-        }
+        main=null;
     }
 
     public int backgroundState() {
-        for (Button button : buttons) {
+        for (int i=buttons.length-1;i >= 0;i--) {
+            Button button=buttons[i];
             if (button instanceof DarkBackground) {
                 return ((DarkBackground) button).backgroundState;
             }
         }
         return 0;
+    }
+
+    public void openOptions() {
+        options=new GuiOptions(game);
+    }
+
+    public boolean isOptionsVisible() {
+        return options!=null;
+    }
+
+    public void closeOptions() {
+        options=null;
     }
 }

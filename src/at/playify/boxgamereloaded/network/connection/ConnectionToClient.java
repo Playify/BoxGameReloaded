@@ -128,7 +128,9 @@ public class ConnectionToClient extends Thread implements Closeable{
         ServerLevel level=server.getLevel(w);
         if (!this.world.equals(w)) {
             this.world=w;
+            this.sendPacket(new PacketSetWorld(w));
             this.sendPacket(new PacketMove(level.spawnPoint, this.name));
+            this.sendPacket(new PacketSpawn(level.spawnPoint));
 
         }
         this.sendPacket(new PacketLevelData(level.toWorldString()));

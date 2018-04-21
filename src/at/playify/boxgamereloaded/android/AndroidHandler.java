@@ -22,6 +22,7 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.util.Scanner;
 
+import at.playify.boxgamereloaded.interfaces.Game;
 import at.playify.boxgamereloaded.interfaces.Handler;
 
 
@@ -129,7 +130,7 @@ public class AndroidHandler implements Handler {
             @Override
             public void afterTextChanged(Editable s) {
                 for(int i=0; i<s.length(); i++) {
-                    if (!a.game.allowedChars.contains(s.charAt(i)+"")) {
+                    if (!Game.allowedChars.contains(s.charAt(i)+"")) {
                         s.delete(i,i+1);
                         i--;
                     }

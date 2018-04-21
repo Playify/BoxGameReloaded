@@ -3,7 +3,10 @@ package at.playify.boxgamereloaded.util;
 import at.playify.boxgamereloaded.block.Block;
 import at.playify.boxgamereloaded.interfaces.Game;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 //Ausborgbares
@@ -27,12 +30,11 @@ public class Borrow {
     }
 
     public static void freeInside(ArrayList<? extends Borrowed> list) {
-        Iterator<? extends Borrowed> iterator = list.iterator();
-        while (iterator.hasNext()) {
-            Borrowed next = iterator.next();
+        for (int i=list.size()-1;i >= 0;i--) {
+            Borrowed next=list.get(i);
             next.free();
-            iterator.remove();
         }
+        list.clear();
     }
 
     public static CollisionData data() {

@@ -44,7 +44,7 @@ public class DarkBackground extends Button {
 
     @Override
     public boolean tick() {
-        if (game.paused || game.options || (game.connection == null || game.connection.isPaused(true))) {
+        if (game.paused||game.gui.isOptionsVisible()||(game.connection==null||game.connection.isPaused(true))) {
             backgroundState = Math.min(255, backgroundState + 32);
         } else {
             backgroundState = Math.max(0, backgroundState - 32);

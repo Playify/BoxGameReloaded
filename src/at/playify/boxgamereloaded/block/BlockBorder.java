@@ -69,6 +69,11 @@ public class BlockBorder extends Block {
         list.add(Borrow.bound(x,y,x+1,y+1));
     }
 
+    @Override
+    protected boolean isBackGround(int meta) {
+        return false;
+    }
+
     private boolean connect(int x, int y, Level level) {
         return !(level.get(x, y) instanceof BlockBorder);
     }
