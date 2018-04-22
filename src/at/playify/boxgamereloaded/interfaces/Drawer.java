@@ -46,6 +46,8 @@ public interface Drawer {
 
     void point(float x, float y, float z, int color);
 
+    void point(float x, float y, float z, int color, float size);
+
     void vertex(float[] vertex, int color);
 
     void vertex(float[] vertex, int color, float darken);
@@ -74,4 +76,7 @@ public interface Drawer {
     void clearDepth();
 
 
+    boolean ready();
+
+    void drawLine(float x, float y, float z, float w, float h, float d, int color);
 }

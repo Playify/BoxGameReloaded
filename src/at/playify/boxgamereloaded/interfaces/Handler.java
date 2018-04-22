@@ -20,9 +20,11 @@ public abstract class Handler {
     //toggle keyboard on/off
     public abstract void setKeyboardVisible(boolean b);
 
+    //Json aus datei lesen
+    //priv wird privat gespeichert (Android) um sicher spielfortschritt speichern zu können
     public JSONObject read(String filename) {
         try {
-            File file=new File(baseDir(), filename+".json");
+            File file=new File(baseDir(filename), filename+".json");
             if (map.containsKey(filename)) {
                 if (!file.exists()||file.lastModified()==time.get(filename)) {
                     return map.get(filename);
@@ -43,8 +45,10 @@ public abstract class Handler {
         }
     }
 
+    //Json in Datei schreiben
+    //priv wird privat gespeichert (Android) um sicher spielfortschritt speichern zu können
     public void write(String filename, JSONObject o) {
-        File file=new File(baseDir(), filename+".json");
+        File file=new File(baseDir(filename), filename+".json");
         try {
             if (!file.exists()) {
                 file.createNewFile();
@@ -60,6 +64,6 @@ public abstract class Handler {
         time.put(filename, file.lastModified());
     }
 
-    public abstract File baseDir();
+    public abstract File baseDir(String filename);
 
 }

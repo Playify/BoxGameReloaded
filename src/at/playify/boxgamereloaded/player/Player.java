@@ -46,20 +46,20 @@ public abstract class Player implements Paintable {
     }
 
     public String skin() {
-        return ""+Long.toHexString(color)+';'+skin+';'+tail+';'+tailArray.length+';'+display;
+        return ""+Integer.toHexString(color)+';'+skin+';'+tail+';'+tailArray.length+';'+display;
     }
 
     public void draw() {
         float d=(bound.w()+bound.h())/4;
         drawbound.set(bound.x(), bound.y(), -d+.5f, bound.xw(), bound.yh(), d+.5f);
-        drawPart(drawbound);
+        drawPart(drawbound, true);
         if (tail) {
             Borrow.BorrowedBoundingBox3d[] tailArray=this.tailArray;
             for (Borrow.BorrowedBoundingBox3d bound : tailArray) {
                 if (bound == null) {
                     break;
                 } else {
-                    drawPart(bound);
+                    drawPart(bound, false);
                 }
             }
         }
@@ -74,40 +74,13 @@ public abstract class Player implements Paintable {
         game.d.rotate(angle, 0, 1, 0);
         game.d.translate(-.5f, -.5f, -.5f);
         drawbound.set(0, 0, 0, 1, 1, 1);
-        drawPart(drawbound);
+        drawPart(drawbound, true);
         game.d.popMatrix();
     }
 
 
-    private void drawPart(BoundingBox3d bound) {
-        switch (skin) {
-            case "cube":
-                if (game.vars.cubic) {
-                    game.d.cube(bound.minX, bound.minY, bound.minZ, bound.maxX-bound.minX, bound.maxY-bound.minY, bound.maxZ-bound.minZ, color);
-                } else {
-                    game.d.rect(bound.minX, bound.minY, bound.maxX-bound.minX, bound.maxY-bound.minY, color);
-                }
-                break;
-            case "border":
-                if (game.vars.cubic) {
-                    game.d.lineCube(bound.minX, bound.minY, bound.minZ, bound.maxX-bound.minX, bound.maxY-bound.minY, bound.maxZ-bound.minZ, color);
-                } else {
-                    game.d.lineRect(bound.minX, bound.minY, bound.maxX-bound.minX, bound.maxY-bound.minY, color);
-                }
-                break;
-            case "bordercube":
-                if (game.vars.cubic) {
-                    game.d.lineCube(bound.minX, bound.minY, bound.minZ, bound.maxX-bound.minX, bound.maxY-bound.minY, bound.maxZ-bound.minZ, 0xFF000000);
-                } else {
-                    game.d.lineRect(bound.minX, bound.minY, bound.maxX-bound.minX, bound.maxY-bound.minY, 0xFF000000);
-                }
-                if (game.vars.cubic) {
-                    game.d.cube(bound.minX, bound.minY, bound.minZ, bound.maxX-bound.minX, bound.maxY-bound.minY, bound.maxZ-bound.minZ, color);
-                } else {
-                    game.d.rect(bound.minX, bound.minY, bound.maxX-bound.minX, bound.maxY-bound.minY, color);
-                }
-                break;
-        }
+    private void drawPart(BoundingBox3d bound, boolean base) {
+        game.skin.get(skin).draw(this, bound, base, color, 0xFF000000);
     }
 
     //tick für Spieler ausführen um Animationen auszuführen

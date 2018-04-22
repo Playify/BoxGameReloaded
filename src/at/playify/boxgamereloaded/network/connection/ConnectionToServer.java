@@ -118,7 +118,7 @@ public class ConnectionToServer implements Closeable,Runnable {
                     try {
                         @SuppressWarnings("unchecked")
                         Class<? extends Packet> cls=(Class<? extends Packet>) Class.forName(Packet.class.getName()+packetName);
-                        Packet packet=cls.newInstance();//TODO reuse objects
+                        Packet packet=cls.newInstance();//TODO maybe reuse objects
                         packet.loadFromString(i==-1 ? "" : s.substring(i+1), game);
                         packet.handle(game, ConnectionToServer.this);
                     } catch (ClassNotFoundException cls) {

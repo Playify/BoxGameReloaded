@@ -12,7 +12,7 @@ public class PacketHello extends Packet{
     @Override
     public String convertToString(BoxGameReloaded game) {
         if (name==null) {
-            return name=game.vars.playername;
+            return name=game.vars.playerID;
         }
         return name;
     }

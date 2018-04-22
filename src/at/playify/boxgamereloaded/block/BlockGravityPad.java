@@ -11,14 +11,6 @@ import java.util.ArrayList;
 public class BlockGravityPad extends Block implements Collideable, NoCollideable {
     public static final char chr='y';
     private boolean collided;
-    private final float[] vertex=new float[]{
-            0f, -0.3f, 0,
-            0f, 0.1f, 0,
-            0.3f, 0.3f, 0,
-            0f, -0.3f, 0,
-            -0f, 0.1f, 0,
-            -0.3f, 0.3f, 0
-    };
 
     BlockGravityPad(BoxGameReloaded game, char c) {
         super(game, c);
@@ -45,7 +37,7 @@ public class BlockGravityPad extends Block implements Collideable, NoCollideable
             game.d.translate(x+.5f, y+.5f, .899f);
             if (game.vars.inverted_gravity)
                 game.d.scale(1, -1, 1);
-            game.d.vertex(vertex, 0xFF0136c6);
+            game.d.vertex(game.vertex.arrow, 0xFF0136c6);
             game.d.popMatrix();
         } else {
             game.d.pushMatrix();
@@ -53,7 +45,7 @@ public class BlockGravityPad extends Block implements Collideable, NoCollideable
             game.d.translate(x+.5f, y+.5f, 0);
             if (game.vars.inverted_gravity)
                 game.d.scale(1, -1, 1);
-            game.d.vertex(vertex, 0xFF0136c6);
+            game.d.vertex(game.vertex.arrow, 0xFF0136c6);
             game.d.popMatrix();
         }
     }

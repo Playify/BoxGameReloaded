@@ -3,8 +3,7 @@ package at.playify.boxgamereloaded;
 
 import at.playify.boxgamereloaded.block.Blocks;
 import at.playify.boxgamereloaded.gui.GuiOverlay;
-import at.playify.boxgamereloaded.interfaces.Game;
-import at.playify.boxgamereloaded.interfaces.Handler;
+import at.playify.boxgamereloaded.interfaces.*;
 import at.playify.boxgamereloaded.interfaces.exceptions.DrawingException;
 import at.playify.boxgamereloaded.level.Level;
 import at.playify.boxgamereloaded.network.connection.ConnectionToServer;
@@ -15,6 +14,7 @@ import at.playify.boxgamereloaded.network.packet.PacketSetWorld;
 import at.playify.boxgamereloaded.paint.PaintHandler;
 import at.playify.boxgamereloaded.player.Player;
 import at.playify.boxgamereloaded.player.PlayerSP;
+import at.playify.boxgamereloaded.util.Borrow;
 import at.playify.boxgamereloaded.util.Finger;
 import at.playify.boxgamereloaded.util.Utils;
 import at.playify.boxgamereloaded.util.bound.RectBound;
@@ -26,14 +26,17 @@ import java.util.Arrays;
 import java.util.Locale;
 
 public class BoxGameReloaded extends Game {
+    public VariableContainer vars;
     public final PlayerSP player=new PlayerSP(this);
     public ConnectionToServer connection = new EmptyConnection();
-    public PaintHandler painter=new PaintHandler(this);
+    public PaintHandler painter;
     public float zoom_x;
     public float zoom_y;
     public float zoom = 1.3f;
     public int vertexcount;
     public float aspectratio;
+    public VertexData vertex=new VertexData();
+    public SkinData skin=new SkinData(this);
     private boolean pauseKeyDown;
     private boolean optionsKeyDown;
     private RectBound leveldrawbound = new RectBound();
@@ -46,7 +49,7 @@ public class BoxGameReloaded extends Game {
     @SuppressWarnings("CanBeFinal")
     private int[] lastticks=new int[10];
     private int lasttickindex;
-    private long lastticktime;
+    long lastticktime;
     private double tps;
     private DecimalFormat dm = new DecimalFormat("0.0");
     public GuiOverlay gui;
@@ -57,6 +60,14 @@ public class BoxGameReloaded extends Game {
 
     public BoxGameReloaded(Handler handler) {
         super(handler);
+        vars=new VariableContainer(this);
+        vars.loader.load();
+        ticker=new TickThread(this);
+        blocks=new Blocks();
+        blocks.init(this);
+        level=new Level(this);
+        level.setSize(20, 20);
+        painter=new PaintHandler(this);
     }
 
     private StringBuilder str = new StringBuilder();
@@ -67,7 +78,7 @@ public class BoxGameReloaded extends Game {
         if (finger.down) {
             finger.control = gui.click(finger);
             if (!finger.control) {
-                if (painter.draw) {
+                if (painter.draw&&connection.pauseCount==0) {
                     painter.handleFingerState(finger);
                 }
             }
@@ -104,16 +115,14 @@ public class BoxGameReloaded extends Game {
                     player1.tick();
                 }
                 painter.handleDrawFingers();
-                if (player != null) {
-                    player.tick();
-                }
+                player.tick();
                 pause = false;
             }
         }
         //Pausestatus bekommen
         boolean lock=gui.tick();
 
-        if (((connection==null||connection.userpause) ? gui.backgroundState()==0 : !connection.pause)&&player!=null&&(!vars.scrollPaint||!painter.pause())) {
+        if ((connection==null||connection.userpause ? gui.backgroundState()==0 : !connection.pause)&&(!vars.scrollPaint||!painter.pause())) {
             float shouldX=Utils.clamp(player.bound.cx(), 0, level.sizeX);
             float x=shouldX-zoom_x;
             float shouldY=Utils.clamp(player.bound.cy(), 0, level.sizeY);
@@ -142,7 +151,6 @@ public class BoxGameReloaded extends Game {
             }
         }
         //Ticks zählen
-        ticker.ticks++;
         lasttickindex=(lasttickindex+1)%lastticks.length;
         lastticks[lasttickindex]=(int) (-lastticktime+(lastticktime=System.nanoTime()));
         long l=0;
@@ -165,7 +173,7 @@ public class BoxGameReloaded extends Game {
         if (vars.tickOnDraw) {
             tick();
         }
-        if (!canDraw) {
+        if (d==null||!d.ready()) {
             return;
         }
         try {
@@ -254,6 +262,9 @@ public class BoxGameReloaded extends Game {
         str.append(dm.format(lastframes.length * 1000000000d / l)).append("FPS,").append(vertexcount).append("Verts");
         txt.add(str.toString());
         str.setLength(0);
+        str.append(Borrow.info());
+        txt.add(str.toString());
+        str.setLength(0);
         str.append("POS:").append(player.bound.toSimpleString(",", true));
         txt.add(str.toString());
         float h=.94f;
@@ -262,15 +273,6 @@ public class BoxGameReloaded extends Game {
             h -= .06f;
         }
         vertexcount = 0;
-    }
-
-    //Objekte initialisieren
-    public void init() {
-        ticker = new TickThread(this);
-        blocks = new Blocks();
-        blocks.init(this);
-        level = new Level(this);
-        level.setSize(20, 20);
     }
 
     @Override
@@ -283,6 +285,7 @@ public class BoxGameReloaded extends Game {
     public void runcmd(String text) {
         //TODO
         System.out.println("RUNCMD:" + text);
+        player.skin=text;
     }
 
     //Tastaturstatusänderungen
@@ -348,8 +351,7 @@ public class BoxGameReloaded extends Game {
     public void finishLevel() {
         player.bound.set(level.spawnPoint);
         vars.finishedLevels.add(vars.world);
-        //TODO save Level finished to config. (using handler)
-        //TODO send PacketSetWorld to next level
+        vars.loader.save();
         connection.sendPacket(new PacketFinish());
     }
 }

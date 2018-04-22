@@ -75,7 +75,7 @@ public class PacketMove extends Packet {
 
     @Override
     public void handle(BoxGameReloaded game, ConnectionToServer connectionToServer) {
-        if (player==null||player.isEmpty()||player.equals(game.vars.playername)){
+        if (player==null||player.isEmpty()||player.equals(game.vars.playerID)) {
             synchronized (game.player.bound) {
                 game.player.motionX = game.player.motionY = 0;
                 game.player.bound.set(x, y, w, h);

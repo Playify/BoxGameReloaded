@@ -36,4 +36,19 @@ public class PlayerMP extends Player {
         bound.setCenter(x, y);
         game.connection.sendPacket(new PacketMove(bound, name));
     }
+
+    @Override
+    public void draw() {
+        super.draw();
+        if (display!=null&&game.vars.nameTags) {
+            game.d.depth(false);
+            game.d.translate(bound.cx(), bound.yh()+bound.h()/7, .5f);
+            float strWidth=game.d.getStringWidth(display)*.3f;
+            float v=1/8f*.3f;
+            game.d.rect(-strWidth/2-v, -v, strWidth+v, .3f+2*v, 0x30000000);
+            game.d.drawStringCenter(display, 0, 0, .3f);
+            game.d.translate(0, -bound.h()/10, -.5f);
+            game.d.depth(true);
+        }
+    }
 }

@@ -31,7 +31,7 @@ public class GameView extends GLSurfaceView implements GLSurfaceView.Renderer, V
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         drawer.gl=gl;
         drawer.font=new FontRenderer(a,drawer);
-        a.game.setCanDraw();
+        drawer.ready=true;
     }
 
     @Override

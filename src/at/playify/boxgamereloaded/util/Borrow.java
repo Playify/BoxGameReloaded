@@ -155,13 +155,15 @@ public class Borrow {
         q.add(o);
     }
 
+    private static StringBuilder str=new StringBuilder();
     public static String info(){
-        StringBuilder ret= new StringBuilder("Borrow=" + borrowed + ", ");
-        ret.append("Bound=").append(bounds.size());
+        str.setLength(0);
+        str.append("Borrow=").append(borrowed).append(", ");
+        str.append("Bound=").append(bounds.size());
         for (Map.Entry<Class, ConcurrentLinkedQueue> entry : map.entrySet()) {
-            ret.append(", ").append(entry.getKey().getSimpleName()).append("=").append(entry.getValue().size());
+            str.append(", ").append(entry.getKey().getSimpleName()).append("=").append(entry.getValue().size());
         }
-        return ret.toString();
+        return str.toString();
     }
 
     public interface Borrowed {

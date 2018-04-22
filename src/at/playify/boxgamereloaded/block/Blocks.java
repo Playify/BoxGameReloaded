@@ -22,6 +22,7 @@ public class Blocks {
     public BlockResize RESIZE;
     public BlockGravity GRAVITY;
     public BlockGravityPad GRAVITY_PAD;
+    public BlockArrow ARROW;
     public int blockscount;
 
     //Block anhand des Zeichens bekommen
@@ -45,6 +46,7 @@ public class Blocks {
         RESIZE = new BlockResize(game, BlockResize.chr);
         GRAVITY=new BlockGravity(game, BlockGravity.chr);
         GRAVITY_PAD=new BlockGravityPad(game, BlockGravityPad.chr);
+        ARROW=new BlockArrow(game, BlockArrow.chr);
 
     }
 }

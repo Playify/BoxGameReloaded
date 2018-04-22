@@ -11,6 +11,7 @@ import java.util.ArrayList;
 public class GuiDraw extends Gui {
     public boolean quick;
     public float state;
+    private PaintButton paintButton;
 
     GuiDraw(BoxGameReloaded game) {
         super(game);
@@ -18,7 +19,7 @@ public class GuiDraw extends Gui {
 
     @Override
     public void initGui(ArrayList<Button> buttons) {
-        buttons.add(new PaintButton(game));
+        buttons.add(paintButton=new PaintButton(game));
         ArrayList<Paintable> p=game.painter.list;
         for (int i=1;i<49;i++) {
             buttons.add(new PaintSelectButton(game, p, i, this));
@@ -40,6 +41,6 @@ public class GuiDraw extends Gui {
         } else {
             state=Math.max(0, state-1/4f);
         }
-        return super.tick()&&(state==0||state==1);
+        return paintButton.tick()&&(state==0||state==1);
     }
 }

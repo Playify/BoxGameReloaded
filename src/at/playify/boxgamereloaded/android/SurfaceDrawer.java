@@ -105,6 +105,21 @@ public class SurfaceDrawer implements Drawer {
             0, 1, 1,
             1, 1, 1
     };
+    public boolean ready;
+    private float[] lineVertex=new float[]{0,0,0,1,1,1};
+
+    public boolean ready(){
+        return ready;
+    }
+
+    @Override
+    public void drawLine(float x, float y, float z, float w, float h, float d, int color) {
+        gl.glPushMatrix();
+        gl.glTranslatef(x, y, z);
+        gl.glScalef(w, h, d);
+        vertexLine(lineVertex,color);
+        gl.glPopMatrix();
+    }
 
 
     SurfaceDrawer(BoxGameReloaded game) {
@@ -195,12 +210,17 @@ public class SurfaceDrawer implements Drawer {
 
     @Override
     public void point(float x, float y, float z, int color) {
+        point(x, y, z, color,3);
+    }
+
+    @Override
+    public void point(float x, float y, float z, int color, float size) {
         FloatBuffer verticesBuffer=checkFloatBuffer(3);
         verticesBuffer.put(x);
         verticesBuffer.put(y);
         verticesBuffer.put(z);
         verticesBuffer.position(0);
-        gl.glPointSize(3);
+        gl.glPointSize(size*h/1040f);
         gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
         float a=((color>>24)&255)/255f, r=((color>>16)&255)/255f, g=((color>>8)&255)/255f, b=((color)&255)/255f;
         gl.glColor4f(r, g, b, a);
@@ -246,6 +266,7 @@ public class SurfaceDrawer implements Drawer {
         FloatBuffer verticesBuffer=checkFloatBuffer(vertex.length);
         verticesBuffer.put(vertex);
         verticesBuffer.position(0);
+        gl.glLineWidth(3*h/1040f);
         gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
         float a=((color>>24)&255)/255f, r=((color>>16)&255)/255f, g=((color>>8)&255)/255f, b=((color)&255)/255f;
         gl.glColor4f(r, g, b, a);
@@ -287,6 +308,7 @@ public class SurfaceDrawer implements Drawer {
             gl.glDisable(GL10.GL_TEXTURE_2D);
             gl.glEnable(GL10.GL_BLEND);
             gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+            gl.glEnable(GL10.GL_POINT_SMOOTH);
             drawing=true;
         }
     }

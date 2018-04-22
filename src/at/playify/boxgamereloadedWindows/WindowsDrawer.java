@@ -186,7 +186,7 @@ public class WindowsDrawer implements Drawer {
         GL11.glPushMatrix();
         GL11.glTranslatef(x, y, z);
         GL11.glScalef(w, h, d);
-        GL11.glLineWidth(2.5f);
+        GL11.glLineWidth(2.5f*this.h/1040f);
         float a=((color >> 24)&255)/255f, r=((color >> 16)&255)/255f, g=((color >> 8)&255)/255f, b=((color)&255)/255f;
         GL11.glColor4f(r, g, b, a);
         GL11.glBegin(GL11.GL_LINES);
@@ -207,15 +207,19 @@ public class WindowsDrawer implements Drawer {
 
     @Override
     public void point(float x, float y, float z, int color) {
+        point(x, y, z, color, 3);
+    }
 
-        GL11.glPointSize(3);
+    @Override
+    public void point(float x, float y, float z, int color, float size) {
+        size*=h/1040f;
+        GL11.glPointSize(size);
         float a=((color >> 24)&255)/255f, r=((color >> 16)&255)/255f, g=((color >> 8)&255)/255f, b=((color)&255)/255f;
         GL11.glColor4f(r, g, b, a);
         GL11.glBegin(GL11.GL_POINTS);
         GL11.glVertex3f(x, y, z);
         game.vertexcount++;
         GL11.glEnd();
-        GL11.glDisable(GL11.GL_POINTS);
     }
 
 
@@ -294,6 +298,8 @@ public class WindowsDrawer implements Drawer {
             GL11.glEnable(GL11.GL_DEPTH_TEST);
             GL11.glEnable(GL11.GL_BLEND);
             GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+            GL11.glEnable(GL11.GL_POINT_SMOOTH);
+
             drawing=true;
         }
     }
@@ -346,6 +352,26 @@ public class WindowsDrawer implements Drawer {
     public void clearDepth() {
         GL11.glClearDepth(1);
         GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
+    }
+
+    @Override
+    public boolean ready() {
+        return true;
+    }
+
+    @Override
+    public void drawLine(float x, float y, float z, float w, float h, float d, int color) {
+        GL11.glPushMatrix();
+        GL11.glTranslatef(x, y, z);
+        GL11.glScalef(w, h, d);
+        GL11.glLineWidth(2.5f*this.h/1040f);
+        float a=((color >> 24)&255)/255f, r=((color >> 16)&255)/255f, g=((color >> 8)&255)/255f, b=((color)&255)/255f;
+        GL11.glColor4f(r, g, b, a);
+        GL11.glBegin(GL11.GL_LINES);
+        GL11.glVertex3f(0, 0, 0);
+        GL11.glVertex3f(1, 1, 1);
+        GL11.glEnd();
+        GL11.glPopMatrix();
     }
 
     //ist Rückseite zeichnen eingeschalten?

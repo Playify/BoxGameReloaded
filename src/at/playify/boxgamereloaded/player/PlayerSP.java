@@ -23,7 +23,16 @@ public class PlayerSP extends Player {
 
     public PlayerSP(BoxGameReloaded game) {
         super(game);
-        display=game.vars.playername;
+    }
+
+    @Override
+    public String skin() {
+        if (display==null) {
+            String s=((int) (Math.random()*1000))+"";
+            s=("0000".substring(s.length()).concat(s)).substring(1);
+            display="Player"+s;
+        }
+        return super.skin();
     }
 
     //Spielertick bewegung,...
@@ -101,11 +110,15 @@ public class PlayerSP extends Player {
             //Spezialfähigkeiten von Blöcken mit Kollision ausführen
             Borrow.freeInside(arr);
             arr=game.level.collideList(bound, arr);
+            ArrayList<Block> list=game.blocks.list;
             out:
-            for (Block block : game.blocks.list) {
+            //noinspection ForLoopReplaceableByForEach
+            for (int i1=0, listSize=list.size();i1<listSize;i1++) {
+                Block block=list.get(i1);
                 in:
                 if (block instanceof Collideable) {
-                    for (CollisionData c : arr) {
+                    for (int i=0, arrSize=arr.size();i<arrSize;i++) {
+                        CollisionData c=arr.get(i);
                         if (c.blk==block) {
                             if (((Collideable) block).onCollide(this, game.level, c.meta, arr)) {
                                 break out;
@@ -189,6 +202,7 @@ public class PlayerSP extends Player {
         game.vars.check.die();
         motionX=motionY=0;
         game.vars.deaths++;
+        game.vars.loader.save();
     }
 
     //Ausgeführt wenn Spieler von Respawnbutton gekillt wird
@@ -196,11 +210,12 @@ public class PlayerSP extends Player {
         game.vars.check.die();
         motionX=motionY=0;
         game.vars.deaths++;
+        game.vars.loader.save();
     }
 
     @Override
     public String name() {
-        return game.vars.playername;
+        return game.vars.playerID;
     }
 
     @Override

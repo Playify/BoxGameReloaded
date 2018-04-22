@@ -41,7 +41,6 @@ public class Main {
         finger=game.fingers[0];
         game.start();
         game.vars.tickOnDraw=false;
-        game.setCanDraw();
 
         while (!Display.isCloseRequested()) {
             runTick();
