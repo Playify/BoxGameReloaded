@@ -5,6 +5,7 @@ import at.playify.boxgamereloaded.level.FakeLevel;
 import at.playify.boxgamereloaded.network.packet.PacketLevelData;
 import at.playify.boxgamereloaded.network.packet.PacketMove;
 import at.playify.boxgamereloaded.util.Finger;
+import at.playify.boxgamereloaded.util.Utils;
 
 import java.util.ArrayList;
 
@@ -16,6 +17,10 @@ public class PaintHandler {
     private final BoxGameReloaded game;
     public boolean draw;
     private boolean wasdrawing;
+    private boolean down;
+    private boolean zooming;
+    private float lx;
+    private float ly;
 
     public PaintHandler(BoxGameReloaded game) {
         this.game=game;
@@ -32,28 +37,61 @@ public class PaintHandler {
     public void handleDrawFingers() {
         if (!draw) {
             wasdrawing=false;
+            down=false;
             return;
         }
-        boolean drawing=false;
-        for (Finger finger : game.fingers) {
-            if (finger.down&&!finger.control) {
-                drawing=true;
-                float w=game.d.getWidth(), h=game.d.getHeight();
-                float x=(finger.getX()-w/2)*game.vars.display_size*game.aspectratio/(w*game.zoom)+game.zoom_x;
-                float y=-(finger.getY()-h/2)*game.vars.display_size/(h*game.zoom)+game.zoom_y;
-                draw(x, y, false, finger);
+        if (game.gui.drawer.zoom) {
+            Finger finger=game.fingers[0];
+            if (down!=(finger.down&&!finger.control)) {
+                down^=true;
+                if (down) {
+                    lx=finger.getX();
+                    ly=finger.getY();
+                    zooming=finger.getX()/game.d.getHeight()<1/7f;
+                }
             }
-        }
-        if (!drawing&&wasdrawing) {
-            game.connection.sendPacket(new PacketLevelData(game.level.toWorldString()));
-        }
-        if (!game.connection.serverbound.equals(game.player.bound)) {
-            game.connection.sendPacket(new PacketMove(game.player.bound));
-            game.connection.serverbound.set(game.player.bound);
-        }
-        wasdrawing=drawing;
-        if (paint instanceof Tickable) {
-            ((Tickable) paint).tick();
+            if (down) {
+                if (zooming) {
+                    float zoom=game.zoom*((ly-finger.getY())/game.d.getHeight()+1);
+                    ly=finger.getY();
+                    game.zoom=Utils.clamp(zoom, 0.3f, 5f);
+                } else {
+                    float w=game.d.getWidth(), h=game.d.getHeight();
+                    float x=(lx-finger.getX())*game.vars.display_size*game.aspectratio/(w*game.zoom)+game.zoom_x;
+                    float y=-(ly-finger.getY())*game.vars.display_size/(h*game.zoom)+game.zoom_y;
+
+                    lx=finger.getX();
+                    ly=finger.getY();
+
+
+                    game.zoom_x=Utils.clamp(x, 0, game.level.sizeX);
+                    game.zoom_y=Utils.clamp(y, 0, game.level.sizeY);
+                }
+            }
+        } else {
+            down=false;
+            boolean drawing=false;
+            float w=game.d.getWidth(), h=game.d.getHeight();
+            for (Finger finger : game.fingers) {
+                if (finger.down&&!finger.control) {
+                    drawing=true;
+                    float x=(finger.getX()-w/2)*game.vars.display_size*game.aspectratio/(w*game.zoom)+game.zoom_x;
+                    float y=-(finger.getY()-h/2)*game.vars.display_size/(h*game.zoom)+game.zoom_y;
+                    draw(x, y, false, finger);
+                }
+            }
+
+            if (!drawing&&wasdrawing) {
+                game.connection.sendPacket(new PacketLevelData(game.level.toWorldString()));
+            }
+            if (!game.connection.serverbound.equals(game.player.bound)) {
+                game.connection.sendPacket(new PacketMove(game.player.bound));
+                game.connection.serverbound.set(game.player.bound);
+            }
+            wasdrawing=drawing;
+            if (paint instanceof Tickable) {
+                ((Tickable) paint).tick();
+            }
         }
     }
 
@@ -63,10 +101,12 @@ public class PaintHandler {
     }
 
     public void handleFingerState(Finger finger) {
-        float ww=game.d.getWidth(), h=game.d.getHeight();
-        float x=(finger.getX()-ww/2)*game.vars.display_size*game.aspectratio/(ww*game.zoom)+game.zoom_x;
-        float y=-(finger.getY()-h/2)*game.vars.display_size/(h*game.zoom)+game.zoom_y;
-        draw(x, y, true, finger);
+        if (!game.gui.drawer.zoom) {
+            float ww=game.d.getWidth(), h=game.d.getHeight();
+            float x=(finger.getX()-ww/2)*game.vars.display_size*game.aspectratio/(ww*game.zoom)+game.zoom_x;
+            float y=-(finger.getY()-h/2)*game.vars.display_size/(h*game.zoom)+game.zoom_y;
+            draw(x, y, true, finger);
+        }
     }
 
     public void setDraw(boolean draw) {

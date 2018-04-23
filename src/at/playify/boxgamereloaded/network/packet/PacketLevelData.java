@@ -59,6 +59,7 @@ public class PacketLevelData extends Packet {
                 JSONObject lvl=paint.getJSONObject(world);
                 lvl.put("data", levelstr);
                 server.handler.write("paint", paint);
+                server.getLevel(world).loadWorldString(levelstr);
             } catch (Exception e) {
                 e.printStackTrace();
             }

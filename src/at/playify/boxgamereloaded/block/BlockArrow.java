@@ -31,10 +31,6 @@ public class BlockArrow extends Block {
 
     @Override
     public void draw(int x, int y, Level level) {
-        game.d.pushMatrix();
-        if ((game.painter.paint()!=this||!game.painter.draw)&&game.vars.cubic) {
-            game.d.translate(0, 0, 1);
-        }
         boolean r, up;
         if (r=(level.get(x+1, y) instanceof BlockArrow)) {
             game.d.drawLine(x+.5f, y+.5f, 0, 1, 0, 0, 0xFF000000);
@@ -68,15 +64,17 @@ public class BlockArrow extends Block {
         }
         if (meta>0&&meta<9) {
             meta++;
+            game.d.pushMatrix();
             game.d.translate(x+.5f, y+.5f, 0);
             game.d.rotate(45*meta, 0, 0, 1);
             game.d.translate(0, -.1f, 0);
             game.d.vertex(game.vertex.arrow, 0xFF000000);
+            point=false;
+            game.d.popMatrix();
         }
         if (point) {
             game.d.point(x+.5f, y+.5f, 0, 0xFF000000, 30);
         }
-        game.d.popMatrix();
     }
 
     @Override

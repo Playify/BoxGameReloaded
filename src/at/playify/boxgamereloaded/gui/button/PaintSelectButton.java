@@ -44,6 +44,7 @@ public class PaintSelectButton extends Button {
         if (paint==null) return false;
         game.painter.paint(paint);
         game.gui.drawer.quick=false;
+        game.gui.drawer.zoom=false;
         return true;
     }
 

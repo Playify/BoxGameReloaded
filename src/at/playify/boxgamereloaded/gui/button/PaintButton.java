@@ -24,7 +24,7 @@ public class PaintButton extends Button {
 
     @Override
     public void draw(Drawer d) {
-        if ((!((game.vars.debug.console||game.painter.draw||game.vars.world.startsWith("paint_"))&&(game.gui.isOptionsVisible()||game.painter.draw)))) {
+        if ((!((game.vars.debug.console||game.painter.draw||game.vars.world.startsWith("paint_"))&&(game.gui.isOptionsVisible()||game.painter.draw)))||game.gui.isMainMenuVisible()) {
             game.gui.drawer.quick=false;
             return;
         }
@@ -46,10 +46,12 @@ public class PaintButton extends Button {
 
     @Override
     public boolean click(Finger finger) {
-        if ((game.vars.debug.console||game.vars.world.startsWith("paint_"))) {
+        if ((game.vars.debug.console||game.vars.world.startsWith("paint_"))&&!game.gui.isMainMenuVisible()) {
             if (game.gui.isOptionsVisible()) {
                 if (game.painter.draw) {
                     game.painter.draw=false;
+                    game.gui.drawer.quick=false;
+                    game.gui.drawer.zoom=false;
                 } else {
                     game.gui.closeOptions();
                     game.painter.draw=true;
@@ -59,10 +61,12 @@ public class PaintButton extends Button {
                 game.gui.drawer.quick^=true;
             }
             game.gui.drawer.quick&=game.connection.pauseCount==0;
+            game.gui.drawer.zoom&=game.connection.pauseCount==0;
             return true;
         } else {
             game.painter.draw=false;
             game.gui.drawer.quick=false;
+            game.gui.drawer.zoom=false;
             game.gui.drawer.state=0;
             return false;
         }

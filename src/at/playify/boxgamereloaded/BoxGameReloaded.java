@@ -60,6 +60,7 @@ public class BoxGameReloaded extends Game {
 
     public BoxGameReloaded(Handler handler) {
         super(handler);
+        paused=true;
         vars=new VariableContainer(this);
         vars.loader.load();
         ticker=new TickThread(this);

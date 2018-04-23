@@ -158,10 +158,11 @@ public class Borrow {
     private static StringBuilder str=new StringBuilder();
     public static String info(){
         str.setLength(0);
-        str.append("Borrow=").append(borrowed).append(", ");
-        str.append("Bound=").append(bounds.size());
-        for (Map.Entry<Class, ConcurrentLinkedQueue> entry : map.entrySet()) {
-            str.append(", ").append(entry.getKey().getSimpleName()).append("=").append(entry.getValue().size());
+        str.append("Borrow=").append(borrowed);
+        if (!map.isEmpty()) {
+            for (Map.Entry<Class,ConcurrentLinkedQueue> entry : map.entrySet()) {
+                str.append(", ").append(entry.getKey().getSimpleName()).append("=").append(entry.getValue().size());
+            }
         }
         return str.toString();
     }

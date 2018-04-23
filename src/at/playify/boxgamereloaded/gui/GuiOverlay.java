@@ -16,6 +16,7 @@ public class GuiOverlay extends Gui {
     public GuiOverlay(BoxGameReloaded game) {
         super(game);
         drawer=new GuiDraw(this.game);
+        main=new GuiMainMenu(this.game);
     }
 
     @Override
@@ -29,6 +30,7 @@ public class GuiOverlay extends Gui {
 
     public void openMainMenu() {
         main=new GuiMainMenu(game);
+        drawer.zoom=drawer.quick=game.painter.draw=false;
     }
 
     public boolean isMainMenuVisible() {
@@ -51,17 +53,17 @@ public class GuiOverlay extends Gui {
                 break;
             }
         }
-        if (!click&&options!=null) {
-            click=options.click(finger);
-        }
-        if (!click&&main!=null) {
-            click=main.click(finger);
-        }
         if (!click) {
             click=drawer.click(finger);
         }
         if (!click) {
             click = super.click(finger);
+        }
+        if (!click&&options!=null) {
+            click=options.click(finger);
+        }
+        if (!click&&main!=null) {
+            click=main.click(finger);
         }
         if (!click) {
             float width = game.d.getWidth();
@@ -118,6 +120,7 @@ public class GuiOverlay extends Gui {
 
     public void openOptions() {
         options=new GuiOptions(game);
+        drawer.quick=false;
     }
 
     public boolean isOptionsVisible() {

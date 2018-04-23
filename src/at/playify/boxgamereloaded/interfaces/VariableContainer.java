@@ -25,8 +25,8 @@ public class VariableContainer {
     public boolean cubic=true;
     @ConfigValue
     public boolean cubic_check=true;
-    @ConfigValue
-    public boolean scrollPaint;
+    //@ConfigValue
+    public boolean scrollPaint=true;
     @ConfigValue
     public boolean paintPoints;
     @ConfigValue
@@ -62,6 +62,12 @@ public class VariableContainer {
         this.game=(BoxGameReloaded) game;
         String s=game.handler.getClass().getSimpleName();
         playerID=s.substring(0, s.length()-7)+"User@"+Long.toHexString(System.currentTimeMillis()^(System.nanoTime()<<16));
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            @Override
+            public void run() {
+                VariableContainer.this.loader.save();
+            }
+        });
     }
 
     public class Debug {

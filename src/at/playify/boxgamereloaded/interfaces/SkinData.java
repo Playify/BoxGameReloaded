@@ -111,21 +111,22 @@ public class SkinData {
                 } else {
                     game.d.lineRect(bound.minX, bound.minY, bound.maxX-bound.minX, bound.maxY-bound.minY, color);
                 }
-            }
-            if (game.vars.cubic) {
-                game.d.point(bound.minX, bound.minY, bound.minZ, color2);
-                game.d.point(bound.minX, bound.maxY, bound.minZ, color2);
-                game.d.point(bound.maxX, bound.minY, bound.minZ, color2);
-                game.d.point(bound.maxX, bound.maxY, bound.minZ, color2);
-                game.d.point(bound.minX, bound.maxY, bound.maxZ, color2);
-                game.d.point(bound.minX, bound.minY, bound.maxZ, color2);
-                game.d.point(bound.maxX, bound.maxY, bound.maxZ, color2);
-                game.d.point(bound.maxX, bound.minY, bound.maxZ, color2);
             } else {
-                game.d.point(bound.minX, bound.minY, 0, color2);
-                game.d.point(bound.minX, bound.maxY, 0, color2);
-                game.d.point(bound.maxX, bound.minY, 0, color2);
-                game.d.point(bound.maxX, bound.maxY, 0, color2);
+                if (game.vars.cubic) {
+                    game.d.point(bound.minX, bound.minY, bound.minZ, color2);
+                    game.d.point(bound.minX, bound.maxY, bound.minZ, color2);
+                    game.d.point(bound.maxX, bound.minY, bound.minZ, color2);
+                    game.d.point(bound.maxX, bound.maxY, bound.minZ, color2);
+                    game.d.point(bound.minX, bound.maxY, bound.maxZ, color2);
+                    game.d.point(bound.minX, bound.minY, bound.maxZ, color2);
+                    game.d.point(bound.maxX, bound.maxY, bound.maxZ, color2);
+                    game.d.point(bound.maxX, bound.minY, bound.maxZ, color2);
+                } else {
+                    game.d.point(bound.minX, bound.minY, 0, color2);
+                    game.d.point(bound.minX, bound.maxY, 0, color2);
+                    game.d.point(bound.maxX, bound.minY, 0, color2);
+                    game.d.point(bound.maxX, bound.maxY, 0, color2);
+                }
             }
         }
     }

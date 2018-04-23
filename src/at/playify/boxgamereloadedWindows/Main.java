@@ -2,6 +2,7 @@ package at.playify.boxgamereloadedWindows;
 
 import at.playify.boxgamereloaded.BoxGameReloaded;
 import at.playify.boxgamereloaded.util.Finger;
+import at.playify.boxgamereloaded.util.Utils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -179,6 +180,11 @@ public class Main {
                 } else {
                     finger.set(Mouse.getEventX(), Display.getHeight()-Mouse.getEventY());
                 }
+            }
+            int wheel=Mouse.getDWheel();
+            float v=wheel*0.001f+1;
+            if (game.painter.draw) {
+                game.zoom=Utils.clamp(game.zoom*v, 0.3f, 5f);
             }
         } catch (Exception e) {
             System.err.println("Input Exception");
