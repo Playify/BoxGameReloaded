@@ -27,11 +27,10 @@ public class PaintHandler {
         fakeLevel=new FakeLevel(game);
         paint=game.player;
         list.add(new MovePaint());
-        if (game.vars.scrollPaint) {
-            list.add(new ScrollPaint(game));
-        }
+        //list.add(new ScrollPaint(game));
         list.addAll(game.blocks.list);
         list.add(game.player);
+        list.add(new SpawnPaint(game));
     }
 
     public void handleDrawFingers() {

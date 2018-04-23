@@ -123,7 +123,7 @@ public class BoxGameReloaded extends Game {
         //Pausestatus bekommen
         boolean lock=gui.tick();
 
-        if ((connection==null||connection.userpause ? gui.backgroundState()==0 : !connection.pause)&&(!vars.scrollPaint||!painter.pause())) {
+        if ((connection==null||connection.userpause ? gui.backgroundState()==0 : !connection.pause)&&(!painter.pause())) {
             float shouldX=Utils.clamp(player.bound.cx(), 0, level.sizeX);
             float x=shouldX-zoom_x;
             float shouldY=Utils.clamp(player.bound.cy(), 0, level.sizeY);
@@ -185,7 +185,7 @@ public class BoxGameReloaded extends Game {
             d.scale(1 / aspectratio, 1);
             d.pushMatrix();
             d.scale(1 / (vars.display_size));
-            if (((connection==null||connection.userpause) ? gui.backgroundState()==0 : !connection.pause)&&vars.instant_zoom&&(!vars.scrollPaint||!painter.pause())) {
+            if (((connection==null||connection.userpause) ? gui.backgroundState()==0 : !connection.pause)&&vars.instant_zoom&&(!painter.pause())) {
                 zoom_x = Utils.clamp(player.bound.cx(), 0, level.sizeX);
                 zoom_y = Utils.clamp(player.bound.cy(), 0, level.sizeY);
             }

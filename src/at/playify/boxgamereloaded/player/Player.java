@@ -80,7 +80,7 @@ public abstract class Player implements Paintable {
 
 
     private void drawPart(BoundingBox3d bound, boolean base) {
-        game.skin.get(skin).draw(this, bound, base, color, 0xFF000000);
+        game.skin.get(this.skin).draw(this, bound, base, color, 0xFF000000);
     }
 
     //tick für Spieler ausführen um Animationen auszuführen

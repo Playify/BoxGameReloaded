@@ -24,6 +24,8 @@ public class Main {
     private static Finger finger;
     private static BoxGameReloaded game;
     static final File base=new File(System.getenv("APPDATA"), "BoxGameReloaded");
+    private static boolean down, zooming;
+    private static float lx, ly;
 
     public static void main(String[] args) {
         loadLibrary();
@@ -185,6 +187,33 @@ public class Main {
             float v=wheel*0.001f+1;
             if (game.painter.draw) {
                 game.zoom=Utils.clamp(game.zoom*v, 0.3f, 5f);
+
+                if (down!=(Mouse.isButtonDown(1)&&!finger.control)) {
+                    down^=true;
+                    if (down) {
+                        lx=finger.getX();
+                        ly=finger.getY();
+                        zooming=finger.getX()/game.d.getHeight()<1/7f;
+                    }
+                }
+                if (down) {
+                    if (zooming) {
+                        float zoom=game.zoom*((ly-finger.getY())/game.d.getHeight()+1);
+                        ly=finger.getY();
+                        game.zoom=Utils.clamp(zoom, 0.3f, 5f);
+                    } else {
+                        float w=game.d.getWidth(), h=game.d.getHeight();
+                        float x=(lx-finger.getX())*game.vars.display_size*game.aspectratio/(w*game.zoom)+game.zoom_x;
+                        float y=-(ly-finger.getY())*game.vars.display_size/(h*game.zoom)+game.zoom_y;
+
+                        lx=finger.getX();
+                        ly=finger.getY();
+
+
+                        game.zoom_x=Utils.clamp(x, 0, game.level.sizeX);
+                        game.zoom_y=Utils.clamp(y, 0, game.level.sizeY);
+                    }
+                }
             }
         } catch (Exception e) {
             System.err.println("Input Exception");
