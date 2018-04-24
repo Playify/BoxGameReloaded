@@ -26,7 +26,7 @@ public class PaintHandler {
         this.game=game;
         fakeLevel=new FakeLevel(game);
         paint=game.player;
-        list.add(new MovePaint());
+        list.add(new PlayPaint());
         //list.add(new ScrollPaint(game));
         list.addAll(game.blocks.list);
         list.add(game.player);
@@ -123,6 +123,6 @@ public class PaintHandler {
     }
 
     public boolean pause() {
-        return draw&&(!(paint instanceof MovePaint)||game.gui.drawer.quick);
+        return draw&&(!(paint instanceof PlayPaint)||game.gui.drawer.quick);
     }
 }

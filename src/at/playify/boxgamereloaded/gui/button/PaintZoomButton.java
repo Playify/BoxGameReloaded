@@ -2,6 +2,7 @@ package at.playify.boxgamereloaded.gui.button;
 
 import at.playify.boxgamereloaded.BoxGameReloaded;
 import at.playify.boxgamereloaded.interfaces.Drawer;
+import at.playify.boxgamereloaded.paint.PlayPaint;
 import at.playify.boxgamereloaded.util.BoundingBox3d;
 import at.playify.boxgamereloaded.util.Finger;
 
@@ -24,7 +25,8 @@ public class PaintZoomButton extends Button {
 
     @Override
     public boolean click(Finger finger) {
-        if ((game.vars.debug.console||game.vars.world.startsWith("paint_"))&&!game.gui.isMainMenuVisible()&&game.painter.draw&&!game.gui.isOptionsVisible()) {
+        if ((game.vars.debug.console||game.vars.world.startsWith("paint_"))
+                &&!game.gui.isMainMenuVisible()&&game.painter.draw&&!game.gui.isOptionsVisible()&&!(game.painter.paint() instanceof PlayPaint)) {
             game.gui.drawer.quick=false;
             game.gui.drawer.zoom^=true;
             game.gui.drawer.zoom&=game.connection.pauseCount==0;
@@ -36,7 +38,8 @@ public class PaintZoomButton extends Button {
 
     @Override
     public void draw(Drawer d) {
-        if ((!((game.vars.debug.console||game.painter.draw||game.vars.world.startsWith("paint_"))&&(game.gui.isOptionsVisible()||game.painter.draw)))||game.gui.isMainMenuVisible()) {
+        if ((!((game.vars.debug.console||game.painter.draw||game.vars.world.startsWith("paint_"))&&game.painter.draw))
+                ||game.gui.isMainMenuVisible()||game.gui.isOptionsVisible()||(game.painter.paint() instanceof PlayPaint)) {
             return;
         }
         int color=color();

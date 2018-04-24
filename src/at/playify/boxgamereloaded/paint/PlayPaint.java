@@ -2,7 +2,7 @@ package at.playify.boxgamereloaded.paint;
 
 import at.playify.boxgamereloaded.util.Finger;
 
-public class MovePaint implements Paintable {
+public class PlayPaint implements Paintable {
 
     @Override
     public void draw(int data) {

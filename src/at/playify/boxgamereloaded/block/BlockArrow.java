@@ -31,6 +31,8 @@ public class BlockArrow extends Block {
 
     @Override
     public void draw(int x, int y, Level level) {
+        game.d.pushMatrix();
+        if (game.vars.cubic) game.d.translate(0, 0, 1);
         boolean r, up;
         if (r=(level.get(x+1, y) instanceof BlockArrow)) {
             game.d.drawLine(x+.5f, y+.5f, 0, 1, 0, 0, 0xFF000000);
@@ -75,6 +77,7 @@ public class BlockArrow extends Block {
         if (point) {
             game.d.point(x+.5f, y+.5f, 0, 0xFF000000, 30);
         }
+        game.d.popMatrix();
     }
 
     @Override
