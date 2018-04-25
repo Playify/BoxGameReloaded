@@ -55,6 +55,7 @@ public class PacketSpawn extends Packet {
 
     @Override
     public void handle(BoxGameReloaded game, ConnectionToServer connectionToServer) {
+        game.level.spawnPoint.set(x, y, w, h);
         game.vars.check.check(game.level.spawnPoint);
     }
 
