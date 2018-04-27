@@ -31,6 +31,7 @@ public class PaintHandler {
         list.addAll(game.blocks.list);
         list.add(game.player);
         list.add(new SpawnPaint(game));
+        list.add(new LevelSpawnPaint(game));
     }
 
     public void handleDrawFingers() {
@@ -80,7 +81,7 @@ public class PaintHandler {
                 }
             }
 
-            if (!drawing&&wasdrawing) {
+            if (!drawing&&wasdrawing&&!(paint() instanceof PlayPaint)) {
                 game.connection.sendPacket(new PacketLevelData(game.level.toWorldString()));
             }
             if (!game.connection.serverbound.equals(game.player.bound)) {

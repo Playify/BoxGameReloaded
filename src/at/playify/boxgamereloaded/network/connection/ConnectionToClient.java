@@ -127,11 +127,12 @@ public class ConnectionToClient extends Thread implements Closeable{
     public void setWorld(String w) {
         server.broadcast(new PacketResetPlayersInWorld(this.name), world, this);
         ServerLevel level=server.getLevel(w);
+        boolean b=false;
         if (!this.world.equals(w)) {
+            b=true;
             this.world=w;
             this.sendPacket(new PacketSetWorld(w));
-            bound.set(level.spawnPoint);
-            this.sendPacket(new PacketMove(level.spawnPoint, this.name));
+            this.sendPacket(new PacketMove(level.spawnPoint, name));
             this.sendPacket(new PacketSpawn(level.spawnPoint));
         }
         server.broadcast(new PacketMove(this), world, this);
@@ -143,6 +144,9 @@ public class ConnectionToClient extends Thread implements Closeable{
             ConnectionToClient client=list.get(i);
             this.sendPacket(new PacketMove(client));
             this.sendPacket(new PacketSkin(client.name, client.skin));
+        }
+        if (b) {
+            this.sendPacket(new PacketMove(level.spawnPoint, name));
         }
     }
 }

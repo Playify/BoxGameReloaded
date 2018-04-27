@@ -90,4 +90,8 @@ public class Utils {
         int rr= (int) (255*r),gg= (int) (255*g),bb= (int) (255*b);
         return 0xFF000000|(rr<<16)|(gg<<8)|(bb);
     }
+
+    public static int round(float v) {
+        return Math.round(v);
+    }
 }

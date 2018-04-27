@@ -11,7 +11,6 @@ public class PacketLevelData extends Packet {
     private String levelstr;
     private String world;
 
-    @SuppressWarnings("WeakerAccess")
     public PacketLevelData(String levelstr) {
         this.levelstr=levelstr;
     }

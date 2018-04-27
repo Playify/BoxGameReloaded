@@ -51,7 +51,6 @@ public abstract class Game {
     @SuppressWarnings("unused")
     public void pause(){
         paused=true;
-        pauseLock.lock();
     }
     //genutzt von Android
     @SuppressWarnings("unused")

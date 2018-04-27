@@ -67,10 +67,10 @@ public class ServerLevel {
         }
         str.append("+").append(sizeX);
         str.append("+").append(sizeY);
-        str.append("+").append(((int) (spawnPoint.x() * 100)));
-        str.append("+").append(((int) (spawnPoint.y() * 100)));
-        str.append("+").append(((int) (spawnPoint.w() * 100)));
-        str.append("+").append(((int) (spawnPoint.h() * 100)));
+        str.append("+").append((Utils.round(spawnPoint.x()*100)));
+        str.append("+").append((Utils.round(spawnPoint.y()*100)));
+        str.append("+").append((Utils.round(spawnPoint.w()*100)));
+        str.append("+").append((Utils.round(spawnPoint.h()*100)));
         return Compresser.compress(str.toString());
     }
     public void loadWorldString(String s) {

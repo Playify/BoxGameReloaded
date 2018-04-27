@@ -17,7 +17,7 @@ public class Level {
     protected BoxGameReloaded game;
     private Block[] blocks;//Blöcke im Level
     private int[] metas;//Metadaten der Blöcke
-    public RectBound spawnPoint = new RectBound(.1f, 0f, .8f, .8f);
+    public final RectBound spawnPoint=new RectBound(.1f, 0f, .8f, .8f);
     public Level(BoxGameReloaded game) {
         this.game = game;
         blocks=new Block[sizeX*sizeY];
@@ -191,10 +191,10 @@ public class Level {
         }
         str.append("+").append(sizeX);
         str.append("+").append(sizeY);
-        str.append("+").append(((int) (spawnPoint.x()*100)));
-        str.append("+").append(((int) (spawnPoint.y()*100)));
-        str.append("+").append(((int) (spawnPoint.w()*100)));
-        str.append("+").append(((int) (spawnPoint.h()*100)));
+        str.append("+").append((Utils.round(spawnPoint.x()*100)));
+        str.append("+").append((Utils.round(spawnPoint.y()*100)));
+        str.append("+").append((Utils.round(spawnPoint.w()*100)));
+        str.append("+").append((Utils.round(spawnPoint.h()*100)));
         return Compresser.compress(str.toString());
     }
 

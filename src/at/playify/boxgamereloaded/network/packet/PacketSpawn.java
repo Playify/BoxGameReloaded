@@ -13,7 +13,6 @@ public class PacketSpawn extends Packet {
     public float w=.8f;
     public float h=.8f;
 
-    @SuppressWarnings("unused")
     public PacketSpawn(RectBound bound) {
         x=bound.x();
         y=bound.y();
@@ -56,6 +55,7 @@ public class PacketSpawn extends Packet {
     @Override
     public void handle(BoxGameReloaded game, ConnectionToServer connectionToServer) {
         game.level.spawnPoint.set(x, y, w, h);
+        game.vars.inverted_gravity=false;
         game.vars.check.check(game.level.spawnPoint);
     }
 
