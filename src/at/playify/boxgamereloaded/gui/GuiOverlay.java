@@ -30,7 +30,7 @@ public class GuiOverlay extends Gui {
 
     public void openMainMenu() {
         main=new GuiMainMenu(game);
-        drawer.zoom=drawer.quick=game.painter.draw=false;
+        game.painter.zoom=game.painter.quick=game.painter.draw=false;
     }
 
     public boolean isMainMenuVisible() {
@@ -120,7 +120,7 @@ public class GuiOverlay extends Gui {
 
     public void openOptions() {
         options=new GuiOptions(game);
-        drawer.quick=false;
+        game.painter.quick=false;
     }
 
     public boolean isOptionsVisible() {

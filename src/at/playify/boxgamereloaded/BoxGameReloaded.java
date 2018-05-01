@@ -2,13 +2,16 @@ package at.playify.boxgamereloaded;
 
 
 import at.playify.boxgamereloaded.block.Blocks;
+import at.playify.boxgamereloaded.commands.CommandHandler;
 import at.playify.boxgamereloaded.gui.GuiOverlay;
 import at.playify.boxgamereloaded.interfaces.*;
 import at.playify.boxgamereloaded.interfaces.exceptions.DrawingException;
 import at.playify.boxgamereloaded.level.Level;
+import at.playify.boxgamereloaded.network.connection.ConnectionSinglePlayer;
 import at.playify.boxgamereloaded.network.connection.ConnectionToServer;
 import at.playify.boxgamereloaded.network.connection.EmptyConnection;
 import at.playify.boxgamereloaded.network.packet.PacketFinish;
+import at.playify.boxgamereloaded.network.packet.PacketHello;
 import at.playify.boxgamereloaded.network.packet.PacketSetPauseMode;
 import at.playify.boxgamereloaded.network.packet.PacketSetWorld;
 import at.playify.boxgamereloaded.paint.PaintHandler;
@@ -28,6 +31,7 @@ import java.util.Locale;
 public class BoxGameReloaded extends Game {
     public VariableContainer vars;
     public final PlayerSP player=new PlayerSP(this);
+    public final CommandHandler commandHandler;
     public ConnectionToServer connection = new EmptyConnection();
     public PaintHandler painter;
     public float zoom_x;
@@ -37,6 +41,7 @@ public class BoxGameReloaded extends Game {
     public float aspectratio;
     public VertexData vertex=new VertexData();
     public SkinData skin=new SkinData(this);
+    public TailData tail=new TailData(this);
     private boolean pauseKeyDown;
     private boolean optionsKeyDown;
     private RectBound leveldrawbound = new RectBound();
@@ -69,6 +74,7 @@ public class BoxGameReloaded extends Game {
         level=new Level(this);
         level.setSize(20, 20);
         painter=new PaintHandler(this);
+        commandHandler=new CommandHandler(this);
     }
 
     private StringBuilder str = new StringBuilder();
@@ -100,6 +106,13 @@ public class BoxGameReloaded extends Game {
     //Spieltick ausführen
     @Override
     public void tick() {
+        if (connection.isClosed()) {
+            commandHandler.error("Connection closed! reconnecting to SinglePlayer");
+            connection.close();
+            connection=new ConnectionSinglePlayer(this);
+            connection.sendPacket(new PacketHello());
+            connection.sendPacket(new PacketSetWorld(vars.world));
+        }
         boolean pause = false;
         if (connection != null) {
             pause = connection.isPaused(false);
@@ -284,9 +297,7 @@ public class BoxGameReloaded extends Game {
 
     @Override
     public void runcmd(String text) {
-        //TODO
-        System.out.println("RUNCMD:" + text);
-        player.skin=text;
+        commandHandler.run(text);
     }
 
     //Tastaturstatusänderungen
@@ -299,9 +310,6 @@ public class BoxGameReloaded extends Game {
             else if (gui.isOptionsVisible()) keyChar='o';
             else keyChar='p';
             keys[keyChar]=keys[257];
-        }
-        if (keyChar == 'c' && vars.debug.console && !handler.isKeyboardVisible()) {
-            handler.setKeyboardVisible(true);
         }
         if (keyChar == 'p') {
             if (paused != keys['p']) {
@@ -336,6 +344,12 @@ public class BoxGameReloaded extends Game {
         }
         if (keyChar=='c'&&!keys['c']&&vars.debug.console) {
             handler.setKeyboardVisible(true);
+        }
+        if (keyChar=='v'&&!keys['v']&&(vars.debug.console||vars.world.startsWith("paint_"))&&!gui.isMainMenuVisible()) {
+            painter.draw^=true;
+        }
+        if (keyChar=='q'&&!keys['q']&&(vars.debug.console||vars.world.startsWith("paint_"))&&!gui.isMainMenuVisible()&&painter.draw) {
+            painter.quick^=true;
         }
         if (keys[keyChar]) {
             if (Character.isDigit(keyChar)) {

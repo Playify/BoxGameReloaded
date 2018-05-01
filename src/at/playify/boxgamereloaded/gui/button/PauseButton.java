@@ -59,7 +59,7 @@ public class PauseButton extends Button {
                 d.translate(1/7f-1/2f, 1/7f-1/2f);
                 d.rotate(26.565f*pauseState, 0, 0, 1);
                 d.cube(0, -1/7f, 0, 6/7f, 1/7f, 1, color, true, false, false, false);
-                d.cube(2.9f/7f, -2.2f/7f*pauseState, 0, 2.2f/7f, 1.2f/7f*pauseState, 1, color, false, false, false, false);
+                d.cube(2.8f/7f, -2.3f/7f*pauseState, 0, 2.3f/7f, 1.3f/7f*pauseState, 1, color, false, false, false, false);
                 d.popMatrix();
                 d.scale(1, -1, 1);
             }
@@ -76,7 +76,7 @@ public class PauseButton extends Button {
 
     @Override
     public boolean tick() {
-        boolean visible=!game.gui.isMainMenuVisible()&&!(game.gui.drawer.quick&&!game.gui.isOptionsVisible());
+        boolean visible=!game.gui.isMainMenuVisible()&&!(game.painter.quick&&!game.gui.isOptionsVisible());
         if (visible) {
             visibleState=Math.min(1f, visibleState+1/8f);
         } else {

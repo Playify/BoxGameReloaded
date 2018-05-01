@@ -8,12 +8,9 @@ import android.os.Handler;
 import android.view.*;
 import android.widget.Toast;
 
-import com.crashlytics.android.Crashlytics;
-
 import at.playify.boxgamereloaded.BoxGameReloaded;
 import at.playify.boxgamereloaded.gui.GuiOverlay;
 import at.playify.boxgamereloaded.interfaces.Game;
-import io.fabric.sdk.android.Fabric;
 
 public class GameActivity extends Activity {
     public Game game;
@@ -32,7 +29,6 @@ public class GameActivity extends Activity {
         game.start();
 
         super.onCreate(savedInstanceState);
-        Fabric.with(this, new Crashlytics());
     }
 
     @Override

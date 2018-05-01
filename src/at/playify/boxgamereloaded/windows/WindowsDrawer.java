@@ -1,4 +1,4 @@
-package at.playify.boxgamereloadedWindows;
+package at.playify.boxgamereloaded.windows;
 
 import at.playify.boxgamereloaded.BoxGameReloaded;
 import at.playify.boxgamereloaded.interfaces.Drawer;
@@ -6,20 +6,19 @@ import at.playify.boxgamereloaded.interfaces.exceptions.DrawingException;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.GLU;
 
+import javax.imageio.ImageIO;
+import java.io.IOException;
+import java.util.HashMap;
+
+import static org.lwjgl.opengl.GL11.*;
+
 public class WindowsDrawer implements Drawer {
     //Größe vom Fenster
     public int w;
     public int h;
-    private final float[] vertexBACK=new float[]{
-            0, 0, 1,
-            0, 1, 1,
-            1, 1, 1,
-            0, 0, 1,
-            1, 0, 1,
-            1, 1, 1
-    };
     private boolean drawing;//derzeitig am zeichnen
     private BoxGameReloaded game;
+    private FontRenderer font=new FontRenderer(this);
     //Vertexes um nicht jedes Mal zeichnen neu generieren zu müssen
     private float[] vertexFRONT=new float[]{
             0, 0, 0,
@@ -29,7 +28,6 @@ public class WindowsDrawer implements Drawer {
             1, 0, 0,
             1, 1, 0
     };
-    private FontRenderer font=new FontRenderer(this);
     private float[] vertexDOWN=new float[]{
             0, 0, 0,
             0, 0, 1,
@@ -62,6 +60,16 @@ public class WindowsDrawer implements Drawer {
             1, 1, 0,
             1, 1, 1
     };
+    private float[] vertexBACK=new float[]{
+            0, 0, 1,
+            0, 1, 1,
+            1, 1, 1,
+            0, 0, 1,
+            1, 0, 1,
+            1, 1, 1
+    };
+
+    private HashMap<String,Integer> textures=new HashMap<>();
 
 
     WindowsDrawer(BoxGameReloaded game) {
@@ -244,10 +252,10 @@ public class WindowsDrawer implements Drawer {
         GL11.glColor4f(r*darken, g*darken, b*darken, a*alpha);
         GL11.glBegin(GL11.GL_TRIANGLES);
         for (int i=0;i<vertex.length;i+=3) {
-            GL11.glColor4f(r*darken, g*darken, b*darken, a*alpha);
             GL11.glVertex3f(vertex[i], vertex[i+1], vertex[i+2]);
             game.vertexcount++;
         }
+        //GL11.glDrawArrays(GL11.GL_TRIANGLES,0,vertex.length/3);
         GL11.glEnd();
         GL11.glDisable(GL11.GL_VERTEX_ARRAY);
     }
@@ -372,6 +380,46 @@ public class WindowsDrawer implements Drawer {
         GL11.glVertex3f(1, 1, 1);
         GL11.glEnd();
         GL11.glPopMatrix();
+    }
+
+    @Override
+    public void drawImage(String s) {//TODO ANDROID
+        if (!textures.containsKey(s)) {
+            try {
+                int id=font.loadTexture(ImageIO.read(getClass().getResourceAsStream("/assets/"+s+".png")));
+                textures.put(s, id);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return;
+            }
+        }
+        glPushMatrix();
+        glEnable(GL_TEXTURE_2D);
+        glBindTexture(GL_TEXTURE_2D, textures.get(s));
+        glColor4f(1, 1, 1, 1);
+        glEnableClientState(GL_VERTEX_ARRAY);
+        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
+        glBegin(GL_QUADS);
+        {
+            glTexCoord2f(0, 1);
+            glVertex3f(0, 0, 0);
+            glTexCoord2f(0, 0);
+            glVertex3f(0, 1, 0);
+            glTexCoord2f(1, 0);
+            glVertex3f(1, 1, 0);
+            glTexCoord2f(1, 1);
+            glVertex3f(1, 0, 0);
+        }
+        glEnd();
+
+        glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+        glDisableClientState(GL_VERTEX_ARRAY);
+
+        glBindTexture(GL_TEXTURE_2D, 0);
+        glDisable(GL_TEXTURE_2D);
+
+        glPopMatrix();
     }
 
     //ist Rückseite zeichnen eingeschalten?

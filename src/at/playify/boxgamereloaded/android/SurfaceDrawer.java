@@ -1,16 +1,24 @@
 package at.playify.boxgamereloaded.android;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.opengl.GLU;
+import android.opengl.GLUtils;
 
+import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
+import java.util.HashMap;
 
 import javax.microedition.khronos.opengles.GL10;
 
 import at.playify.boxgamereloaded.BoxGameReloaded;
+import at.playify.boxgamereloaded.R;
 import at.playify.boxgamereloaded.interfaces.Drawer;
 import at.playify.boxgamereloaded.interfaces.exceptions.DrawingException;
+
+import static javax.microedition.khronos.opengles.GL10.*;
 
 @SuppressWarnings("WeakerAccess")
 public class SurfaceDrawer implements Drawer {
@@ -19,6 +27,7 @@ public class SurfaceDrawer implements Drawer {
     GL10 gl;
     public FontRenderer font;
     private boolean drawing;
+    private GameActivity a;
     private BoxGameReloaded game;
     private FloatBuffer fb=null;
     private float[] vertexFRONT=new float[]{
@@ -121,8 +130,92 @@ public class SurfaceDrawer implements Drawer {
         gl.glPopMatrix();
     }
 
+    private HashMap<String,Integer> textures=new HashMap<>();
+    private FloatBuffer vertexBuffer,textureBuffer;
+    {
+        float vertices[] = new float[12];
+        float texture[] = new float[8];
 
-    SurfaceDrawer(BoxGameReloaded game) {
+        ByteBuffer byteBuffer = ByteBuffer.allocateDirect(vertices.length * 4);
+        byteBuffer.order(ByteOrder.nativeOrder());
+        vertexBuffer = byteBuffer.asFloatBuffer();
+
+        byteBuffer = ByteBuffer.allocateDirect(texture.length * 4);
+        byteBuffer.order(ByteOrder.nativeOrder());
+        textureBuffer = byteBuffer.asFloatBuffer();
+
+        //Vertex
+        vertexBuffer.position(0);
+        //x
+        vertices[0]=vertices[3]=0;
+        vertices[6]=vertices[9]=1;
+        //y
+        vertices[1]=vertices[7]=0;
+        vertices[4]=vertices[10]=1;
+        //z
+        vertices[2]=vertices[5]=vertices[8]=vertices[11]=0;
+        vertexBuffer.put(vertices);
+        vertexBuffer.position(0);
+
+        //Texture
+        textureBuffer.position(0);
+        texture[0]=texture[2]=0;
+        texture[3]=texture[7]=0;
+        texture[4]=texture[6]=1;
+        texture[1]=texture[5]=1;
+
+        textureBuffer.put(texture);
+        textureBuffer.position(0);
+    }
+
+    @Override
+    public void drawImage(String s) {
+        if (!textures.containsKey(s)) {
+            try {
+                InputStream inStream = a.getResources().openRawResource(R.raw.ascii);
+                Bitmap bitmap = BitmapFactory.decodeStream(inStream);
+                int[] id=new int[1];
+                gl.glGenTextures(1,id,0);
+                gl.glBindTexture(GL_TEXTURE_2D,id[0]);
+                gl.glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+                gl.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+                gl.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,GL_REPEAT);
+                gl.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,GL_REPEAT);
+                GLUtils.texImage2D(GL_TEXTURE_2D,0,bitmap,0);
+                bitmap.recycle();
+                textures.put(s,id[0]);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return;
+            }
+        }
+        gl.glPushMatrix();
+        gl.glEnable(GL_TEXTURE_2D);
+        gl.glBindTexture(GL_TEXTURE_2D,textures.get(s));
+        gl.glColor4f(0,0,0,.4f);
+
+        gl.glEnableClientState(GL_VERTEX_ARRAY);
+        gl.glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
+        vertexBuffer.position(0);
+        textureBuffer.position(0);
+
+        gl.glVertexPointer(3,GL_FLOAT,0,vertexBuffer);
+        gl.glTexCoordPointer(2,GL_FLOAT,0,textureBuffer);
+        gl.glDrawArrays(GL_TRIANGLE_STRIP,0,4);
+
+        gl.glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+        gl.glDisableClientState(GL_VERTEX_ARRAY);
+
+        gl.glBindTexture(GL_TEXTURE_2D, 0);
+        gl.glDisable(GL_TEXTURE_2D);
+
+        gl.glPopMatrix();
+    }
+
+
+    SurfaceDrawer(GameActivity a, BoxGameReloaded game) {
+        this.a=a;
         this.game=game;
     }
 

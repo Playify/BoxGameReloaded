@@ -19,6 +19,7 @@ public class Borrow {
     private static final Queue<BorrowedBoundingBox> bounds=new ConcurrentLinkedQueue<>();
     private static final Queue<BorrowedBoundingBox3d> bounds3d=new ConcurrentLinkedQueue<>();
     private static final Queue<ArrayList<? extends Borrowed>> boundLists=new ConcurrentLinkedQueue<>();
+    private static final Queue<ArrayList<String>> stringLists=new ConcurrentLinkedQueue<>();
 
     public static <T extends Borrowed> void free(T b) {
         b.free();
@@ -27,6 +28,11 @@ public class Borrow {
     public static void free(ArrayList<? extends Borrowed> list) {
         freeInside(list);
         boundLists.add(list);
+    }
+
+    public static void freeStr(ArrayList<String> list) {
+        list.clear();
+        stringLists.add(list);
     }
 
     public static void freeInside(ArrayList<? extends Borrowed> list) {
@@ -109,6 +115,17 @@ public class Borrow {
         } else {
             poll.up = poll.down = poll.left = poll.right = poll.front = poll.back = true;
             poll.set(0, 0, 0, 0, 0, 0);
+            return poll;
+        }
+    }
+
+    public static ArrayList<String> stringList() {
+        ArrayList<String> poll=stringLists.poll();
+        if (poll==null) {
+            borrowed++;
+            return new ArrayList<>();
+        } else {
+            poll.clear();
             return poll;
         }
     }

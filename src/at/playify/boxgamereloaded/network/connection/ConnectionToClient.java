@@ -14,7 +14,7 @@ import java.util.ArrayList;
 public class ConnectionToClient extends Thread implements Closeable{
     private final Server server;
     public String skin;
-    private Socket socket;
+    public Socket socket;
     private BufferedReader in;
     private PrintStream out;
     private boolean closed;
@@ -132,7 +132,6 @@ public class ConnectionToClient extends Thread implements Closeable{
             b=true;
             this.world=w;
             this.sendPacket(new PacketSetWorld(w));
-            this.sendPacket(new PacketMove(level.spawnPoint, name));
             this.sendPacket(new PacketSpawn(level.spawnPoint));
         }
         server.broadcast(new PacketMove(this), world, this);
@@ -140,6 +139,7 @@ public class ConnectionToClient extends Thread implements Closeable{
         this.sendPacket(new PacketLevelData(level.toWorldString()));
         this.sendPacket(new PacketResetPlayersInWorld());
         server.getByWorld(world, list);
+        list.remove(this);
         for (int i=list.size()-1;i >= 0;i--) {
             ConnectionToClient client=list.get(i);
             this.sendPacket(new PacketMove(client));

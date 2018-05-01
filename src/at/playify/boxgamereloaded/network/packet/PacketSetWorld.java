@@ -45,7 +45,6 @@ public class PacketSetWorld extends Packet {
     @Override
     public void handle(Server server, ConnectionToClient connectionToClient) {
         connectionToClient.setWorld(world);
-
     }
 
     @Override

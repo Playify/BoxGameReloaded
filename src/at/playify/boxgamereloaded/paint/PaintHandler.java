@@ -13,6 +13,8 @@ import java.util.ArrayList;
 public class PaintHandler {
     public final FakeLevel fakeLevel;
     public final ArrayList<Paintable> list=new ArrayList<>();
+    public boolean quick;
+    public boolean zoom;
     private Paintable paint;
     private final BoxGameReloaded game;
     public boolean draw;
@@ -40,7 +42,7 @@ public class PaintHandler {
             down=false;
             return;
         }
-        if (game.gui.drawer.zoom) {
+        if (game.painter.zoom) {
             Finger finger=game.fingers[0];
             if (down!=(finger.down&&!finger.control)) {
                 down^=true;
@@ -101,16 +103,12 @@ public class PaintHandler {
     }
 
     public void handleFingerState(Finger finger) {
-        if (!game.gui.drawer.zoom) {
+        if (!game.painter.zoom) {
             float ww=game.d.getWidth(), h=game.d.getHeight();
             float x=(finger.getX()-ww/2)*game.vars.display_size*game.aspectratio/(ww*game.zoom)+game.zoom_x;
             float y=-(finger.getY()-h/2)*game.vars.display_size/(h*game.zoom)+game.zoom_y;
             draw(x, y, true, finger);
         }
-    }
-
-    public void setDraw(boolean draw) {
-        this.draw=draw;
     }
 
     public void paint(Paintable paint) {
@@ -124,6 +122,6 @@ public class PaintHandler {
     }
 
     public boolean pause() {
-        return draw&&(!(paint instanceof PlayPaint)||game.gui.drawer.quick);
+        return draw&&(!(paint instanceof PlayPaint)||game.painter.quick);
     }
 }

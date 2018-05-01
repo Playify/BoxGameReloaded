@@ -83,7 +83,7 @@ public class RespawnButton extends Button {
 
     @Override
     public boolean tick() {
-        boolean visible=!game.gui.isOptionsVisible()&&!game.gui.isMainMenuVisible()&&!(game.gui.drawer.quick&&!game.gui.isOptionsVisible());
+        boolean visible=!game.gui.isOptionsVisible()&&!game.gui.isMainMenuVisible()&&!(game.painter.quick&&!game.gui.isOptionsVisible());
         boolean main=game.gui.isMainMenuVisible()||game.paused||game.connection==null||game.connection.pauseCount>0;
         if (visible) {
             visibleState = Math.min(1f, visibleState + 1 / 8f);

@@ -6,6 +6,10 @@ import org.json.JSONTokener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Scanner;
 
@@ -66,4 +70,33 @@ public abstract class Handler {
 
     public abstract File baseDir(String filename);
 
+    public String ip() {
+        InetAddress localhost=null;
+        InetAddress network=null;
+        try {
+            Enumeration<NetworkInterface> net=NetworkInterface.getNetworkInterfaces();
+            while (net.hasMoreElements()) {
+                NetworkInterface networkInterface=net.nextElement();
+                Enumeration<InetAddress> inetAddresses=networkInterface.getInetAddresses();
+                while (inetAddresses.hasMoreElements()) {
+                    InetAddress inetAddress=inetAddresses.nextElement();
+                    String hostAddress=inetAddress.getHostAddress();
+                    if (hostAddress.startsWith("127.")) {
+                        localhost=inetAddress;
+                    } else if (hostAddress.startsWith("192.168.")||hostAddress.startsWith("10.")||hostAddress.startsWith("172.16")) {
+                        network=inetAddress;
+                    }
+                }
+            }
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
+        if (network!=null) {
+            return network.getHostAddress();
+        }
+        if (localhost!=null) {
+            return localhost.getHostAddress();
+        }
+        return "127.0.0.1";
+    }
 }

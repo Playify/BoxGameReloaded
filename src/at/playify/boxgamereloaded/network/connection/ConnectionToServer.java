@@ -70,7 +70,7 @@ public class ConnectionToServer implements Closeable,Runnable {
     }
 
     public boolean isClosed() {
-        return closed || socket == null || socket.isClosed();
+        return closed||socket==null||socket.isClosed()||out.checkError();
     }
 
     public void handleSoon() {
@@ -107,6 +107,7 @@ public class ConnectionToServer implements Closeable,Runnable {
             }
         }
     }
+
     @Override
     public void run() {
         try {
@@ -141,6 +142,17 @@ public class ConnectionToServer implements Closeable,Runnable {
         } catch (Exception e) {
             System.err.println("Error in " + getClass().getSimpleName());
             Game.report(e);
+            close();
         }
     }
+
+    public String getIp() {
+        if (socket==null) {
+            return "[Not Connected]";
+        } else {
+            InetAddress add=socket.getInetAddress();
+            return add.toString();
+        }
+    }
+
 }

@@ -25,7 +25,7 @@ public class TickThread extends Thread {
                     game.connection=new ConnectionSinglePlayer(game);
                 }
                 game.connection.sendPacket(new PacketHello());
-                game.joinWorld("Lobby");
+                game.joinWorld(game.vars.world);
             } catch (Exception e) {
                 Game.report(e);
             }
@@ -42,7 +42,9 @@ public class TickThread extends Thread {
     //TickThread tick ausführen: Spieltick und gegebenfalls Locken
     private void tick() {
         try {
-            if (!game.vars.tickOnDraw) {
+            if (game.vars.tickOnDraw) {
+                game.pauseLock.lock();
+            } else {
                 game.tick();
             }
             boolean locked=game.pauseLock.isLocked();

@@ -18,51 +18,48 @@ public abstract class Player implements Paintable {
     String display;
 
     public final RectBound bound = new RectBound(0, 0, 0.8f, 0.8f);
-
     Player(BoxGameReloaded game) {
         this.game=game;
     }
-    private int color=0xFF00FF00;
+
+    public int color=0xFF00FF00;
+    public int color2=0xFF000000;
     public String skin = "cube";
-    public boolean tail;
-    private Borrow.BorrowedBoundingBox3d[] tailArray = new Borrow.BorrowedBoundingBox3d[25];
+    public String tail="false";
+    public Borrow.BorrowedBoundingBox3d[] tailArray=new Borrow.BorrowedBoundingBox3d[25];
     private int tailindex;
 
     public void skin(String skin) {
-        if (skin==null) return;
-        int index=0;
-        this.color=Utils.parseHex(skin.substring(index, index=skin.indexOf(';', index+1)), 0xFF00FF00);
-        this.skin=skin.substring(index+1, index=skin.indexOf(';', index+1));
-        this.tail=skin.substring(index+1, index=skin.indexOf(';', index+1)).equals("true");
-        Borrow.BorrowedBoundingBox3d[] arr=tailArray;
-        tailArray=new Borrow.BorrowedBoundingBox3d[Utils.parseInt(skin.substring(index+1, index=skin.indexOf(';', index+1)), 10)];
-        tailindex=0;
-        display=skin.substring(index+1);
-        for (Borrow.BorrowedBoundingBox3d bound : arr) {
-            if (bound!=null) {
-                bound.free();
+        try {
+            if (skin==null) return;
+            int index=0;
+            this.color=Utils.parseHex(skin.substring(index, index=skin.indexOf(';', index+1)), 0xFF00FF00);
+            this.color2=Utils.parseHex(skin.substring(index, index=skin.indexOf(';', index+1)), 0xFF000000);
+            this.skin=skin.substring(index+1, index=skin.indexOf(';', index+1));
+            this.tail=skin.substring(index+1, index=skin.indexOf(';', index+1));
+            Borrow.BorrowedBoundingBox3d[] arr=tailArray;
+            tailArray=new Borrow.BorrowedBoundingBox3d[Utils.parseInt(skin.substring(index+1, index=skin.indexOf(';', index+1)), 10)];
+            tailindex=0;
+            display=skin.substring(index+1);
+            for (Borrow.BorrowedBoundingBox3d bound : arr) {
+                if (bound!=null) {
+                    bound.free();
+                }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
     public String skin() {
-        return ""+Integer.toHexString(color)+';'+skin+';'+tail+';'+tailArray.length+';'+display;
+        return Integer.toHexString(color)+';'+Integer.toHexString(color2)+';'+skin+';'+tail+';'+tailArray.length+';'+display;
     }
 
     public void draw() {
         float d=(bound.w()+bound.h())/4;
         drawbound.set(bound.x(), bound.y(), -d+.5f, bound.xw(), bound.yh(), d+.5f);
-        drawPart(drawbound, true);
-        if (tail) {
-            Borrow.BorrowedBoundingBox3d[] tailArray=this.tailArray;
-            for (Borrow.BorrowedBoundingBox3d bound : tailArray) {
-                if (bound == null) {
-                    break;
-                } else {
-                    drawPart(bound, false);
-                }
-            }
-        }
+        game.skin.get(this.skin).draw(this, drawbound, color, color2);
+        game.tail.get(this.tail).draw(this, drawbound, color, color2);
     }
 
     @Override
@@ -74,18 +71,13 @@ public abstract class Player implements Paintable {
         game.d.rotate(angle, 0, 1, 0);
         game.d.translate(-.5f, -.5f, -.5f);
         drawbound.set(0, 0, 0, 1, 1, 1);
-        drawPart(drawbound, true);
+        game.skin.get(this.skin).draw(this, drawbound, color, color2);
         game.d.popMatrix();
-    }
-
-
-    private void drawPart(BoundingBox3d bound, boolean base) {
-        game.skin.get(this.skin).draw(this, bound, base, color, 0xFF000000);
     }
 
     //tick für Spieler ausführen um Animationen auszuführen
     public void tick(){
-        if (tail) {
+        if (!tail.equals("off")) {
             float w = (bound.w() / tailArray.length) / 2;
             float h = (bound.h() / tailArray.length) / 2;
             float d = (((bound.w() + bound.h()) / 2) / tailArray.length) / 2;

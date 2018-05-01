@@ -43,7 +43,7 @@ public class VariableContainer {
     public boolean god;
     public String playerID;
     public boolean nameTags;
-    public String world="NONE";
+    public String world="Lobby";
     @ConfigValue
     public ConfigVariable skin=new ConfigVariable() {
 

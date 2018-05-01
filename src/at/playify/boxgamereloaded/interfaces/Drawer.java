@@ -37,10 +37,10 @@ public interface Drawer {
 
     void cube(float x, float y, float z, float w, float h, float d, int color);
 
-    void cube(float x, float y, float z, float w, float h, float d, int color, boolean up, boolean left, boolean down, boolean right);
+    void cube(float x, float y, float z, float w, float h, float d, int color, boolean up, boolean right, boolean down, boolean left);
 
     //Zeichne Würfel wie bei der Methode darüber, jedoch kann editiert werden welche Seiten (auch Vorder und Rückwand) gezeichnet werden
-    void cube(float x, float y, float z, float w, float h, float d, int color, boolean up, boolean left, boolean down, boolean right, boolean front, boolean back);
+    void cube(float x, float y, float z, float w, float h, float d, int color, boolean up, boolean right, boolean down, boolean left, boolean front, boolean back);
 
     void lineCube(float x, float y, float z, float w, float h, float d, int color);
 
@@ -79,4 +79,6 @@ public interface Drawer {
     boolean ready();
 
     void drawLine(float x, float y, float z, float w, float h, float d, int color);
+
+    void drawImage(String s);
 }

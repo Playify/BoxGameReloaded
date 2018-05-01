@@ -1,4 +1,4 @@
-package at.playify.boxgamereloadedWindows;
+package at.playify.boxgamereloaded.windows;
 
 import at.playify.boxgamereloaded.interfaces.Game;
 import org.lwjgl.BufferUtils;
@@ -121,7 +121,7 @@ class FontRenderer {
     }
 
     //Lade Texture in OpenGL aus BufferedImage
-    private int loadTexture(BufferedImage image) {
+    int loadTexture(BufferedImage image) {
         try {
             //Bild zu Pixel[]
             int[] pixels = new int[image.getWidth() * image.getHeight()];

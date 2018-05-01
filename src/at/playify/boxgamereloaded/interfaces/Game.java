@@ -4,8 +4,6 @@ import at.playify.boxgamereloaded.BoxGameReloaded;
 import at.playify.boxgamereloaded.TickThread;
 import at.playify.boxgamereloaded.block.Blocks;
 import at.playify.boxgamereloaded.level.Level;
-import at.playify.boxgamereloaded.network.packet.PacketSkin;
-import at.playify.boxgamereloaded.player.PlayerSP;
 import at.playify.boxgamereloaded.util.Finger;
 import at.playify.boxgamereloaded.util.Lock;
 
@@ -78,31 +76,6 @@ public abstract class Game {
             ((BoxGameReloaded) this).vars.debug.console^=true;
             ((BoxGameReloaded) this).vars.loader.save();
             System.out.println("Console activated");
-            str.setLength(0);
-        }
-        PlayerSP player = ((BoxGameReloaded) this).player;
-        String skin="uuudd";
-        if (s.endsWith(skin)) {
-            switch (player.skin) {
-                case "cube":
-                    player.skin = "border";
-                    break;
-                case "border":
-                    player.skin = "bordercube";
-                    break;
-                case "bordercube":
-                    player.skin = "cube";
-                    break;
-            }
-            ((BoxGameReloaded) this).connection.sendPacket(new PacketSkin(player));
-            System.out.println("Skin toggled");
-            str.setLength(0);
-        }
-        String tail="uuddd";
-        if (s.endsWith(tail)) {
-            player.tail ^= true;
-            ((BoxGameReloaded) this).connection.sendPacket(new PacketSkin(player));
-            System.out.println("Tail toggled");
             str.setLength(0);
         }
     }

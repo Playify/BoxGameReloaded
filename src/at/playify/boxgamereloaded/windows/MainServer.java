@@ -1,4 +1,4 @@
-package at.playify.boxgamereloadedWindows;
+package at.playify.boxgamereloaded.windows;
 
 import at.playify.boxgamereloaded.network.Server;
 

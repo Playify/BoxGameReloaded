@@ -19,13 +19,13 @@ public class DarkBackground extends Button {
 
     @Override
     public BoundingBox3d bound() {
-        bound.set(-1, -1, -1, 2, 1 + game.aspectratio, -1);
+        bound.set(-1, -1, -1, 1+game.aspectratio, 2, -1);
         return bound;
     }
 
     @Override
     public void draw(Drawer d) {
-        if (backgroundState != 0) {
+        if (backgroundState!=0&&!game.gui.isMainMenuVisible()) {
             game.d.depth(false);
             d.rect(0, 0, 1, 1, color());
             game.d.depth(true);

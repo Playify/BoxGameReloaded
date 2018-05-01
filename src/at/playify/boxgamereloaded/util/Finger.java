@@ -4,9 +4,7 @@ import at.playify.boxgamereloaded.BoxGameReloaded;
 
 //Finger/Cursor
 public class Finger {
-
-    @SuppressWarnings("WeakerAccess")
-    public final int index;//Finger index
+    public int index;//Finger index
     public boolean down;//gedrückt
     public boolean control;//gedrückt auf einem Knopf/Menü
     public float dx, dy;

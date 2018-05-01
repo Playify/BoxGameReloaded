@@ -16,11 +16,10 @@ public class SkinData {
         map.put("cube", def=new SkinCube());
         map.put("border", new SkinBorder());
         map.put("bordercube", new SkinBorderCube());
-        map.put("dot", new SkinDot());
-        map.put("dotborder", new SkinDotBorder());
         map.put("ground", new SkinGround());
         map.put("dust", new SkinDust());
         map.put("5350", new Skin5350());
+        map.put("gute", new SkinImage("gute"));
     }
 
     public Skin get(String s) {
@@ -32,13 +31,17 @@ public class SkinData {
         }
     }
 
+    public boolean exist(String s) {
+        return map.containsKey(s);
+    }
+
     public interface Skin {
-        void draw(Player p, BoundingBox3d bound, boolean base, int color, int color2);
+        void draw(Player p, BoundingBox3d bound, int color, int color2);
     }
 
     private class SkinCube implements Skin {
         @Override
-        public void draw(Player p, BoundingBox3d bound, boolean base, int color, int color2) {
+        public void draw(Player p, BoundingBox3d bound, int color, int color2) {
             if (game.vars.cubic) {
                 game.d.cube(bound.minX, bound.minY, bound.minZ, bound.maxX-bound.minX, bound.maxY-bound.minY, bound.maxZ-bound.minZ, color);
             } else {
@@ -49,7 +52,7 @@ public class SkinData {
 
     private class SkinBorder implements Skin {
         @Override
-        public void draw(Player p, BoundingBox3d bound, boolean base, int color, int color2) {
+        public void draw(Player p, BoundingBox3d bound, int color, int color2) {
             if (game.vars.cubic) {
                 game.d.lineCube(bound.minX, bound.minY, bound.minZ, bound.maxX-bound.minX, bound.maxY-bound.minY, bound.maxZ-bound.minZ, color);
             } else {
@@ -60,102 +63,34 @@ public class SkinData {
 
     private class SkinBorderCube implements Skin {
         @Override
-        public void draw(Player p, BoundingBox3d bound, boolean base, int color, int color2) {
+        public void draw(Player p, BoundingBox3d bound, int color, int color2) {
             if (game.vars.cubic) {
                 game.d.lineCube(bound.minX, bound.minY, bound.minZ, bound.maxX-bound.minX, bound.maxY-bound.minY, bound.maxZ-bound.minZ, color2);
-            } else {
-                game.d.lineRect(bound.minX, bound.minY, bound.maxX-bound.minX, bound.maxY-bound.minY, color2);
-            }
-            if (game.vars.cubic) {
                 game.d.cube(bound.minX, bound.minY, bound.minZ, bound.maxX-bound.minX, bound.maxY-bound.minY, bound.maxZ-bound.minZ, color);
             } else {
+                game.d.lineRect(bound.minX, bound.minY, bound.maxX-bound.minX, bound.maxY-bound.minY, color2);
                 game.d.rect(bound.minX, bound.minY, bound.maxX-bound.minX, bound.maxY-bound.minY, color);
-            }
-        }
-    }
-
-    private class SkinDot implements Skin {
-        @Override
-        public void draw(Player p, BoundingBox3d bound, boolean base, int color, int color2) {
-            if (base) {
-                if (game.vars.cubic) {
-                    game.d.cube(bound.minX, bound.minY, bound.minZ, bound.maxX-bound.minX, bound.maxY-bound.minY, bound.maxZ-bound.minZ, color);
-                } else {
-                    game.d.rect(bound.minX, bound.minY, bound.maxX-bound.minX, bound.maxY-bound.minY, color);
-                }
-            }
-            if (game.vars.cubic) {
-                game.d.point(bound.minX, bound.minY, bound.minZ, color2);
-                game.d.point(bound.minX, bound.maxY, bound.minZ, color2);
-                game.d.point(bound.maxX, bound.minY, bound.minZ, color2);
-                game.d.point(bound.maxX, bound.maxY, bound.minZ, color2);
-                game.d.point(bound.minX, bound.maxY, bound.maxZ, color2);
-                game.d.point(bound.minX, bound.minY, bound.maxZ, color2);
-                game.d.point(bound.maxX, bound.maxY, bound.maxZ, color2);
-                game.d.point(bound.maxX, bound.minY, bound.maxZ, color2);
-            } else {
-                game.d.point(bound.minX, bound.minY, 0, color2);
-                game.d.point(bound.minX, bound.maxY, 0, color2);
-                game.d.point(bound.maxX, bound.minY, 0, color2);
-                game.d.point(bound.maxX, bound.maxY, 0, color2);
-            }
-        }
-    }
-
-    private class SkinDotBorder implements Skin {
-        @Override
-        public void draw(Player p, BoundingBox3d bound, boolean base, int color, int color2) {
-            if (base) {
-                if (game.vars.cubic) {
-                    game.d.lineCube(bound.minX, bound.minY, bound.minZ, bound.maxX-bound.minX, bound.maxY-bound.minY, bound.maxZ-bound.minZ, color);
-                } else {
-                    game.d.lineRect(bound.minX, bound.minY, bound.maxX-bound.minX, bound.maxY-bound.minY, color);
-                }
-            } else {
-                if (game.vars.cubic) {
-                    game.d.point(bound.minX, bound.minY, bound.minZ, color2);
-                    game.d.point(bound.minX, bound.maxY, bound.minZ, color2);
-                    game.d.point(bound.maxX, bound.minY, bound.minZ, color2);
-                    game.d.point(bound.maxX, bound.maxY, bound.minZ, color2);
-                    game.d.point(bound.minX, bound.maxY, bound.maxZ, color2);
-                    game.d.point(bound.minX, bound.minY, bound.maxZ, color2);
-                    game.d.point(bound.maxX, bound.maxY, bound.maxZ, color2);
-                    game.d.point(bound.maxX, bound.minY, bound.maxZ, color2);
-                } else {
-                    game.d.point(bound.minX, bound.minY, 0, color2);
-                    game.d.point(bound.minX, bound.maxY, 0, color2);
-                    game.d.point(bound.maxX, bound.minY, 0, color2);
-                    game.d.point(bound.maxX, bound.maxY, 0, color2);
-                }
             }
         }
     }
 
     private class SkinGround implements Skin {
         @Override
-        public void draw(Player p, BoundingBox3d bound, boolean base, int color, int color2) {
+        public void draw(Player p, BoundingBox3d bound, int color, int color2) {
             int x=((int) ((bound.minX+bound.maxX)/2));
             int y=((int) ((bound.minY+bound.maxY)/2));
             int z=((int) ((bound.minZ+bound.maxZ)/2));
-            if (base) {
                 if (game.vars.cubic) {
                     game.d.cube(x, y, z, 1, 1, 1, color);
                 } else {
                     game.d.rect(x, y, 1, 1, color);
                 }
-            } else {
-                if (game.vars.cubic) {
-                    game.d.cube(x+.1f, y+.1f, z+.1f, .8f, .8f, .8f, color);
-                } else {
-                    game.d.rect(x+.1f, y+.1f, .8f, .8f, color);
-                }
-            }
         }
     }
 
     private class SkinDust implements Skin {
         @Override
-        public void draw(Player p, BoundingBox3d bound, boolean base, int color, int color2) {
+        public void draw(Player p, BoundingBox3d bound, int color, int color2) {
             float w=bound.maxX-bound.minX;
             float h=bound.maxY-bound.minY;
             float minZ=bound.minZ;
@@ -170,18 +105,54 @@ public class SkinData {
 
     private class Skin5350 implements Skin {
         @Override
-        public void draw(Player p, BoundingBox3d bound, boolean base, int color, int color2) {
-            float w=(bound.maxX-bound.minX)/2;
-            float h=(bound.maxY-bound.minY)/2;
+        public void draw(Player p, BoundingBox3d bound, int color, int color2) {
+            float w=(bound.maxX-bound.minX);
+            float h=(bound.maxY-bound.minY);
             float d=(bound.maxZ-bound.minZ);
             game.d.pushMatrix();
-            game.d.translate(bound.minX+w, bound.minY+h, bound.minZ);
+            game.d.translate(bound.minX, bound.minY, bound.minZ);
             game.d.scale(w, h, d);
-            for (int i=0;i<4;i++) {//TODO efficientcy shading
-                game.d.cube(-1/5f, 0, 0, 2/5f, 1, 1, color, false, true, false, true);
-                game.d.cube(-1/5f, 3/5f, 0, 6/5f, 2/5f, 1, color, true, true, true, false);
-                game.d.rotate(90, 0, 0, 1);
+            game.d.scale(1/5f);
+            game.d.cube(0, 0, 0, 3, 1, 5, color, true, false, true, true);
+            game.d.cube(2, 4, 0, 3, 1, 5, color, true, true, true, false);
+            game.d.cube(4, 0, 0, 1, 3, 5, color, false, true, true, true);
+            game.d.cube(0, 2, 0, 1, 3, 5, color, true, true, false, true);
+            game.d.cube(0, 2, 0, 5, 1, 5, color, true, false, true, false);
+            game.d.cube(2, 0, 0, 1, 5, 5, color, false, true, false, true);
+            game.d.popMatrix();
+        }
+    }
+
+    private class SkinImage implements Skin {
+        private String img;
+
+        private SkinImage(String img) {
+            this.img=img;
+        }
+
+        @Override
+        public void draw(Player p, BoundingBox3d bound, int color, int color2) {
+            float w=(bound.maxX-bound.minX);
+            float h=(bound.maxY-bound.minY);
+            float d=(bound.maxZ-bound.minZ);
+            game.d.pushMatrix();
+            game.d.translate(bound.minX, bound.minY, bound.minZ);
+            game.d.scale(w, h, d);
+            for (int i=0;i<4;i++) {
+                game.d.translate(.5f, .5f, .5f);
+                game.d.rotate(90, 0, 1, 0);
+                game.d.translate(-.5f, -.5f, -.5f);
+                game.d.drawImage(img);
             }
+            game.d.translate(.5f, .5f, .5f);
+            game.d.rotate(90, 1, 0, 0);
+            game.d.translate(-.5f, -.5f, -.5f);
+            game.d.drawImage(img);
+            game.d.translate(.5f, .5f, .5f);
+            game.d.rotate(180, 1, 0, 0);
+            game.d.rotate(180, 0, 0, 1);
+            game.d.translate(-.5f, -.5f, -.5f);
+            game.d.drawImage(img);
             game.d.popMatrix();
         }
     }

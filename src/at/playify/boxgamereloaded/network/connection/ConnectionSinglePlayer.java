@@ -4,14 +4,12 @@ import at.playify.boxgamereloaded.BoxGameReloaded;
 import at.playify.boxgamereloaded.network.Server;
 
 import java.io.*;
-import java.net.Socket;
 
 //Verbindung zum SinglePlayer Server [WIP]
 @SuppressWarnings("WeakerAccess")
 public class ConnectionSinglePlayer extends ConnectionToServer implements Closeable {
 
     private final Server server;
-    private Socket socket;
 
     public ConnectionSinglePlayer(BoxGameReloaded game) {
         super(game);
@@ -46,8 +44,11 @@ public class ConnectionSinglePlayer extends ConnectionToServer implements Closea
     }
 
     public void close() {
-        //server.close();
+        server.close();
     }
 
-
+    @Override
+    public String getIp() {
+        return "SinglePlayer";
+    }
 }

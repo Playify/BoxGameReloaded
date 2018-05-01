@@ -10,6 +10,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -23,6 +24,7 @@ public class Server extends Thread{
 
     private ServerLevel empty;
     private final ThreadLocal<ArrayList<ConnectionToClient>> last = new ThreadLocal<>();
+    private ServerSocket socket;
 
     public Server(Handler handler) {
         this.handler=handler;
@@ -46,14 +48,15 @@ public class Server extends Thread{
     }
 
     public void run() {
-
-        ServerSocket serverSocket;
         try {
-            serverSocket = new ServerSocket(45565);
+            socket=new ServerSocket(45565);
             //noinspection InfiniteLoopStatement
             while (true) {
-                connected.add(new ConnectionToClient(serverSocket.accept(),this));
+                connected.add(new ConnectionToClient(socket.accept(), this));
             }
+        } catch (SocketException e) {
+            System.out.println("Server closed");
+            close();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -183,6 +186,22 @@ public class Server extends Thread{
             if (world.equals(connectionToClient.world)) {
                 list.add(connectionToClient);
             }
+        }
+    }
+
+    public void close() {
+        for (ConnectionToClient connectionToClient : connected) {
+            if (connectionToClient.socket!=null) {
+                connectionToClient.close();
+            }
+        }
+        connected.clear();
+        try {
+            if (socket!=null) {
+                socket.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

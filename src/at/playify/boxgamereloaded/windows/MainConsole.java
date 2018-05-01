@@ -1,4 +1,4 @@
-package at.playify.boxgamereloadedWindows;
+package at.playify.boxgamereloaded.windows;
 
 import java.io.BufferedReader;
 import java.io.IOException;

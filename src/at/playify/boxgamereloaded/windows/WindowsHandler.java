@@ -1,4 +1,4 @@
-package at.playify.boxgamereloadedWindows;
+package at.playify.boxgamereloaded.windows;
 
 import at.playify.boxgamereloaded.BoxGameReloaded;
 import at.playify.boxgamereloaded.interfaces.Handler;
@@ -146,5 +146,4 @@ public class WindowsHandler extends Handler {
     public File baseDir(String filename) {
         return Main.base;
     }
-
 }

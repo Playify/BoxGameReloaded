@@ -49,10 +49,9 @@ class AndroidHandler extends Handler {
             context=a;
         }
         final EditText input = new EditText(context);
-        input.setText("/");
         input.setImeOptions(EditorInfo.IME_FLAG_NO_EXTRACT_UI | EditorInfo.IME_ACTION_DONE);
         input.setSingleLine();
-        ad = new AlertDialog.Builder(context).setTitle("CMD" + (": /")).setView(input)
+        ad = new AlertDialog.Builder(context).setTitle("CMD: ").setView(input)
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -104,7 +103,6 @@ class AndroidHandler extends Handler {
                 a.game.pauseLock.unlock();
             }
         });
-        input.setSelection(1);
         input.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -124,7 +122,7 @@ class AndroidHandler extends Handler {
                         i--;
                     }
                 }
-                ad.setTitle(TextUtils.concat("CMD" + (s.length() == 0 ? "" : ": "), s.toString()));
+                ad.setTitle(TextUtils.concat("CMD: ", s.toString()));
             }
         });
     }

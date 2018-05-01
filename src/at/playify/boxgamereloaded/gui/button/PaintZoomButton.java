@@ -27,9 +27,9 @@ public class PaintZoomButton extends Button {
     public boolean click(Finger finger) {
         if ((game.vars.debug.console||game.vars.world.startsWith("paint_"))
                 &&!game.gui.isMainMenuVisible()&&game.painter.draw&&!game.gui.isOptionsVisible()&&!(game.painter.paint() instanceof PlayPaint)) {
-            game.gui.drawer.quick=false;
-            game.gui.drawer.zoom^=true;
-            game.gui.drawer.zoom&=game.connection.pauseCount==0;
+            game.painter.quick=false;
+            game.painter.zoom^=true;
+            game.painter.zoom&=game.connection.pauseCount==0;
             return true;
         } else {
             return false;
@@ -49,7 +49,7 @@ public class PaintZoomButton extends Button {
         d.cube(0, 1-v, 0, 1, v, v, color, true, false, true, false);
         d.cube(0, 0, 0, v, 1, v, color, false, true, false, true);
         d.cube(1-v, 0, 0, v, 1, v, color, false, true, false, true);
-        if (game.gui.drawer.zoom) {
+        if (game.painter.zoom) {
             float vv=1/14f;
             float max=1-2*vv;
             d.cube(vv, vv, v/2, max, max, 0, 0xA0FF0000, false, false, false, false);

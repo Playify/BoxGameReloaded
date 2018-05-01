@@ -12,7 +12,6 @@ import at.playify.boxgamereloaded.util.Finger;
 import java.util.ArrayList;
 
 public class GuiDraw extends Gui {
-    public boolean quick;
     public float state;
     public boolean zoom;
     private PaintButton paintButton;
@@ -63,14 +62,14 @@ public class GuiDraw extends Gui {
         if (state!=0) {
             super.draw();
         }
-        if (!game.painter.draw||quick) return;
+        if (!game.painter.draw||game.painter.quick) return;
         String name=game.painter.paint().name(0);
         game.d.drawString(name, game.aspectratio-1/7f-0.01f-game.d.getStringWidth(name)*0.05f, 0.01f, 0.05f);
     }
 
     @Override
     public boolean tick() {
-        if (!game.gui.isOptionsVisible()&&game.gui.drawer.quick&&game.painter.draw) {
+        if (!game.gui.isOptionsVisible()&&game.painter.quick&&game.painter.draw) {
             state=Math.min(1f, state+1/4f);
         } else {
             state=Math.max(0, state-1/4f);
