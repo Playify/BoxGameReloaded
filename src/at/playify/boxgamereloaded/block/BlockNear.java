@@ -20,6 +20,7 @@ public class BlockNear extends Block implements Collideable, NoCollideable {
     public void getCollisionBox(Level level, int x, int y, Borrow.BorrowedBoundingBox bound, ArrayList<Borrow.BorrowedBoundingBox> list, PlayerSP player) {
         if (collided||player.collidesVert||player.collidesHor) {
             list.add(Borrow.bound(x, y, x+1, y+1));
+
         }
     }
 
