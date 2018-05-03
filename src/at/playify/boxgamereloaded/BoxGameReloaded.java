@@ -2,7 +2,7 @@ package at.playify.boxgamereloaded;
 
 
 import at.playify.boxgamereloaded.block.Blocks;
-import at.playify.boxgamereloaded.commands.CommandHandler;
+import at.playify.boxgamereloaded.commands.CMDHandler;
 import at.playify.boxgamereloaded.gui.GuiOverlay;
 import at.playify.boxgamereloaded.interfaces.*;
 import at.playify.boxgamereloaded.interfaces.exceptions.DrawingException;
@@ -31,7 +31,7 @@ import java.util.Locale;
 public class BoxGameReloaded extends Game {
     public VariableContainer vars;
     public final PlayerSP player=new PlayerSP(this);
-    public final CommandHandler commandHandler;
+    public final CMDHandler cmd;
     public ConnectionToServer connection = new EmptyConnection();
     public PaintHandler painter;
     public float zoom_x;
@@ -74,7 +74,7 @@ public class BoxGameReloaded extends Game {
         level=new Level(this);
         level.setSize(20, 20);
         painter=new PaintHandler(this);
-        commandHandler=new CommandHandler(this);
+        cmd=new CMDHandler(this);
     }
 
     private StringBuilder str = new StringBuilder();
@@ -107,7 +107,7 @@ public class BoxGameReloaded extends Game {
     @Override
     public void tick() {
         if (connection.isClosed()) {
-            commandHandler.error("Connection closed! reconnecting to SinglePlayer");
+            cmd.error("Connection closed! reconnecting to SinglePlayer");
             connection.close();
             connection=new ConnectionSinglePlayer(this);
             connection.sendPacket(new PacketHello());
@@ -297,7 +297,7 @@ public class BoxGameReloaded extends Game {
 
     @Override
     public void runcmd(String text) {
-        commandHandler.run(text);
+        cmd.run(text);
     }
 
     //Tastaturstatusänderungen

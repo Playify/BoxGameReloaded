@@ -29,7 +29,7 @@ public class BlockGravity extends Block implements Collideable, NoCollideable {
     public boolean collide(Bound b, int x, int y, boolean checkOnly, int meta, Level level) {
         if (checkOnly) {
             final float v=.01f;
-            return b.collide(bound.set(x-v, y-v, 1+2*v, 1+2*v));
+            return b.collide(bound.set(x-v, y, 1+2*v, 1))||b.collide(bound.set(x, y-v, 1, 1+2*v));
         } else {
             return b.collide(bound.set(x, y, 1, 1));
         }

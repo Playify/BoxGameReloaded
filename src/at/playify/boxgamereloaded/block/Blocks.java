@@ -23,6 +23,7 @@ public class Blocks {
     public BlockGravity GRAVITY;
     public BlockGravityPad GRAVITY_PAD;
     public BlockArrow ARROW;
+    public BlockTeleporter TELEPORT;
     public int blockscount;
 
     //Block anhand des Zeichens bekommen
@@ -47,6 +48,7 @@ public class Blocks {
         GRAVITY=new BlockGravity(game, BlockGravity.chr);
         GRAVITY_PAD=new BlockGravityPad(game, BlockGravityPad.chr);
         ARROW=new BlockArrow(game, BlockArrow.chr);
+        TELEPORT=new BlockTeleporter(game, BlockTeleporter.chr);
 
     }
 }
