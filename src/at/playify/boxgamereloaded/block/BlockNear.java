@@ -8,17 +8,19 @@ import at.playify.boxgamereloaded.util.bound.Bound;
 
 import java.util.ArrayList;
 
-public class BlockGravity extends Block implements Collideable, NoCollideable {
-    public static final char chr='v';
+public class BlockNear extends Block implements Collideable, NoCollideable {
+    public static final char chr='n';
     private boolean collided;
 
-    BlockGravity(BoxGameReloaded game, char c) {
+    BlockNear(BoxGameReloaded game, char c) {
         super(game, c);
     }
 
     @Override
     public void getCollisionBox(Level level, int x, int y, Borrow.BorrowedBoundingBox bound, ArrayList<Borrow.BorrowedBoundingBox> list, PlayerSP player) {
-        list.add(Borrow.bound(x, y, x+1, y+1));
+        if (collided||player.collidesVert||player.collidesHor) {
+            list.add(Borrow.bound(x, y, x+1, y+1));
+        }
     }
 
     @Override
@@ -30,44 +32,41 @@ public class BlockGravity extends Block implements Collideable, NoCollideable {
         if (checkOnly) {
             final float v=.01f;
             return b.collide(bound.set(x-v, y, 1+2*v, 1))||b.collide(bound.set(x, y-v, 1, 1+2*v));
-        } else {
+        } else if (collided) {
             return b.collide(bound.set(x, y, 1, 1));
-        }
+        } else return false;
     }
 
     @Override
     public void draw(int x, int y, Level level) {
-        if (game.vars.cubic) {
-            game.d.pushMatrix();
-                game.d.cube(x, y, 0f, 1, 1, 1f, 0xFF9c06ad);
-                game.d.translate(x+.5f, y+.5f, -.001f);
-            if (game.vars.inverted_gravity)
-                game.d.scale(1, -1, 1);
-            game.d.vertex(game.vertex.arrow, 0xFF0136c6);
-            game.d.popMatrix();
+        int color=0xFFEAEAEA;
+        boolean b=game.player.collidesHor||game.player.collidesVert||collided;
+        if (b) {
+            if (game.vars.cubic) {
+                game.d.cube(x, y, 0f, 1, 1, 1f, color);
+            } else {
+                game.d.rect(x, y, 1, 1, color);
+            }
         } else {
-            game.d.pushMatrix();
-                game.d.rect(x, y, 1, 1, 0xFF9c06ad);
-                game.d.translate(x+.5f, y+.5f, 0);
-            if (game.vars.inverted_gravity)
-                game.d.scale(1, -1, 1);
-            game.d.vertex(game.vertex.arrow, 0xFF0136c6);
-            game.d.popMatrix();
+            float v=.3f;
+            if (game.vars.cubic) {
+                game.d.cube(x+v, y+v, 0f, 1-2*v, 1-2*v, 1f, color);
+            } else {
+                game.d.rect(x+v, y+v, 1-2*v, 1-2*v, color);
+            }
         }
     }
 
     @Override
     public boolean isSolid() {
-        return true;
+        return false;
     }
 
     @Override
     public boolean onCollide(PlayerSP player, Level level, int meta, ArrayList<Borrow.BorrowedCollisionData> data) {
         if (!collided) {
-            game.vars.inverted_gravity^=true;
-            game.player.motionY*=-1;
-            collided=true;
-            game.player.jumps=0;
+            if (player.collidesHor||player.collidesVert)
+                collided=true;
         }
         return false;
     }

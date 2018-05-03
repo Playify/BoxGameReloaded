@@ -24,6 +24,7 @@ public class Blocks {
     public BlockGravityPad GRAVITY_PAD;
     public BlockArrow ARROW;
     public BlockTeleporter TELEPORT;
+    public BlockNear NEAR;
     public int blockscount;
 
     //Block anhand des Zeichens bekommen
@@ -49,6 +50,7 @@ public class Blocks {
         GRAVITY_PAD=new BlockGravityPad(game, BlockGravityPad.chr);
         ARROW=new BlockArrow(game, BlockArrow.chr);
         TELEPORT=new BlockTeleporter(game, BlockTeleporter.chr);
+        NEAR=new BlockNear(game, BlockNear.chr);
 
     }
 }

@@ -167,9 +167,6 @@ public class WindowsDrawer implements Drawer {
         GL11.glScalef(w, h, d);
 
 
-        //front
-        if (front)
-            vertex(vertexFRONT, color);
         //back
         if (back)
             vertex(vertexBACK, color);
@@ -185,6 +182,9 @@ public class WindowsDrawer implements Drawer {
         //left
         if (left)
             vertex(vertexLEFT, color, 0.9f);
+        //front
+        if (front)
+            vertex(vertexFRONT, color);
         GL11.glPopMatrix();
     }
 
