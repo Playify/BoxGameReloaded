@@ -44,6 +44,7 @@ public class VariableContainer {
     public String playerID;
     public boolean nameTags;
     public String world="Lobby";
+    public boolean[] keys=new boolean[8];
     @ConfigValue
     public ConfigVariable skin=new ConfigVariable() {
 

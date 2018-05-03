@@ -26,6 +26,7 @@ public class Blocks {
     public BlockTeleporter TELEPORT;
     public BlockNear NEAR;
     public int blockscount;
+    public BlockKey KEY;
 
     //Block anhand des Zeichens bekommen
     public Block get(char c) {
@@ -51,6 +52,7 @@ public class Blocks {
         ARROW=new BlockArrow(game, BlockArrow.chr);
         TELEPORT=new BlockTeleporter(game, BlockTeleporter.chr);
         NEAR=new BlockNear(game, BlockNear.chr);
+        KEY=new BlockKey(game, BlockKey.chr);
 
     }
 }
