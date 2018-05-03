@@ -126,7 +126,7 @@ public class Level {
                 bl = get(xx, yy);
                 int meta = getMeta(xx, yy);
                 if (bl.collide(b, xx, yy, true, meta, this)) {
-                    lst.add(Borrow.data(bl, x, y, meta));
+                    lst.add(Borrow.data(bl, xx, yy, meta));
                 }
             }
         }
@@ -268,5 +268,17 @@ public class Level {
             }
         }
         return list;
+    }
+
+    public Borrow.BorrowedCollisionData findNext(Borrow.BorrowedCollisionData col) {
+        int index=col.y*sizeX+col.x+1;
+        int size=sizeX*sizeY;
+        for (int i=0;i<size;i++) {
+            int pos=(index+i)%size;
+            if (blocks[pos]==col.blk&&metas[pos]==col.meta) {
+                return Borrow.data(col.blk, pos%sizeX, pos/sizeX, col.meta);
+            }
+        }
+        return Borrow.data(col.blk, col.x, col.y, col.meta);
     }
 }

@@ -18,11 +18,6 @@ public class CommandBoolean extends Command {
     }
 
     @Override
-    public boolean is(String cmd) {
-        return this.cmd.equals(cmd);
-    }
-
-    @Override
     public void run(String cmd, String[] args, BoxGameReloaded game) {
         try {
             String action=args.length==0 ? def : args[0];
@@ -46,19 +41,19 @@ public class CommandBoolean extends Command {
                     set(!get(game), game);
                     break;
                 case "get":
-                    game.commandHandler.display(this.cmd+":"+get(game));
+                    game.cmd.display(this.cmd+":"+get(game));
                     return;
                 case "":
-                    game.commandHandler.error("Syntax: "+this.cmd+" <true/false>");
+                    game.cmd.error("Syntax: "+this.cmd+" <true/false>");
                     return;
                 default:
-                    game.commandHandler.error("Illegal Argument!");
+                    game.cmd.error("Illegal Argument!");
                     return;
             }
-            game.commandHandler.display(this.cmd+" has been set to "+get(game));
+            game.cmd.display(this.cmd+" has been set to "+get(game));
         } catch (Exception e) {
             e.printStackTrace();
-            game.commandHandler.error("Error executing Command.");
+            game.cmd.error("Error executing Command.");
         }
     }
 

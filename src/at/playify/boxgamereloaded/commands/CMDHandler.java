@@ -5,23 +5,25 @@ import at.playify.boxgamereloaded.interfaces.VariableContainer;
 import at.playify.boxgamereloaded.util.Borrow;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
-public class CommandHandler {
+public class CMDHandler {
 
-    private final ArrayList<Command> commands;
+    private final HashMap<String,Command> commands;
     private final BoxGameReloaded game;
 
-    public CommandHandler(BoxGameReloaded game) {
+    public CMDHandler(BoxGameReloaded game) {
         this.game=game;
-        commands=new ArrayList<>();
+        commands=new HashMap<>();
         Class<? extends VariableContainer> vars=game.vars.getClass();
         try {
-            commands.add(new CommandBoolean("fly", vars.getField("fly"), game.vars));
-            commands.add(new CommandBoolean("gravity", vars.getField("inverted_gravity"), game.vars));
-            commands.add(new CommandBoolean("noclip", vars.getField("noclip"), game.vars));
-            commands.add(new CommandBoolean("god", vars.getField("god"), game.vars));
-            commands.add(new CommandConnect());
-            commands.add(new CommandSkin());
+            commands.put("fly",new CommandBoolean("fly", vars.getField("fly"), game.vars));
+            commands.put("gravity",new CommandBoolean("gravity", vars.getField("inverted_gravity"), game.vars));
+            commands.put("noclip",new CommandBoolean("noclip", vars.getField("noclip"), game.vars));
+            commands.put("god",new CommandBoolean("god", vars.getField("god"), game.vars));
+            commands.put("connect",new CommandConnect());
+            commands.put("skin", new CommandSkin());
+            commands.put("tail", commands.get("skin"));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -72,18 +74,14 @@ public class CommandHandler {
     }
 
     private void execute(String cmd, String... args) {
-        //TODO replace with HashMap<String,Command>
-        for (int i=0;i<commands.size();i++) {
-            Command command=commands.get(i);
-            if (command.is(cmd)) {
-                try {
-                    command.run(cmd, args, game);
-                } catch (Exception e) {
-                    error(e.getClass().getSimpleName()+":"+e.getMessage());
-                    e.printStackTrace();
-                }
-                return;
+        if (commands.containsKey(cmd)){
+            try {
+                commands.get(cmd).run(cmd, args, game);
+            } catch (Exception e) {
+                error(e.getClass().getSimpleName()+":"+e.getMessage());
+                e.printStackTrace();
             }
+            return;
         }
         error("Unknown Command");
     }

@@ -16,6 +16,8 @@ public class TailData {
     public TailData(BoxGameReloaded game) {
         this.game=game;
         map.put("false", def=new TailData.None());
+        map.put("none", def);
+        map.put("off", def);
         map.put("true", new TailData.Normal());
         map.put("dot", new TailData.Dot());
         map.put("ground", new TailData.Ground());

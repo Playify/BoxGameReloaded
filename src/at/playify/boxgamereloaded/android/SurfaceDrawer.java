@@ -172,7 +172,7 @@ public class SurfaceDrawer implements Drawer {
     public void drawImage(String s) {
         if (!textures.containsKey(s)) {
             try {
-                InputStream inStream = a.getResources().openRawResource(R.raw.ascii);
+                InputStream inStream = a.getResources().openRawResource(R.raw.class.getField(s).getInt(null));
                 Bitmap bitmap = BitmapFactory.decodeStream(inStream);
                 int[] id=new int[1];
                 gl.glGenTextures(1,id,0);
@@ -192,7 +192,7 @@ public class SurfaceDrawer implements Drawer {
         gl.glPushMatrix();
         gl.glEnable(GL_TEXTURE_2D);
         gl.glBindTexture(GL_TEXTURE_2D,textures.get(s));
-        gl.glColor4f(0,0,0,.4f);
+        gl.glColor4f(1,1,1,1);
 
         gl.glEnableClientState(GL_VERTEX_ARRAY);
         gl.glEnableClientState(GL_TEXTURE_COORD_ARRAY);
