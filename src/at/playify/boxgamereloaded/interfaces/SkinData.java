@@ -110,15 +110,16 @@ public class SkinData {
             float h=(bound.maxY-bound.minY);
             float d=(bound.maxZ-bound.minZ);
             game.d.pushMatrix();
-            game.d.translate(bound.minX, bound.minY, bound.minZ);
+            game.d.translate(bound.minX, bound.minY, game.vars.cubic?bound.minZ:0);
             game.d.scale(w, h, d);
             game.d.scale(1/5f);
-            game.d.cube(0, 0, 0, 3, 1, 5, color, true, false, true, true);
-            game.d.cube(2, 4, 0, 3, 1, 5, color, true, true, true, false);
-            game.d.cube(4, 0, 0, 1, 3, 5, color, false, true, true, true);
-            game.d.cube(0, 2, 0, 1, 3, 5, color, true, true, false, true);
-            game.d.cube(0, 2, 0, 5, 1, 5, color, true, false, true, false);
-            game.d.cube(2, 0, 0, 1, 5, 5, color, false, true, false, true);
+            d=game.vars.cubic?5:0;
+            game.d.cube(0, 0, 0, 3, 1, d, color, true, false, true, true);
+            game.d.cube(2, 4, 0, 3, 1, d, color, true, true, true, false);
+            game.d.cube(4, 0, 0, 1, 3, d, color, false, true, true, true);
+            game.d.cube(0, 2, 0, 1, 3, d, color, true, true, false, true);
+            game.d.cube(0, 2, 0, 5, 1, d, color, true, false, true, false);
+            game.d.cube(2, 0, 0, 1, 5, d, color, false, true, false, true);
             game.d.popMatrix();
         }
     }

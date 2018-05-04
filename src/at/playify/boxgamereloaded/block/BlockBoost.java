@@ -58,8 +58,8 @@ public class BlockBoost extends Block implements Collideable{
         }else {
             game.d.rect(x, y, 1, 1, 0xFF00C656);
             game.d.pushMatrix();
-            game.d.translate(x+.5f,y+.5f,.9f);
-            game.d.rotate(game.vars.inverted_gravity?-1:1,-1,0,0);
+            game.d.translate(x+.5f,y+.5f,0);
+            game.d.rotate((game.vars.inverted_gravity?-1:1)*0.01f,-1,0,0);
             game.d.rotate(45,0,0,1);
             final float v=.3f;
             game.d.rect(-v,-v,2*v,2*v, 0xFF59FF59);

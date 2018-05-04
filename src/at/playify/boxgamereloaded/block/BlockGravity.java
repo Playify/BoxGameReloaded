@@ -48,7 +48,7 @@ public class BlockGravity extends Block implements Collideable, NoCollideable {
         } else {
             game.d.pushMatrix();
                 game.d.rect(x, y, 1, 1, 0xFF9c06ad);
-                game.d.translate(x+.5f, y+.5f, 0);
+                game.d.translate(x+.5f, y+.5f, -0.01f);
             if (game.vars.inverted_gravity)
                 game.d.scale(1, -1, 1);
             game.d.vertex(game.vertex.arrow, 0xFF0136c6);

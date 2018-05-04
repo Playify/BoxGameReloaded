@@ -63,7 +63,7 @@ public class BlockTeleporter extends Block implements Collideable, NoCollideable
         } else {
             game.d.pushMatrix();
             game.d.rect(x, y, 1, 1, 0xFFA991FF);
-            game.d.translate(x+.5f, y+.5f, 0);
+            game.d.translate(x+.5f, y+.5f, -0.01f);
             game.d.scale(1/3f);
             for (int i=0;i<4;i++) {
                 game.d.vertex(vertex, Utils.hsvToRgb(level.getMeta(x, y)/(float) metaStates()));

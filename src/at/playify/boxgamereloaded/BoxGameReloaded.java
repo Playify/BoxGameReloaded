@@ -264,7 +264,6 @@ public class BoxGameReloaded extends Game {
 
     //Spiel info auf Bildschirm oben links anzeigen
     private void logFrame() {
-        System.out.println(Arrays.toString(vars.keys));
         lastframeindex = (lastframeindex + 1) % lastframes.length;
         lastframes[lastframeindex] = (int) (-lastframetime + (lastframetime = System.nanoTime()));
         long l = 0;

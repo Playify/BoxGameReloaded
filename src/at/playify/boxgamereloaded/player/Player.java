@@ -65,11 +65,15 @@ public abstract class Player implements Paintable {
     @Override
     public void draw(int data) {
         game.d.pushMatrix();
-        game.d.translate(.5f, .5f, .5f);
-        final int v=50;
-        float angle=System.currentTimeMillis()%(360*v)/(float) v;
-        game.d.rotate(angle, 0, 1, 0);
-        game.d.translate(-.5f, -.5f, -.5f);
+        if (game.vars.cubic) {
+            game.d.translate(.5f, .5f, .5f);
+            final int v=50;
+            float angle=System.currentTimeMillis()%(360*v)/(float) v;
+            game.d.rotate(angle, 0, 1, 0);
+            game.d.translate(-.5f, -.5f, -.5f);
+        }else{
+            game.d.translate(0,0,.5f);
+        }
         drawbound.set(0, 0, 0, 1, 1, 1);
         game.skin.get(this.skin).draw(this, drawbound, color, color2);
         game.d.popMatrix();

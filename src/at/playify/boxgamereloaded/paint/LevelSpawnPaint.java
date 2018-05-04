@@ -14,10 +14,14 @@ public class LevelSpawnPaint implements Paintable {
     public void draw(int data) {
         game.d.pushMatrix();
         game.d.translate(.5f, .5f, .5f);
-        final int v=50;
-        float angle=System.currentTimeMillis()%(360*v)/(float) v;
-        game.d.rotate(angle, 0, 1, 0);
-        game.d.lineCube(-.5f, -.5f, -.5f, 1, 1, 1, 0xFFFF0000);
+        if (game.vars.cubic) {
+            final int v=50;
+            float angle=System.currentTimeMillis()%(360*v)/(float) v;
+            game.d.rotate(angle, 0, 1, 0);
+            game.d.lineCube(-.5f, -.5f, -.5f, 1, 1, 1, 0xFFFF0000);
+        }else{
+            game.d.lineRect(-.5f,-.5f,1,1,0xFFFF0000);
+        }
         game.d.popMatrix();
     }
 

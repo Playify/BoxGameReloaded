@@ -60,14 +60,18 @@ public abstract class Block implements Paintable {
     @Override
     public void draw(int meta) {
         game.d.pushMatrix();
-        if (isBackGround(meta)) {
-            game.d.translate(0, 0, -.4f);
-        } else {
-            game.d.translate(.5f, .5f, .5f);
-            final int v=50;
-            float angle=System.currentTimeMillis()%(360*v)/(float) v;
-            game.d.rotate(angle, 0, 1, 0);
-            game.d.translate(-.5f, -.5f, -.5f);
+        if (game.vars.cubic) {
+            if (isBackGround(meta)) {
+                game.d.translate(0, 0, -.4f);
+            } else {
+                game.d.translate(.5f, .5f, .5f);
+                final int v=50;
+                float angle=System.currentTimeMillis()%(360*v)/(float) v;
+                game.d.rotate(angle, 0, 1, 0);
+                game.d.translate(-.5f, -.5f, -.5f);
+            }
+        }else{
+            game.d.translate(0,0,.5f);
         }
         FakeLevel fakeLevel=game.painter.fakeLevel;
         fakeLevel.set(this, meta);

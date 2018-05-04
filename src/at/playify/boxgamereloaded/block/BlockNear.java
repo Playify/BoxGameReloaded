@@ -50,7 +50,7 @@ public class BlockNear extends Block implements Collideable, NoCollideable {
         } else {
             float v=.3f;
             if (game.vars.cubic) {
-                game.d.cube(x+v, y+v, 0f, 1-2*v, 1-2*v, 1f, color);
+                game.d.cube(x+v, y+v, v, 1-2*v, 1-2*v, 1f-2*v, color);
             } else {
                 game.d.rect(x+v, y+v, 1-2*v, 1-2*v, color);
             }
