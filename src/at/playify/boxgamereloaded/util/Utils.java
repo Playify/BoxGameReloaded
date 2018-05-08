@@ -1,5 +1,8 @@
 package at.playify.boxgamereloaded.util;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
@@ -76,22 +79,59 @@ public class Utils {
         float t = value * (1 - (1 - f) * saturation);
 
         switch (h) {
-            case 0: return rgbToString(value, t, p);
-            case 1: return rgbToString(q, value, p);
-            case 2: return rgbToString(p, value, t);
-            case 3: return rgbToString(p, q, value);
-            case 4: return rgbToString(t, p, value);
-            case 5: return rgbToString(value, p, q);
+            case 0: return rgbFloatToInt(value, t, p);
+            case 1: return rgbFloatToInt(q, value, p);
+            case 2: return rgbFloatToInt(p, value, t);
+            case 3: return rgbFloatToInt(p, q, value);
+            case 4: return rgbFloatToInt(t, p, value);
+            case 5: return rgbFloatToInt(value, p, q);
         }
         return 0xFF000000;
     }
 
-    public static int rgbToString(float r, float g, float b) {
+    public static int rgbFloatToInt(float r, float g, float b) {
         int rr= (int) (255*r),gg= (int) (255*g),bb= (int) (255*b);
         return 0xFF000000|(rr<<16)|(gg<<8)|(bb);
     }
 
     public static int round(float v) {
         return Math.round(v);
+    }
+
+    public static int color(int meta, int states) {
+        if (states==6) {
+            return hsvToRgb(meta/(float)states);
+        }else if (states==8){
+            meta%=8;
+            if(meta<0)meta+=8;
+            switch (meta){
+                case 0:return 0xFFFF0000;
+                case 1:return 0xFFFF8000;
+                case 2:return 0xFFFFFF00;
+                case 3:return 0xFF00FF00;
+                case 4:return 0xFF00FFFF;
+                case 5:return 0xFF0000FF;
+                case 6:return 0xFFAA00FF;
+                case 7:return 0xFFFF00FF;
+                default:return 0xFFFF0000;
+            }
+        }else{
+            return hsvToRgb(meta/(float)states);
+        }
+    }
+
+    public static String inputStreamToString(InputStream inputStream){
+        try(ByteArrayOutputStream result = new ByteArrayOutputStream()) {
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = inputStream.read(buffer)) != -1) {
+                result.write(buffer, 0, length);
+            }
+
+            return result.toString("UTF-8");
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

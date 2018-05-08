@@ -99,7 +99,7 @@ public class BlockResize extends Block implements Collideable {
             game.d.translate(0,0,-0.01f);
             float v=.45f;
             game.d.rect(-v, -v, 2*v, 2*v, 0xFFFF00F2);
-            game.d.translate(0,0,-0.01f);
+            game.d.translate(0,0,-0.001f);
             int meta=level.getMeta(x, y);
             v=.4f;
             game.d.lineRect(-v, -v, 2*v, 2*v, meta==1 ? 0xFF00FF00 : 0xFF000000);

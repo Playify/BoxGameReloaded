@@ -99,15 +99,16 @@ public class BlockOneWay extends Block {
         if (game.vars.cubic) {
             game.d.cube(x, y, 0.9f, 1, 1, .1f, 0xFF009DFF);
             game.d.translate(x+.5f,y+.5f,.9f);
-            game.d.rotate(15,meta==2?1:meta==3?-1:0,meta==0?1:meta==1?-1:0,0);
+            game.d.rotate(15f,meta==2?1:meta==3?-1:0,meta==0?1:meta==1?-1:0,0);
+            game.d.rotate(45,0,0,1);
+            final float v=.3f;
+            game.d.cube(-v,-v,0,2*v,2*v,.2f,0xFF00FFFF);
         }else {
             game.d.rect(x, y, 1, 1,0xFF009DFF);
-            game.d.translate(x+.5f,y+.5f,0);
-            game.d.rotate(0.001f,meta==2?1:meta==3?-1:0,meta==0?1:meta==1?-1:0,0);
+            game.d.translate(x+.5f,y+.5f,-0.01f);
+            game.d.rotate(((meta&2)==0?90:0)+((meta&1)==0?0:180),0,0,1);
+            game.d.vertex(game.vertex.bigtriangle,0xFF00FFFF);
         }
-        game.d.rotate(45,0,0,1);
-        final float v=.3f;
-        game.d.cube(-v,-v,0,2*v,2*v,.2f,0xFF00FFFF);
         game.d.popMatrix();
     }
 

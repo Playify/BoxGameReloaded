@@ -13,6 +13,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 
 import at.playify.boxgamereloaded.interfaces.Game;
 import at.playify.boxgamereloaded.interfaces.Handler;
@@ -55,7 +57,7 @@ class AndroidHandler extends Handler {
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        a.game.runcmd(input.getText().toString());
+                        runcmd(input.getText().toString());
                         dialog.dismiss();
                         a.game.pauseLock.unlock();
                     }
@@ -74,7 +76,7 @@ class AndroidHandler extends Handler {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    a.game.runcmd(input.getText().toString());
+                    runcmd(input.getText().toString());
                     ad.dismiss();
                     a.game.pauseLock.unlock();
                     return true;
@@ -87,7 +89,7 @@ class AndroidHandler extends Handler {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if (event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
-                    a.game.runcmd(input.getText().toString());
+                    runcmd(input.getText().toString());
                     ad.dismiss();
                     a.game.pauseLock.unlock();
                     return true;
@@ -98,7 +100,7 @@ class AndroidHandler extends Handler {
         ad.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                a.game.runcmd(input.getText().toString());
+                runcmd(input.getText().toString());
                 ad.dismiss();
                 a.game.pauseLock.unlock();
             }
@@ -130,5 +132,26 @@ class AndroidHandler extends Handler {
     @Override
     public File baseDir(String s){
         return a.getExternalFilesDir(null);
+    }
+
+    @Override
+    public InputStream asset(String s) {
+        try {
+            return a.getAssets().open(s);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private void runcmd(final String s){
+        Thread thread=new Thread(new Runnable() {
+            @Override
+            public void run() {
+                a.game.runcmd(s);
+            }
+        });
+        thread.setName("Command Executor");
+        thread.start();
     }
 }

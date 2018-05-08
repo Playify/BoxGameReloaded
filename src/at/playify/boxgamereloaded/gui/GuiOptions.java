@@ -3,6 +3,7 @@ package at.playify.boxgamereloaded.gui;
 import at.playify.boxgamereloaded.BoxGameReloaded;
 import at.playify.boxgamereloaded.gui.button.Button;
 import at.playify.boxgamereloaded.gui.button.ConsoleButton;
+import at.playify.boxgamereloaded.interfaces.Drawer;
 import at.playify.boxgamereloaded.util.BoundingBox3d;
 import at.playify.boxgamereloaded.util.Finger;
 
@@ -20,7 +21,7 @@ public class GuiOptions extends Gui {
         buttons.add(new Button(game) {
             @Override
             public String text() {
-                return "";
+                return "Options Menu, Coming Soon";
             }
 
             @Override
@@ -28,6 +29,23 @@ public class GuiOptions extends Gui {
                 float v=.2f;
                 bound.set(v, v, 0, game.aspectratio-v, 1-v, 0);
                 return bound;
+            }
+
+            @Override
+            public void draw(Drawer d) {
+                d.pushMatrix();
+                BoundingBox3d bound=bound();
+                d.cube(0, 0, 0, 1, 1, 1, color());
+                float v=(bound.maxY-bound.minY);
+                d.scale(1, 1/v,1);
+                d.drawStringCenter("Options Menu", .5f, v*3/5, v/6);
+                d.drawStringCenter("Coming Soon", .5f, v*2/5, v/6);
+                d.popMatrix();
+            }
+
+            @Override
+            public int color() {
+                return 0xFF007599;
             }
 
             @Override

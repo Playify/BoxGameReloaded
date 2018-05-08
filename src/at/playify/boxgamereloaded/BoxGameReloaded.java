@@ -7,6 +7,7 @@ import at.playify.boxgamereloaded.gui.GuiOverlay;
 import at.playify.boxgamereloaded.interfaces.*;
 import at.playify.boxgamereloaded.interfaces.exceptions.DrawingException;
 import at.playify.boxgamereloaded.level.Level;
+import at.playify.boxgamereloaded.level.compress.CompressionHandler;
 import at.playify.boxgamereloaded.network.connection.ConnectionSinglePlayer;
 import at.playify.boxgamereloaded.network.connection.ConnectionToServer;
 import at.playify.boxgamereloaded.network.connection.EmptyConnection;
@@ -26,9 +27,11 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Locale;
 
 public class BoxGameReloaded extends Game {
+    public HashMap<String,ArrayList<String>> levels=new HashMap<>();
     public VariableContainer vars;
     public final PlayerSP player=new PlayerSP(this);
     public final CMDHandler cmd;
@@ -39,9 +42,10 @@ public class BoxGameReloaded extends Game {
     public float zoom = 1.3f;
     public int vertexcount;
     public float aspectratio;
-    public VertexData vertex=new VertexData();
+    public VertexData vertex=new VertexData(this);
     public SkinData skin=new SkinData(this);
     public TailData tail=new TailData(this);
+    public CompressionHandler compresser=new CompressionHandler();
     private boolean pauseKeyDown;
     private boolean optionsKeyDown;
     private RectBound leveldrawbound = new RectBound();
@@ -83,6 +87,7 @@ public class BoxGameReloaded extends Game {
     @Override
     public void fingerStateChanged(Finger finger) {
         if (finger.down) {
+            finger.control=true;
             finger.control = gui.click(finger);
             if (!finger.control) {
                 if (painter.draw&&connection.pauseCount==0) {
@@ -342,18 +347,21 @@ public class BoxGameReloaded extends Game {
                 optionsKeyDown = false;
             }
         }
+        if (keyChar=='r'&&!keys['r']) {
+            player.killedByButton();
+        }
         if (keyChar=='c'&&!keys['c']&&vars.debug.console) {
             handler.setKeyboardVisible(true);
         }
-        if (keyChar=='v'&&!keys['v']&&(vars.debug.console||vars.world.startsWith("paint_"))&&!gui.isMainMenuVisible()) {
+        if (keyChar=='v'&&!keys['v']&&(vars.debug.console||vars.world.startsWith("paint"))&&!gui.isMainMenuVisible()) {
             painter.draw^=true;
         }
-        if (keyChar=='q'&&!keys['q']&&(vars.debug.console||vars.world.startsWith("paint_"))&&!gui.isMainMenuVisible()&&painter.draw) {
+        if (keyChar=='q'&&!keys['q']&&(vars.debug.console||vars.world.startsWith("paint"))&&!gui.isMainMenuVisible()&&painter.draw) {
             painter.quick^=true;
         }
         if (keys[keyChar]) {
             if (Character.isDigit(keyChar)) {
-                joinWorld("paint_"+((char) keyChar));
+                joinWorld("paint"+((char) keyChar));
             }
         }
     }

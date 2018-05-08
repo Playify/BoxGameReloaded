@@ -16,6 +16,8 @@ public class BoundingBox3d extends BoundingBox {
         float miY = this.minY;
         float maX = this.maxX;
         float maY = this.maxY;
+        float miZ = this.minZ;
+        float maZ = this.maxZ;
 
         if (x < 0.0D) {
             miX += x;
@@ -28,8 +30,6 @@ public class BoundingBox3d extends BoundingBox {
         } else if (y > 0.0D) {
             maY += y;
         }
-        float miZ = this.minZ;
-        float maZ = this.maxZ;
 
         if (z < 0.0D) {
             miZ += z;
@@ -169,5 +169,10 @@ public class BoundingBox3d extends BoundingBox {
 
     public boolean intersects(BoundingBox3d b) {
         return this.intersects(b.minX, b.minY, b.minZ, b.maxX, b.maxY, b.maxZ);
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return super.isEmpty()||minZ==maxZ;
     }
 }

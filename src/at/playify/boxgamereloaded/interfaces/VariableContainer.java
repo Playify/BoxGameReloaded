@@ -58,6 +58,8 @@ public class VariableContainer {
             game.player.skin(s);
         }
     };
+    @ConfigValue public String lastWorld;
+    @ConfigValue public String stage;
 
     public VariableContainer(Game game) {
         this.game=(BoxGameReloaded) game;
@@ -82,9 +84,8 @@ public class VariableContainer {
         private int jumps;
         private boolean geometry_dash;
         private boolean inverted_gravity;
-        private float motionX;
-        private float motionY;
         public RectBound bound=new RectBound();
+        public boolean[] keys=new boolean[0];
 
         public void check() {
             check(game.player.bound);
@@ -95,9 +96,11 @@ public class VariableContainer {
             vars.geometry_dash=geometry_dash;
             vars.inverted_gravity=inverted_gravity;
             game.player.jumps=jumps;
-            game.player.motionX=motionX;
-            game.player.motionY=motionY;
+            game.player.motionX=0;
+            game.player.motionY=0;
             game.player.bound.set(bound);
+            if (keys.length!=vars.keys.length) keys=new boolean[keys.length];
+            System.arraycopy(keys,0,vars.keys,0,keys.length);
         }
 
         public void check(RectBound spawnPoint) {
@@ -105,9 +108,9 @@ public class VariableContainer {
             geometry_dash=vars.geometry_dash;
             inverted_gravity=vars.inverted_gravity;
             jumps=game.player.jumps;
-            motionX=game.player.motionX;
-            motionY=game.player.motionY;
             bound.set(spawnPoint);
+            if (keys.length!=vars.keys.length) keys=new boolean[vars.keys.length];
+            System.arraycopy(vars.keys,0,keys,0,keys.length);
         }
     }
 

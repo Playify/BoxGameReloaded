@@ -149,4 +149,8 @@ public class BoundingBox {
     public boolean contains(float x, float y) {
         return x > minX && x < maxX && y > minY && y < maxY;
     }
+
+    public boolean isEmpty() {
+        return minX==maxX||minY==maxY;
+    }
 }

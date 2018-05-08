@@ -3,15 +3,15 @@ package at.playify.boxgamereloaded.interfaces;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
+import java.io.*;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Scanner;
+
+import at.playify.boxgamereloaded.util.Utils;
 
 //Benutzt um dem Spiel Zugriff auf eine Config Datei zu geben und sonstige Betriebssystemabhängige Aktionen.
 public abstract class Handler {
@@ -42,10 +42,16 @@ public abstract class Handler {
                 return json;
             }
         } catch (FileNotFoundException e) {
-            return new JSONObject();
+            JSONObject json=new JSONObject();
+            map.put(filename, json);
+            time.put(filename, 0L);
+            return json;
         } catch (Exception e) {
             e.printStackTrace();
-            return new JSONObject();
+            JSONObject json=new JSONObject();
+            map.put(filename, json);
+            time.put(filename, 0L);
+            return json;
         }
     }
 
@@ -65,6 +71,7 @@ public abstract class Handler {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        map.put(filename,o);
         time.put(filename, file.lastModified());
     }
 
@@ -99,4 +106,35 @@ public abstract class Handler {
         }
         return "127.0.0.1";
     }
+
+    @SuppressWarnings("unused")
+    public String version(){
+        InputStream inputStream=asset("version.txt");
+        try(ByteArrayOutputStream result = new ByteArrayOutputStream()) {
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = inputStream.read(buffer)) != -1) {
+                result.write(buffer, 0, length);
+            }
+
+            String s=result.toString().replace("\r","");
+            return s.substring(0,s.indexOf('\n'));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
+
+    public JSONObject assetJson(String s){
+        try {
+            JSONTokener tokener=new JSONTokener(Utils.inputStreamToString(asset(s+".json")));
+            return new JSONObject(tokener);
+        }catch (Exception e){
+            System.err.println("Error reading Json:"+s);
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public abstract InputStream asset(String s);
 }

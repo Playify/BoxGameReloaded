@@ -184,8 +184,11 @@ public class Main {
                 }
             }
             int wheel=Mouse.getDWheel();
-            float v=wheel*0.001f+1;
-            if (game.painter.draw) {
+            if (game.gui.isMainMenuVisible()&&wheel!=0){
+                game.gui.main.scroll-=wheel*0.001f;
+                game.pauseLock.unlock();
+            }else if (game.painter.draw) {
+                float v=wheel*0.001f+1;
                 game.zoom=Utils.clamp(game.zoom*v, 0.3f, 5f);
 
                 if (down!=(Mouse.isButtonDown(1)&&!finger.control)) {

@@ -24,7 +24,7 @@ public class PaintButton extends Button {
 
     @Override
     public void draw(Drawer d) {
-        if ((!((game.vars.debug.console||game.painter.draw||game.vars.world.startsWith("paint_"))&&(game.gui.isOptionsVisible()||game.painter.draw)))||game.gui.isMainMenuVisible()) {
+        if ((!((game.vars.debug.console||game.painter.draw||game.vars.world.startsWith("paint"))&&(game.gui.isOptionsVisible()||game.painter.draw)))||game.gui.isMainMenuVisible()) {
             game.painter.quick=false;
             return;
         }
@@ -46,7 +46,7 @@ public class PaintButton extends Button {
 
     @Override
     public boolean click(Finger finger) {
-        if ((game.vars.debug.console||game.vars.world.startsWith("paint_"))&&!game.gui.isMainMenuVisible()) {
+        if ((game.vars.debug.console||game.vars.world.startsWith("paint"))&&!game.gui.isMainMenuVisible()) {
             if (game.gui.isOptionsVisible()) {
                 if (game.painter.draw) {
                     game.painter.draw=false;

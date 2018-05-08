@@ -49,7 +49,7 @@ public class PacketLevelData extends Packet {
     @Override
     public void handle(Server server, ConnectionToClient connectionToClient) {
         String world=this.world==null ? connectionToClient.world : this.world;
-        if (world.startsWith("paint_")) {
+        if (world.startsWith("paint")) {
             try {
                 JSONObject paint=server.handler.read("paint");
                 if (!paint.has(world)) {

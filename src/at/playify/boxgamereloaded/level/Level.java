@@ -2,11 +2,10 @@ package at.playify.boxgamereloaded.level;
 
 import at.playify.boxgamereloaded.BoxGameReloaded;
 import at.playify.boxgamereloaded.block.Block;
+import at.playify.boxgamereloaded.level.compress.LevelData;
 import at.playify.boxgamereloaded.player.Player;
 import at.playify.boxgamereloaded.player.PlayerSP;
 import at.playify.boxgamereloaded.util.Borrow;
-import at.playify.boxgamereloaded.util.Compresser;
-import at.playify.boxgamereloaded.util.Utils;
 import at.playify.boxgamereloaded.util.bound.Bound;
 import at.playify.boxgamereloaded.util.bound.RectBound;
 
@@ -160,7 +159,6 @@ public class Level {
         } else {
             game.d.lineRect(bound.x(), bound.y(), bound.w(), bound.h(), 0xFF000000);
         }
-        int minX = (int) Math.floor(b.x()), minY = (int) Math.floor(b.y()), maxX = (int) Math.ceil(b.x()+b.w()), maxY = (int) Math.ceil(b.y()+b.h());
         game.player.draw();
         if (game.connection!=null) {
             Player[] players=game.connection.players;
@@ -168,6 +166,7 @@ public class Level {
                 player.draw();
             }
         }
+        int minX = (int) Math.floor(b.x()), minY = (int) Math.floor(b.y()), maxX = (int) Math.ceil(b.x()+b.w()), maxY = (int) Math.ceil(b.y()+b.h());
         for (int y = minY; y < maxY; y++) {
             for (int x = minX; x < maxX; x++) {
                 if (game.painter.draw&&game.vars.paintPoints&&x>0&&y>0&&x<sizeX&&y<sizeY)
@@ -180,64 +179,22 @@ public class Level {
 
     //Level zu Text
     public String toWorldString() {
-        StringBuilder str=new StringBuilder();
-        for(int i=0; i<blocks.length; i++) {
-            Block block=blocks[i];
-            str.append(block==null?'a':block.getChar());
-            int meta=metas[i];
-            if (meta!=0) {
-                str.append(meta);
-            }
-        }
-        str.append("+").append(sizeX);
-        str.append("+").append(sizeY);
-        str.append("+").append((Utils.round(spawnPoint.x()*100)));
-        str.append("+").append((Utils.round(spawnPoint.y()*100)));
-        str.append("+").append((Utils.round(spawnPoint.w()*100)));
-        str.append("+").append((Utils.round(spawnPoint.h()*100)));
-        return Compresser.compress(str.toString());
+        return game.compresser.compress(new LevelData(blocks,metas,spawnPoint,sizeX,sizeY));
     }
 
     //Level aus Text laden
     public void loadWorldString(String s) {
-        s=Compresser.decompress(s);
-        String[] split=new String[]{"","","","","","",""};
-        StringBuilder stringBuilder = new StringBuilder();
-        int index=0;
-        for (char c : s.toCharArray()) {
-            if (c == '+') {
-                split[index++]=stringBuilder.toString();
-                stringBuilder.setLength(0);
-                if (index>split.length) {
-                    return;
-                }
-            }else {
-                stringBuilder.append(c);
+        LevelData levelData=game.compresser.decompress(s);
+        if (levelData!=null) {
+            setSize(levelData.sizeX,levelData.sizeY);
+            spawnPoint.set(levelData.spawnPoint);
+            int index=0;
+            while (levelData.hasNext()){
+                levelData.next();
+                blocks[index]=game.blocks.get(levelData.chr());
+                metas[index]=levelData.meta();
+                index++;
             }
-        }
-        setSize(Utils.parseInt(split[1],32),Utils.parseInt(split[2],18));
-        spawnPoint.set(Utils.parseInt(split[3],10)/100f,Utils.parseInt(split[4],10)/100f,Utils.parseInt(split[5],80)/100f,Utils.parseInt(split[6],80)/100f);
-        spawnPoint.round();
-        char[] chars=split[0].toCharArray();
-        int number=0;
-        int i=0;
-        Block block=null;
-        for(char c : chars) {
-            if (c>='0'&&c<='9'){
-                number=number*10+(c-'0');
-            }else{
-                if (block!=null){
-                    blocks[i]=block;
-                    metas[i]=number;
-                    number=0;
-                    i++;
-                }
-                block=game.blocks.get(c);
-            }
-        }
-        if (block!=null){
-            blocks[i]=block;
-            metas[i]=number;
         }
     }
 

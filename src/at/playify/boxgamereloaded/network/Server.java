@@ -1,10 +1,6 @@
 package at.playify.boxgamereloaded.network;
 
-import at.playify.boxgamereloaded.interfaces.Handler;
-import at.playify.boxgamereloaded.level.EmptyServerLevel;
-import at.playify.boxgamereloaded.level.ServerLevel;
-import at.playify.boxgamereloaded.network.connection.ConnectionToClient;
-import at.playify.boxgamereloaded.network.packet.Packet;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -13,10 +9,19 @@ import java.net.ServerSocket;
 import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import at.playify.boxgamereloaded.interfaces.Handler;
+import at.playify.boxgamereloaded.level.EmptyServerLevel;
+import at.playify.boxgamereloaded.level.ServerLevel;
+import at.playify.boxgamereloaded.level.compress.CompressionHandler;
+import at.playify.boxgamereloaded.network.connection.ConnectionToClient;
+import at.playify.boxgamereloaded.network.packet.Packet;
 
 //Server wird auch für SinglePlayer benutzt
 public class Server extends Thread{
+    public CompressionHandler compresser=new CompressionHandler();
     private CopyOnWriteArrayList<ConnectionToClient> connected=new CopyOnWriteArrayList<>();
     private HashMap<String, ServerLevel> levelmap=new HashMap<>();
     private int pausemode= 2;
@@ -67,24 +72,40 @@ public class Server extends Thread{
             return levelmap.get(world);
         }else {
             try {
-                boolean paint=world.startsWith("paint_");
-                JSONObject levels=handler.read(paint ? "paint" : "levels");
+                boolean paint=world.startsWith("paint");
+                JSONObject levels=world.startsWith("paint") ?handler.read("paint"):handler.assetJson( "leveldata");
+                if (paint){
+                    boolean found=false;
+                    JSONObject n=new JSONObject();
+                    Iterator<String> keys=levels.keys();
+                    while (keys.hasNext()) {
+                        String s=keys.next();
+                        if (s.startsWith("paint_")) {
+                            found=true;
+                            n.put("paint"+s.substring(6),levels.get(s));
+                        }else n.put(s,levels.get(s));
+                    }
+                    if (found){
+                        handler.write("paint",n);
+                        levels=n;
+                    }
+                }
                 if (levels.has(world)) {
                     JSONObject object=levels.getJSONObject(world);
                     if (object.has("data")) {
-                        ServerLevel level=new ServerLevel();
+                        ServerLevel level=new ServerLevel(this);
                         level.loadWorldString(object.getString("data"));
                         levelmap.put(world, level);
                         return level;
                     }
                     System.err.println("Level file is incorrect");
-                    return empty==null ? empty=new EmptyServerLevel() : empty;
+                    return empty==null ? empty=new EmptyServerLevel(this) : empty;
                 } else {
-                    return empty==null ? empty=new EmptyServerLevel() : empty;
+                    return empty==null ? empty=new EmptyServerLevel(this) : empty;
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
-                return empty==null ? empty=new EmptyServerLevel() : empty;
+                return empty==null ? empty=new EmptyServerLevel(this) : empty;
             }
         }
     }
@@ -203,5 +224,62 @@ public class Server extends Thread{
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public ArrayList<String> getLevels(String name) {
+        ArrayList<String> list=new ArrayList<>();
+        try {
+            JSONObject levels=handler.assetJson("levels");
+            if (levels.has(name)) {
+                JSONArray arr=levels.getJSONArray(name);
+                for(int i=0; i<arr.length(); i++) {
+                    list.add(arr.getString(i));
+                }
+            }
+            return list;
+        }catch (Exception e){
+            e.printStackTrace();
+            return list;
+        }
+    }
+
+    public ArrayList<String> getStages() {
+        ArrayList<String> list=new ArrayList<>();
+        try {
+            JSONObject levels=handler.assetJson("levels");
+            if (levels.has("list")) {
+                JSONArray arr=levels.getJSONArray("list");
+                for(int i=0; i<arr.length(); i++) {
+                    list.add(arr.getString(i));
+                }
+            }
+            return list;
+        }catch (Exception e){
+            e.printStackTrace();
+            return list;
+        }
+    }
+
+    public boolean isLevel(String s) {
+        try {
+            s+="=";
+            JSONObject levels=handler.assetJson("levels");
+            Iterator<String> keys=levels.keys();
+            while (keys.hasNext()) {
+                String key=keys.next();
+                if (!key.equals("list")) {
+                    JSONArray arr=levels.getJSONArray(key);
+                    int length=arr.length();
+                    for(int i=0; i<length; i++) {
+                        if (arr.getString(i).startsWith(s)) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }catch (JSONException e){
+            e.printStackTrace();
+        }
+        return false;
     }
 }

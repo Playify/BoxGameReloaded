@@ -31,6 +31,7 @@ class FontRenderer {
 
     //Zeichnet Text bei den Koordinaten x,y mit der Höhe von height
     void draw(String s, float x, float y, float height) {
+        if (s==null)return;
         if (textureID == -1) {
             return;
         }
@@ -100,6 +101,7 @@ class FontRenderer {
 
     //Zeichenbreite errechnen
     public float getWidth(String s) {
+        if(s==null)return 0;
         int w = 0;
         for (char c : s.toCharArray()) {
             int i=indexOf(c);
@@ -161,6 +163,7 @@ class FontRenderer {
     }
 
     public String trimStringToWidth(String s, float width) {
+        if (s==null)return null;
         int i = 0;
         for (; i < s.length(); i++) {
             width-=charWidth[this.indexOf(s.charAt(i))];
@@ -174,6 +177,7 @@ class FontRenderer {
 
     //Zeichnet Text bei den Koordinaten x,y mit der Höhe von height
     void drawMultiline(String s, float x, float y, float w) {
+        if (s==null)return;
         if (textureID == -1) {
             return;
         }
@@ -228,6 +232,7 @@ class FontRenderer {
     }
 
     public int lines(String s, float w) {
+        if (s==null)return 0;
         int lines = 1;
         float offset = 0;
         for (char c : s.toCharArray()) {

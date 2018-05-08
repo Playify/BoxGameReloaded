@@ -7,10 +7,7 @@ import org.lwjgl.opengl.Display;
 import java.awt.*;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
@@ -64,6 +61,7 @@ public class WindowsHandler extends Handler {
                         }
                     }
                 });
+                thr.setName("Command Executor");
                 thr.start();
                 int port=server.getLocalPort();
                 try {
@@ -146,4 +144,10 @@ public class WindowsHandler extends Handler {
     public File baseDir(String filename) {
         return Main.base;
     }
+
+    @Override
+    public InputStream asset(String s) {
+        return getClass().getResourceAsStream("/assets/"+s);
+    }
+
 }

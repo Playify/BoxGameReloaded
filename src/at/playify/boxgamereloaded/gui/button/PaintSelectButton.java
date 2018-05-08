@@ -29,7 +29,7 @@ public class PaintSelectButton extends Button {
     }
 
     @Override
-    public BoundingBox3d bound() {//max-v*(min-max)
+    public BoundingBox3d bound() {
         int a=7;
         int index=this.index+1;
         float x=1/7f+gui.state*((index%a+1)/(float) a-1/7f);

@@ -7,6 +7,8 @@ import at.playify.boxgamereloaded.network.connection.ConnectionToServer;
 import at.playify.boxgamereloaded.util.Utils;
 import at.playify.boxgamereloaded.util.bound.RectBound;
 
+import java.util.Arrays;
+
 public class PacketSpawn extends Packet {
     public float x=.1f;
     public float y=.1f;
@@ -54,8 +56,11 @@ public class PacketSpawn extends Packet {
 
     @Override
     public void handle(BoxGameReloaded game, ConnectionToServer connectionToServer) {
+        game.zoom_x=x+w/2;
+        game.zoom_y=y+h/2;
         game.level.spawnPoint.set(x, y, w, h);
         game.vars.inverted_gravity=false;
+        Arrays.fill(game.vars.keys,false);
         game.vars.check.check(game.level.spawnPoint);
     }
 

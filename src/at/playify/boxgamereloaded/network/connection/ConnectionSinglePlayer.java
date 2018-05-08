@@ -26,7 +26,9 @@ public class ConnectionSinglePlayer extends ConnectionToServer implements Closea
         Thread thread = new Thread(this);
         thread.setName("ConnectionToSinglePlayerServer");
         thread.start();
+        initPackets();
     }
+
 
     public boolean isLanWorld() {
         return server.getState() != Thread.State.NEW;

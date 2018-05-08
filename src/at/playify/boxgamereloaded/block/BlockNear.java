@@ -11,6 +11,7 @@ import java.util.ArrayList;
 public class BlockNear extends Block implements Collideable, NoCollideable {
     public static final char chr='n';
     private boolean collided;
+    private boolean inside;
 
     BlockNear(BoxGameReloaded game, char c) {
         super(game, c);
@@ -18,7 +19,7 @@ public class BlockNear extends Block implements Collideable, NoCollideable {
 
     @Override
     public void getCollisionBox(Level level, int x, int y, Borrow.BorrowedBoundingBox bound, ArrayList<Borrow.BorrowedBoundingBox> list, PlayerSP player) {
-        if (collided||player.collidesVert||player.collidesHor) {
+        if (!inside&&(collided||player.collidesVert||player.collidesHor)) {
             list.add(Borrow.bound(x, y, x+1, y+1));
         }
     }
@@ -31,8 +32,8 @@ public class BlockNear extends Block implements Collideable, NoCollideable {
     public boolean collide(Bound b, int x, int y, boolean checkOnly, int meta, Level level) {
         if (checkOnly) {
             final float v=.01f;
-            return b.collide(bound.set(x-v, y, 1+2*v, 1))||b.collide(bound.set(x, y-v, 1, 1+2*v));
-        } else if (collided) {
+            return b.collide(bound.set(x-v, y-v, 1+2*v, 1+v+.201f));
+        } else if (!inside&&(collided)) {
             return b.collide(bound.set(x, y, 1, 1));
         } else return false;
     }
@@ -40,7 +41,7 @@ public class BlockNear extends Block implements Collideable, NoCollideable {
     @Override
     public void draw(int x, int y, Level level) {
         int color=0xFFEAEAEA;
-        boolean b=game.player.collidesHor||game.player.collidesVert||collided;
+        boolean b=!inside&&(collided||game.player.collidesVert||game.player.collidesHor);
         if (b) {
             if (game.vars.cubic) {
                 game.d.cube(x, y, 0f, 1, 1, 1f, color);
@@ -67,6 +68,15 @@ public class BlockNear extends Block implements Collideable, NoCollideable {
         if (!collided) {
             if (player.collidesHor||player.collidesVert)
                 collided=true;
+            for (int i=data.size()-1;i >= 0;i--) {
+                Borrow.BorrowedCollisionData dat=data.get(i);
+                if (dat.blk==this) {
+                    if (player.bound.collide(bound.set(dat.x,dat.y,1,1))) {
+                        inside=true;
+                        break;
+                    }
+                }
+            }
         }
         return false;
     }
@@ -79,5 +89,6 @@ public class BlockNear extends Block implements Collideable, NoCollideable {
     @Override
     public void onNoCollide(PlayerSP player, Level level, ArrayList<Borrow.BorrowedCollisionData> data) {
         collided=false;
+        inside=false;
     }
 }

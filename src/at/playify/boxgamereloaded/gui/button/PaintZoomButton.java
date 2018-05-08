@@ -25,7 +25,7 @@ public class PaintZoomButton extends Button {
 
     @Override
     public boolean click(Finger finger) {
-        if ((game.vars.debug.console||game.vars.world.startsWith("paint_"))
+        if ((game.vars.debug.console||game.vars.world.startsWith("paint"))
                 &&!game.gui.isMainMenuVisible()&&game.painter.draw&&!game.gui.isOptionsVisible()&&!(game.painter.paint() instanceof PlayPaint)) {
             game.painter.quick=false;
             game.painter.zoom^=true;
@@ -38,7 +38,7 @@ public class PaintZoomButton extends Button {
 
     @Override
     public void draw(Drawer d) {
-        if ((!((game.vars.debug.console||game.painter.draw||game.vars.world.startsWith("paint_"))&&game.painter.draw))
+        if ((!((game.vars.debug.console||game.painter.draw||game.vars.world.startsWith("paint"))&&game.painter.draw))
                 ||game.gui.isMainMenuVisible()||game.gui.isOptionsVisible()||(game.painter.paint() instanceof PlayPaint)) {
             return;
         }

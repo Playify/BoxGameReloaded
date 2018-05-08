@@ -54,4 +54,9 @@ public class BlockLadder extends Block implements Collideable{
         player.jumps=0;
         return false;
     }
+
+    @Override
+    public String name(int data) {
+        return "Ladder [WIP]";
+    }
 }

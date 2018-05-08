@@ -3,6 +3,8 @@ package at.playify.boxgamereloaded.network.connection;
 import at.playify.boxgamereloaded.BoxGameReloaded;
 import at.playify.boxgamereloaded.interfaces.Game;
 import at.playify.boxgamereloaded.network.packet.Packet;
+import at.playify.boxgamereloaded.network.packet.PacketHello;
+import at.playify.boxgamereloaded.network.packet.PacketMainMenu;
 import at.playify.boxgamereloaded.network.packet.PacketSetWorld;
 import at.playify.boxgamereloaded.player.PlayerMP;
 import at.playify.boxgamereloaded.util.bound.RectBound;
@@ -47,6 +49,14 @@ public class ConnectionToServer implements Closeable,Runnable {
         Thread thread=new Thread(this);
         thread.setName("ConnectionToServer");
         thread.start();
+        initPackets();
+    }
+    protected void initPackets() {
+        sendPacket(new PacketHello());
+        sendPacket(new PacketSetWorld(game.vars.world));
+        if (game.gui.isMainMenuVisible()) {
+            sendPacket(new PacketMainMenu());
+        }
     }
 
     protected ConnectionToServer(BoxGameReloaded game) {

@@ -14,7 +14,6 @@ import java.util.HashMap;
 import javax.microedition.khronos.opengles.GL10;
 
 import at.playify.boxgamereloaded.BoxGameReloaded;
-import at.playify.boxgamereloaded.R;
 import at.playify.boxgamereloaded.interfaces.Drawer;
 import at.playify.boxgamereloaded.interfaces.exceptions.DrawingException;
 
@@ -172,7 +171,7 @@ public class SurfaceDrawer implements Drawer {
     public void drawImage(String s) {
         if (!textures.containsKey(s)) {
             try {
-                InputStream inStream = a.getResources().openRawResource(R.raw.class.getField(s).getInt(null));
+                InputStream inStream = a.handler.asset("font.png");
                 Bitmap bitmap = BitmapFactory.decodeStream(inStream);
                 int[] id=new int[1];
                 gl.glGenTextures(1,id,0);

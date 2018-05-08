@@ -17,16 +17,10 @@ public class BlockTeleporter extends Block implements Collideable, NoCollideable
     private float[] vertex3d=new float[]{
             -1, 1, 0,
             0, 0, -0.25f,
-            0, .7f, 0,
-            1, 1, 0,
-            0, 0, -0.25f,
             0, .7f, 0
     };
     private float[] vertex=new float[]{
             -1, 1, 0,
-            0, 0, 0,
-            0, .7f, 0,
-            1, 1, 0,
             0, 0, 0,
             0, .7f, 0
     };
@@ -50,13 +44,19 @@ public class BlockTeleporter extends Block implements Collideable, NoCollideable
 
     @Override
     public void draw(int x, int y, Level level) {
+        int color=Utils.hsvToRgb(level.getMeta(x, y)/(float) metaStates());
         if (game.vars.cubic) {
             game.d.pushMatrix();
             game.d.cube(x, y, 0.9f, 1, 1, .1f, 0xFFA991FF);
             game.d.translate(x+.5f, y+.5f, .899f);
             game.d.scale(1/3f);
             for (int i=0;i<4;i++) {
-                game.d.vertex(vertex3d, Utils.hsvToRgb(level.getMeta(x, y)/(float) metaStates()));
+                game.d.vertex(vertex3d, color);
+                game.d.rotate(90, 0, 0, 1);
+            }
+            game.d.scale(1,-1,1);
+            for (int i=0;i<4;i++) {
+                game.d.vertex(vertex3d, color,.95f);
                 game.d.rotate(90, 0, 0, 1);
             }
             game.d.popMatrix();
@@ -66,7 +66,12 @@ public class BlockTeleporter extends Block implements Collideable, NoCollideable
             game.d.translate(x+.5f, y+.5f, -0.01f);
             game.d.scale(1/3f);
             for (int i=0;i<4;i++) {
-                game.d.vertex(vertex, Utils.hsvToRgb(level.getMeta(x, y)/(float) metaStates()));
+                game.d.vertex(vertex, color);
+                game.d.rotate(90, 0, 0, 1);
+            }
+            game.d.scale(1,-1,1);
+            for (int i=0;i<4;i++) {
+                game.d.vertex(vertex, color,.95f);
                 game.d.rotate(90, 0, 0, 1);
             }
             game.d.popMatrix();

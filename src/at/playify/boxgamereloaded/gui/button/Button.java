@@ -22,8 +22,13 @@ public abstract class Button implements Comparable<Button> {
     public abstract BoundingBox3d bound();
 
     public void draw(Drawer d) {
+        d.pushMatrix();
+        BoundingBox3d bound=bound();
         d.cube(0, 0, 0, 1, 1, 1, color());
-        d.drawStringCenter(text(), .5f, .4f, .1f);
+        float v=(bound.maxY-bound.minY);
+        d.scale(1, 1/v,1);
+        d.drawStringCenter(text(), .5f, v/4, v/2);
+        d.popMatrix();
     }
 
     @Override

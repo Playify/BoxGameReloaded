@@ -1,9 +1,11 @@
 package at.playify.boxgamereloaded.level;
 
 import at.playify.boxgamereloaded.block.BlockAir;
+import at.playify.boxgamereloaded.network.Server;
 
 public class EmptyServerLevel extends ServerLevel {
-    public EmptyServerLevel(){
+    public EmptyServerLevel(Server server){
+        super(server);
         super.setSize(25, 25);
         super.set(0,0,'a',0);
     }

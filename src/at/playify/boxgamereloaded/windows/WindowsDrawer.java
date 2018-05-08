@@ -70,6 +70,7 @@ public class WindowsDrawer implements Drawer {
     };
 
     private HashMap<String,Integer> textures=new HashMap<>();
+    private int matrix;
 
 
     WindowsDrawer(BoxGameReloaded game) {
@@ -307,7 +308,6 @@ public class WindowsDrawer implements Drawer {
             GL11.glEnable(GL11.GL_BLEND);
             GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
             GL11.glEnable(GL11.GL_POINT_SMOOTH);
-
             drawing=true;
         }
     }
@@ -331,13 +331,21 @@ public class WindowsDrawer implements Drawer {
     //Derzeitige Zeichenposition,Rotation und Skalierung speichern
     @Override
     public void pushMatrix() {
-        GL11.glPushMatrix();
+        try {
+            GL11.glPushMatrix();
+            matrix++;
+        }catch (Exception e){
+            e.printStackTrace();
+            System.err.println("Stack Overflow in pushMatrix()");
+            System.exit(GL11.glGetError());
+        }
     }
 
     //Letzte gespeicherte Position,Rotation und Skalierung laden
     @Override
     public void popMatrix() {
         GL11.glPopMatrix();
+        matrix--;
     }
 
     //Tiefeberechnung aktivieren
@@ -383,7 +391,7 @@ public class WindowsDrawer implements Drawer {
     }
 
     @Override
-    public void drawImage(String s) {//TODO ANDROID
+    public void drawImage(String s) {
         if (!textures.containsKey(s)) {
             try {
                 int id=font.loadTexture(ImageIO.read(getClass().getResourceAsStream("/assets/"+s+".png")));

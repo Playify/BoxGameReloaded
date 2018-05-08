@@ -1,0 +1,34 @@
+{
+    "paint": [
+        "paint0=Paint 0",
+        "paint1=Paint 1",
+        "paint2=Paint 2",
+        "paint3=Paint 3",
+        "paint4=Paint 4",
+        "paint5=Paint 5",
+        "paint6=Paint 6",
+        "paint7=Paint 7",
+        "paint8=Paint 8",
+        "paint9=Paint 9",
+        "paint10=Paint 10",
+        "paint11=Paint 11",
+        "paint12=Paint 12",
+        "paint13=Paint 13",
+        "paint14=Paint 14",
+        "paint15=Paint 15",
+        "paint16=Paint 16",
+        "paint17=Paint 17",
+        "paint18=Paint 18",
+        "paint19=Paint 19",
+        "paint20=Paint 20"
+    ],
+    "lvl": [
+        "lvl0=Beginning",
+        "lvl1=Floating Islands",
+        "lvl2=Gravity"
+    ],
+    "list": [
+        "paint",
+        "lvl"
+    ]
+}

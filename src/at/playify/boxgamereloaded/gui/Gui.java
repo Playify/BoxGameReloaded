@@ -40,7 +40,7 @@ public abstract class Gui {
         float x=finger.getX()/game.d.getHeight(), y=1-finger.getY()/game.d.getHeight();
         for (Button button : buttons) {
             BoundingBox3d bound=button.bound();
-            if (bound.contains(x, y)) {
+            if (!bound.isEmpty()&&bound.contains(x, y)) {
                 if (button.click(finger)) {
                     return true;
                 }

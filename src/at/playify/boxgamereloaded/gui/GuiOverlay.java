@@ -10,7 +10,7 @@ import java.util.ArrayList;
 public class GuiOverlay extends Gui {
     private ArrayList<Gui> guis = new ArrayList<>();
     public GuiDraw drawer;
-    private GuiMainMenu main;
+    public GuiMainMenu main;
     private GuiOptions options;
 
     public GuiOverlay(BoxGameReloaded game) {
@@ -26,6 +26,7 @@ public class GuiOverlay extends Gui {
         buttons.add(new OptionsButton(game));
         buttons.add(new PauseButton(game));
         buttons.add(new RespawnButton(game));
+        buttons.add(new KeyButtons(game));
     }
 
     public void openMainMenu() {
@@ -83,8 +84,11 @@ public class GuiOverlay extends Gui {
             Gui gui=guis.get(i);
             gui.draw();
         }
+        if (main!=null) {
+            main.draw();
+            game.d.clearDepth();
+        }
         if (options!=null) options.draw();
-        if (main!=null) main.draw();
         if (drawer!=null) drawer.draw();
         super.draw();
 
