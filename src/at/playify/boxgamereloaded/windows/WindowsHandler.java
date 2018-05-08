@@ -5,6 +5,10 @@ import at.playify.boxgamereloaded.interfaces.Handler;
 import org.lwjgl.opengl.Display;
 
 import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.*;
@@ -148,6 +152,23 @@ public class WindowsHandler extends Handler {
     @Override
     public InputStream asset(String s) {
         return getClass().getResourceAsStream("/assets/"+s);
+    }
+
+    @Override
+    public void setClipboard(String s) {
+        StringSelection selection = new StringSelection(s);
+        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        clipboard.setContents(selection, selection);
+    }
+
+    @Override
+    public String getClipboard() {
+        try {
+            return ((String) Toolkit.getDefaultToolkit()
+                    .getSystemClipboard().getData(DataFlavor.stringFlavor));
+        } catch (UnsupportedFlavorException | IOException e) {
+            return "";
+        }
     }
 
 }

@@ -1,6 +1,8 @@
 package at.playify.boxgamereloaded.android;
 
 import android.app.AlertDialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.DialogInterface;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -18,6 +20,8 @@ import java.io.InputStream;
 
 import at.playify.boxgamereloaded.interfaces.Game;
 import at.playify.boxgamereloaded.interfaces.Handler;
+
+import static android.content.Context.CLIPBOARD_SERVICE;
 
 
 class AndroidHandler extends Handler {
@@ -141,6 +145,23 @@ class AndroidHandler extends Handler {
         } catch (IOException e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    @Override
+    public void setClipboard(String s) {
+        ClipboardManager clipboard = (ClipboardManager) a.getSystemService(CLIPBOARD_SERVICE);
+        clipboard.setPrimaryClip(ClipData.newPlainText("BoxGameReloaded Level",s));
+    }
+
+    @Override
+    public String getClipboard() {
+        ClipboardManager clipboard = (ClipboardManager) a.getSystemService(CLIPBOARD_SERVICE);
+        ClipData clip=clipboard.getPrimaryClip();
+        if (clip!=null) {
+            return clip.getItemAt(0).getText().toString();
+        }else{
+            return "";
         }
     }
 

@@ -1,5 +1,6 @@
 package at.playify.boxgamereloaded.interfaces;
 
+import at.playify.boxgamereloaded.util.Utils;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
@@ -10,8 +11,6 @@ import java.net.SocketException;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Scanner;
-
-import at.playify.boxgamereloaded.util.Utils;
 
 //Benutzt um dem Spiel Zugriff auf eine Config Datei zu geben und sonstige Betriebssystemabhängige Aktionen.
 public abstract class Handler {
@@ -137,4 +136,8 @@ public abstract class Handler {
     }
 
     public abstract InputStream asset(String s);
+
+    public abstract void setClipboard(String s);
+
+    public abstract String getClipboard();
 }

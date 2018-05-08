@@ -2,6 +2,7 @@ package at.playify.boxgamereloaded.gui;
 
 import at.playify.boxgamereloaded.BoxGameReloaded;
 import at.playify.boxgamereloaded.gui.button.Button;
+import at.playify.boxgamereloaded.gui.button.ButtonClipBoard;
 import at.playify.boxgamereloaded.gui.button.ConsoleButton;
 import at.playify.boxgamereloaded.interfaces.Drawer;
 import at.playify.boxgamereloaded.util.BoundingBox3d;
@@ -38,8 +39,8 @@ public class GuiOptions extends Gui {
                 d.cube(0, 0, 0, 1, 1, 1, color());
                 float v=(bound.maxY-bound.minY);
                 d.scale(1, 1/v,1);
-                d.drawStringCenter("Options Menu", .5f, v*3/5, v/6);
-                d.drawStringCenter("Coming Soon", .5f, v*2/5, v/6);
+                d.drawStringCenter("Options Menu", .5f, v*6/7, v/8);
+                d.drawStringCenter("Coming Soon", .5f, v*5/7, v/8);
                 d.popMatrix();
             }
 
@@ -53,5 +54,7 @@ public class GuiOptions extends Gui {
                 return true;
             }
         });
+        buttons.add(new ButtonClipBoard(game,false));
+        buttons.add(new ButtonClipBoard(game,true));
     }
 }

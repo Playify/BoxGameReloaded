@@ -69,7 +69,7 @@ public class GuiMainMenu extends Gui {
     public boolean tick() {
         float shouldScroll=scroll;
         int index=game.levels.containsKey(game.vars.stage)? game.levels.get(game.vars.stage).size():0;
-        float scrollMax=(index*(.2f+.05f))-.2f;
+        float scrollMax=(index*(.2f+.05f))-.225f;
         //scrollMax-=.25f;
         if(scroll<0)shouldScroll=0;
         if(scroll>scrollMax)shouldScroll=scrollMax;
