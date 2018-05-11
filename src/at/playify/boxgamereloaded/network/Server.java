@@ -1,10 +1,18 @@
 package at.playify.boxgamereloaded.network;
 
+import at.playify.boxgamereloaded.interfaces.Handler;
+import at.playify.boxgamereloaded.level.EmptyServerLevel;
+import at.playify.boxgamereloaded.level.ServerLevel;
+import at.playify.boxgamereloaded.level.compress.CompressionHandler;
+import at.playify.boxgamereloaded.network.connection.ConnectionToClient;
+import at.playify.boxgamereloaded.network.packet.Packet;
+import at.playify.boxgamereloaded.network.packet.PacketAllPlayers;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.net.BindException;
 import java.net.ServerSocket;
 import java.net.SocketException;
 import java.util.ArrayList;
@@ -12,30 +20,30 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import at.playify.boxgamereloaded.interfaces.Handler;
-import at.playify.boxgamereloaded.level.EmptyServerLevel;
-import at.playify.boxgamereloaded.level.ServerLevel;
-import at.playify.boxgamereloaded.level.compress.CompressionHandler;
-import at.playify.boxgamereloaded.network.connection.ConnectionToClient;
-import at.playify.boxgamereloaded.network.packet.Packet;
-
 //Server wird auch für SinglePlayer benutzt
-public class Server extends Thread{
+public class Server implements Runnable{
     public CompressionHandler compresser=new CompressionHandler();
-    private CopyOnWriteArrayList<ConnectionToClient> connected=new CopyOnWriteArrayList<>();
+    public boolean pauseForSingleUser=true;
+    private ConnectionList connected=new ConnectionList();
     private HashMap<String, ServerLevel> levelmap=new HashMap<>();
-    private int pausemode= 2;
+    private int pausemode=0;
     public Handler handler;
 
     private ServerLevel empty;
     private final ThreadLocal<ArrayList<ConnectionToClient>> last = new ThreadLocal<>();
     private ServerSocket socket;
+    private boolean closed;
+    private Thread thread;
 
     public Server(Handler handler) {
         this.handler=handler;
+
     }
 
     public int getPausemode() {
+        if (pauseForSingleUser&&connected.size()==1){
+            return connected.get(0).paused?3:2;
+        }
         if ((pausemode & 2) != 0) {
             for (ConnectionToClient connectionToClient : connected) {
                 if (connectionToClient.paused) {
@@ -54,16 +62,24 @@ public class Server extends Thread{
 
     public void run() {
         try {
-            socket=new ServerSocket(45565);
-            //noinspection InfiniteLoopStatement
+            try {
+                socket=new ServerSocket(45565);
+            }catch (BindException e){
+                System.err.println("Error starting Server");
+                return;
+            }
             while (true) {
+                if (isClosed()||thread==null||thread.isInterrupted())return;
                 connected.add(new ConnectionToClient(socket.accept(), this));
             }
         } catch (SocketException e) {
-            System.out.println("Server closed");
-            close();
+            if (socket!=null) {
+                System.out.println("Server closed");
+                close();
+            }
         } catch (IOException e) {
             e.printStackTrace();
+            close();
         }
     }
 
@@ -212,10 +228,9 @@ public class Server extends Thread{
 
     public void close() {
         for (ConnectionToClient connectionToClient : connected) {
-            if (connectionToClient.socket!=null) {
-                connectionToClient.close();
-            }
+            connectionToClient.close("Server Closed");
         }
+        closed=true;
         connected.clear();
         try {
             if (socket!=null) {
@@ -223,6 +238,9 @@ public class Server extends Thread{
             }
         } catch (IOException e) {
             e.printStackTrace();
+        }
+        if (thread!=null) {
+            thread.interrupt();
         }
     }
 
@@ -281,5 +299,105 @@ public class Server extends Thread{
             e.printStackTrace();
         }
         return false;
+    }
+
+    public boolean isClosed() {
+        if (closed||(socket!=null&&socket.isClosed())) {
+            close();
+            return true;
+        }else return false;
+    }
+
+    public boolean running() {
+        return thread!=null&&thread.isAlive();
+    }
+
+    public void start() {
+        if (!running()){
+            if (thread!=null) {
+                thread.interrupt();
+            }
+            thread=new Thread(this);
+            thread.setName("ServerThread");
+            thread.start();
+        }
+    }
+    public void stop() {
+        if (running()){
+            if (thread==null) {
+                return;
+            }
+            thread.interrupt();
+            ServerSocket s=socket;
+            socket=null;
+            try {
+                s.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+    @SuppressWarnings("WeakerAccess")
+    public class ConnectionList implements Iterable<ConnectionToClient>{
+        private final CopyOnWriteArrayList<ConnectionToClient> lst=new CopyOnWriteArrayList<>();
+
+        private void changed() {
+            for (ConnectionToClient con : lst) {
+                con.sendPacket(new PacketAllPlayers());
+            }
+        }
+
+        public void add(ConnectionToClient con) {
+            lst.add(con);
+            changed();
+        }
+
+
+        public void remove(ConnectionToClient con) {
+            lst.remove(con);
+            changed();
+        }
+        public void clear() {
+            lst.clear();
+            changed();
+        }
+
+        @Override
+        public Iterator<ConnectionToClient> iterator() {
+            return new ConnectionIterator();
+        }
+
+        public int size() {
+            return lst.size();
+        }
+
+        public ConnectionToClient get(int i) {
+            return lst.get(i);
+        }
+
+        private class ConnectionIterator implements Iterator<ConnectionToClient> {
+            private final Iterator<ConnectionToClient> it;
+            private ConnectionIterator(){
+                it=lst.iterator();
+            }
+
+            @Override
+            public boolean hasNext() {
+                return it.hasNext();
+            }
+
+            @Override
+            public ConnectionToClient next() {
+                return it.next();
+            }
+
+            @Override
+            public void remove() {
+                it.remove();
+                changed();
+            }
+        }
     }
 }

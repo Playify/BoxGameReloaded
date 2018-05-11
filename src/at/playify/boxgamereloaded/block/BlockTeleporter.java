@@ -44,7 +44,7 @@ public class BlockTeleporter extends Block implements Collideable, NoCollideable
 
     @Override
     public void draw(int x, int y, Level level) {
-        int color=Utils.hsvToRgb(level.getMeta(x, y)/(float) metaStates());
+        int color=Utils.color(level.getMeta(x, y),metaStates());
         if (game.vars.cubic) {
             game.d.pushMatrix();
             game.d.cube(x, y, 0.9f, 1, 1, .1f, 0xFFA991FF);
@@ -120,7 +120,7 @@ public class BlockTeleporter extends Block implements Collideable, NoCollideable
     }
 
     @Override
-    public void onNoCollide(PlayerSP player, Level level, ArrayList<Borrow.BorrowedCollisionData> data) {
+    public void onNoCollide(PlayerSP player, Level level) {
         collided=false;
     }
 }

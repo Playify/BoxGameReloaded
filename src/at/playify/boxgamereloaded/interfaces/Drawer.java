@@ -81,4 +81,6 @@ public interface Drawer {
     void drawLine(float x, float y, float z, float w, float h, float d, int color);
 
     void drawImage(String s);
+
+    float charWidth(char c);
 }

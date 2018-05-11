@@ -1,6 +1,8 @@
 package at.playify.boxgamereloaded.interfaces;
 
 import at.playify.boxgamereloaded.BoxGameReloaded;
+import at.playify.boxgamereloaded.block.Block;
+import at.playify.boxgamereloaded.block.NoCollideable;
 import at.playify.boxgamereloaded.util.bound.RectBound;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -25,8 +27,6 @@ public class VariableContainer {
     public boolean cubic=true;
     @ConfigValue
     public boolean cubic_check=true;
-    //@ConfigValue
-    public boolean scrollPaint=true;
     @ConfigValue
     public boolean paintPoints;
     @ConfigValue
@@ -42,7 +42,7 @@ public class VariableContainer {
     public boolean noclip;
     public boolean god;
     public String playerID;
-    public boolean nameTags;
+    public boolean nameTags=true;
     public String world="Lobby";
     public boolean[] keys=new boolean[8];
     @ConfigValue
@@ -60,6 +60,7 @@ public class VariableContainer {
     };
     @ConfigValue public String lastWorld;
     @ConfigValue public String stage;
+    @ConfigValue public String lastversion;
 
     public VariableContainer(Game game) {
         this.game=(BoxGameReloaded) game;
@@ -101,6 +102,11 @@ public class VariableContainer {
             game.player.bound.set(bound);
             if (keys.length!=vars.keys.length) keys=new boolean[keys.length];
             System.arraycopy(keys,0,vars.keys,0,keys.length);
+            for (Block block : game.blocks.list) {
+                if (block instanceof NoCollideable) {
+                    ((NoCollideable) block).onNoCollide(game.player,game.level);
+                }
+            }
         }
 
         public void check(RectBound spawnPoint) {

@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 //Verbindung zum Client
 public class ConnectionToClient extends Thread implements Closeable{
-    private final Server server;
+    protected final Server server;
     public String skin;
     public Socket socket;
     private BufferedReader in;
@@ -39,10 +39,10 @@ public class ConnectionToClient extends Thread implements Closeable{
         System.out.println("Opened Connection to " + socket.getInetAddress());
     }
 
-    public ConnectionToClient(InputStream in, OutputStream out, Server server) {
-        this.server = server;
-        this.in = new BufferedReader(new InputStreamReader(in));
-        this.out = new PrintStream(out);
+    public ConnectionToClient(InputStream is,OutputStream os,Server server) {
+        in=new BufferedReader(new InputStreamReader(is));
+        out=new PrintStream(os);
+        this.server=server;
         setName("ConnectionToSinglePlayer");
         start();
         System.out.println("Opened Connection to SinglePlayer");
@@ -68,12 +68,18 @@ public class ConnectionToClient extends Thread implements Closeable{
         return closed || (socket != null && socket.isClosed());
     }
 
+    public void close(String reason){
+        sendPacket(new PacketKick(reason));
+        close();
+    }
+
 
     @Override
     public void close() {
         try {
             if (socket!=null) {
                 socket.close();
+                socket=null;
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -133,6 +139,7 @@ public class ConnectionToClient extends Thread implements Closeable{
             this.world=w;
             this.sendPacket(new PacketSetWorld(w));
             this.sendPacket(new PacketSpawn(level.spawnPoint));
+            bound.set(level.spawnPoint);
         }
         server.broadcast(new PacketMove(this), world, this);
         server.broadcast(new PacketSkin(name, skin), world, this);
@@ -142,6 +149,7 @@ public class ConnectionToClient extends Thread implements Closeable{
         list.remove(this);
         for (int i=list.size()-1;i >= 0;i--) {
             ConnectionToClient client=list.get(i);
+            System.out.println(bound+" "+client.bound);
             this.sendPacket(new PacketMove(client));
             this.sendPacket(new PacketSkin(client.name, client.skin));
         }

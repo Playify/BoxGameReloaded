@@ -169,7 +169,7 @@ class AndroidHandler extends Handler {
         Thread thread=new Thread(new Runnable() {
             @Override
             public void run() {
-                a.game.runcmd(s);
+                a.game.cmd.run(s);
             }
         });
         thread.setName("Command Executor");

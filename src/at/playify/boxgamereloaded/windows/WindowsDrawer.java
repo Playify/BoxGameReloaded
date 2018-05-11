@@ -430,6 +430,11 @@ public class WindowsDrawer implements Drawer {
         glPopMatrix();
     }
 
+    @Override
+    public float charWidth(char c) {
+        return font.charWidth(c);
+    }
+
     //ist Rückseite zeichnen eingeschalten?
     @Override
     public boolean back() {

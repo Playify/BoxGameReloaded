@@ -25,7 +25,8 @@
     "lvl": [
         "lvl0=Beginning",
         "lvl1=Floating Islands",
-        "lvl2=Gravity"
+        "lvl2=Ladder",
+        "lvl3=Hard Gravity"
     ],
     "list": [
         "paint",

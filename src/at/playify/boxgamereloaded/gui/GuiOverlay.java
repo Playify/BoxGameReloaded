@@ -39,7 +39,7 @@ public class GuiOverlay extends Gui {
     }
 
     @SuppressWarnings("unused")
-    void openMenu(Gui g) {
+    public void openMenu(Gui g) {
         guis.add(g);
     }
 
@@ -79,19 +79,18 @@ public class GuiOverlay extends Gui {
 
     @Override
     public void draw() {
-        int size=guis.size();
-        for (int i=0;i<size;i++) {
-            Gui gui=guis.get(i);
-            gui.draw();
-        }
+        super.draw();
         if (main!=null) {
             main.draw();
             game.d.clearDepth();
         }
         if (options!=null) options.draw();
         if (drawer!=null) drawer.draw();
-        super.draw();
-
+        int size=guis.size();
+        for (int i=size-1;i >= 0;i--) {
+            Gui gui=guis.get(i);
+            gui.draw();
+        }
     }
 
     @Override
@@ -133,5 +132,35 @@ public class GuiOverlay extends Gui {
 
     public void closeOptions() {
         options=null;
+    }
+
+    public void close(Gui gui) {
+        guis.remove(gui);
+    }
+
+    @Override
+    public boolean key(char c, boolean down) {
+        boolean done = false;
+        int size=guis.size();
+        for (int i=0;i<size;i++) {
+            Gui gui=guis.get(i);
+            if (gui.key(c,down)) {
+                done=true;
+                break;
+            }
+        }
+        if (!done) {
+            done=drawer.key(c,down);
+        }
+        if (!done) {
+            done = super.key(c,down);
+        }
+        if (!done&&options!=null) {
+            done=options.key(c,down);
+        }
+        if (!done&&main!=null) {
+            done=main.key(c,down);
+        }
+        return done;
     }
 }

@@ -1,0 +1,20 @@
+$BoxGame
+
+Created by:
+    Playify
+
+Programming:
+    Playify
+
+Game Design:
+    Playify
+
+Level Design
+    Fraberger Thomas
+    Heindl Andreas
+
+
+Technologies used:
+    Java
+    Android
+    LWJGL

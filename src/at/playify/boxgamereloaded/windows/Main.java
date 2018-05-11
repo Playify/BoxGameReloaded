@@ -12,7 +12,6 @@ import org.lwjgl.opengl.DisplayMode;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.zip.ZipEntry;
@@ -61,10 +60,12 @@ public class Main {
             if (!libs.exists()) {
                 libs.mkdirs();
             }
+            System.setProperty("org.lwjgl.librarypath", libs.getAbsolutePath());
+            /*
             System.setProperty("java.library.path", libs.getAbsolutePath());
             Field fieldSysPath = ClassLoader.class.getDeclaredField("sys_paths");
             fieldSysPath.setAccessible(true);
-            fieldSysPath.set(null, null);
+            fieldSysPath.set(null, null);*/
             File file = new File(Main.class.getProtectionDomain().getCodeSource().getLocation().getPath());
             if (file.isFile()) {
                 ZipInputStream zip = new ZipInputStream(new FileInputStream(file));

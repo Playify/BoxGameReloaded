@@ -29,6 +29,7 @@ public class PauseButton extends Button {
     @Override
     public void draw(Drawer d) {
         if (visibleState==0) return;
+        if (game.gui.isMainMenuVisible()) return;
         d.translate(0.5f, 0, 0);
         float z=(bound.maxX-bound.minX)/(bound.maxZ-bound.minZ);
         d.scale(1, 1, z);
@@ -69,6 +70,7 @@ public class PauseButton extends Button {
     @Override
     public boolean click(Finger finger) {
         game.cheatCode('b');
+        if (game.gui.isMainMenuVisible()) return false;
         if (visibleState!=1) return false;
         game.paused^=true;
         return true;

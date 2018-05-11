@@ -16,7 +16,6 @@ public class PacketMove extends Packet {
     public float w=.8f;
     public float h=.8f;
 
-    @SuppressWarnings("WeakerAccess")
     public PacketMove(ConnectionToClient client) {
         this.player=client.name;
         x=client.bound.x();
@@ -24,13 +23,18 @@ public class PacketMove extends Packet {
         w=client.bound.w();
         h=client.bound.h();
     }
-    @SuppressWarnings("WeakerAccess")
     public PacketMove(RectBound bound, String player) {
         this.player=player;
         x=bound.x();
         y=bound.y();
         w=bound.w();
         h=bound.h();
+    }
+    public PacketMove(float x,float y,float w,float h,String player) {
+        this.x=x;
+        this.y=y;
+        this.w=w;
+        this.h=h;
     }
     public PacketMove(RectBound bound) {
         player="";
@@ -137,8 +141,6 @@ public class PacketMove extends Packet {
             connectionToClient.bound.set(x,y,w,h);
             server.broadcast(this,connectionToClient.world,connectionToClient);
         } else {//Draw other players
-            //nopermission(server,connectionToClient);
-
             server.checkConnected();
             for (ConnectionToClient con : server.getLastBroadcast()) {
                 if (con.world.equals(connectionToClient.world)&&con.name.equals(player)) {
@@ -146,6 +148,20 @@ public class PacketMove extends Packet {
                 }
             }
             server.broadcast(this, connectionToClient.world, connectionToClient);
+        }
+    }
+
+    @Override
+    public void onSend(BoxGameReloaded game, ConnectionToServer connectionToServer) {
+        if (player==null||player.isEmpty()||player.equals(game.vars.playerID)) {
+            connectionToServer.serverbound.set(x,y,w,h);
+        }
+    }
+
+    @Override
+    public void onSend(Server server, ConnectionToClient connectionToClient) {
+        if (player==null||player.isEmpty()||player.equals(connectionToClient.name)) {
+            connectionToClient.bound.set(x,y,w,h);
         }
     }
 }

@@ -34,18 +34,23 @@ public abstract class Gui {
             button.draw(d);
             d.popMatrix();
         }
+        d.clearDepth();
     }
 
     public boolean click(Finger finger) {
         float x=finger.getX()/game.d.getHeight(), y=1-finger.getY()/game.d.getHeight();
         for (Button button : buttons) {
             BoundingBox3d bound=button.bound();
-            if (!bound.isEmpty()&&bound.contains(x, y)) {
+            if (bound.contains(x, y)) {
                 if (button.click(finger)) {
                     return true;
                 }
             }
         }
+        return false;
+    }
+
+    public boolean key(char c,boolean down) {
         return false;
     }
 

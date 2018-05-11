@@ -126,7 +126,10 @@ public abstract class Handler {
 
     public JSONObject assetJson(String s){
         try {
-            JSONTokener tokener=new JSONTokener(Utils.inputStreamToString(asset(s+".json")));
+            if (!s.endsWith(".json")) {
+                s+=".json";
+            }
+            JSONTokener tokener=new JSONTokener(Utils.inputStreamToString(asset(s)));
             return new JSONObject(tokener);
         }catch (Exception e){
             System.err.println("Error reading Json:"+s);
@@ -134,10 +137,15 @@ public abstract class Handler {
             return null;
         }
     }
+    public String assetString(String s) {
+        InputStream in=asset(s);
+        return new Scanner(in).useDelimiter("\\Z").next();
+    }
 
     public abstract InputStream asset(String s);
 
     public abstract void setClipboard(String s);
 
     public abstract String getClipboard();
+
 }

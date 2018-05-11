@@ -78,13 +78,5 @@ public abstract class Game {
             System.out.println("Console activated");
             str.setLength(0);
         }
-        if (s.endsWith("llrrbbaa")) {
-            ((BoxGameReloaded) this).vars.cubic^=true;
-            ((BoxGameReloaded) this).vars.loader.save();
-            System.out.println("Cubic toggled");
-            str.setLength(0);
-        }
     }
-
-    public abstract void runcmd(String text);
 }

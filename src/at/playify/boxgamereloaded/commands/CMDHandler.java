@@ -24,6 +24,10 @@ public class CMDHandler {
             commands.put("connect",new CommandConnect());
             commands.put("skin", new CommandSkin());
             commands.put("tail", commands.get("skin"));
+            commands.put("2d", new Command23Dimension());
+            commands.put("3d", commands.get("2d"));
+            commands.put("size", new CommandSize());
+            commands.put("shift", new CommandShift());
         } catch (Exception e) {
             e.printStackTrace();
         }

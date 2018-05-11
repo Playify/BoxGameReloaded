@@ -27,8 +27,6 @@ public class CommandConnect extends Command {
                 }
                 game.connection.close();
                 game.connection=con;
-                game.connection.sendPacket(new PacketHello());
-                game.connection.sendPacket(new PacketSetWorld(game.vars.world));
                 game.cmd.display("Connected to "+con.getIp());
             } catch (Exception e) {
                 e.printStackTrace();

@@ -40,6 +40,7 @@ public class GuiDraw extends Gui {
         if (paintZoomButton.bound().contains(x, y)&&paintZoomButton.click(finger)) {
             return true;
         }
+        if (game.gui.isMainMenuVisible())return false;
         return super.click(finger);
     }
 

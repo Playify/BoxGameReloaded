@@ -72,7 +72,7 @@ public class BlockGravityPad extends Block implements Collideable, NoCollideable
     }
 
     @Override
-    public void onNoCollide(PlayerSP player, Level level, ArrayList<Borrow.BorrowedCollisionData> data) {
+    public void onNoCollide(PlayerSP player, Level level) {
         collided=false;
     }
 

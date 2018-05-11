@@ -2,10 +2,7 @@ package at.playify.boxgamereloaded.network.connection;
 
 import at.playify.boxgamereloaded.BoxGameReloaded;
 import at.playify.boxgamereloaded.interfaces.Game;
-import at.playify.boxgamereloaded.network.packet.Packet;
-import at.playify.boxgamereloaded.network.packet.PacketHello;
-import at.playify.boxgamereloaded.network.packet.PacketMainMenu;
-import at.playify.boxgamereloaded.network.packet.PacketSetWorld;
+import at.playify.boxgamereloaded.network.packet.*;
 import at.playify.boxgamereloaded.player.PlayerMP;
 import at.playify.boxgamereloaded.util.bound.RectBound;
 
@@ -13,6 +10,7 @@ import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -24,6 +22,7 @@ public class ConnectionToServer implements Closeable,Runnable {
     public boolean pause;
     public boolean userpause;
     public int pauseCount;
+    public ArrayList<String> all;
     protected BoxGameReloaded game;
     private Socket socket;
     protected BufferedReader in;
@@ -42,7 +41,7 @@ public class ConnectionToServer implements Closeable,Runnable {
             in=new BufferedReader(new InputStreamReader(socket.getInputStream()));
             out=new PrintStream(socket.getOutputStream());
         } catch (IOException e) {
-            Game.report(e);
+            System.err.println(e.getClass().getSimpleName()+":"+e.getMessage());
             closed=true;
             return;
         }
@@ -64,7 +63,7 @@ public class ConnectionToServer implements Closeable,Runnable {
     }
 
     public void leaveWorld() {
-        sendPacketSoon(new PacketSetWorld("NONE"));
+        sendPacketSoon(new PacketSetWorld("Lobby"));
     }
 
     public void sendPacket(Packet packet) {
@@ -96,6 +95,8 @@ public class ConnectionToServer implements Closeable,Runnable {
 
     @Override
     public void close() {
+        sendPacket(new PacketKick());
+        closed=true;
         try {
             if (socket!=null) {
                 socket.close();
@@ -106,8 +107,9 @@ public class ConnectionToServer implements Closeable,Runnable {
     }
 
     public boolean isPaused(boolean partly) {
+        if (game.gui.isMainMenuVisible())return false;
         if (userpause) {
-            return game.paused||pause||(!partly&&game.gui.backgroundState()!=0);
+            return game.paused||(!partly&&game.gui.backgroundState()!=0);
         } else {
             if (pause) {
                 game.paused=true;
@@ -124,6 +126,8 @@ public class ConnectionToServer implements Closeable,Runnable {
             String s;
             while ((s=in.readLine())!=null) {
                 try {
+                    if (isClosed())
+                        return;
                     int i=s.indexOf(':');
                     String packetName=i==-1 ? s : s.substring(0, i);
                     try {
@@ -149,7 +153,7 @@ public class ConnectionToServer implements Closeable,Runnable {
         } catch (SocketException e) {
             System.err.println("Connection to Server Closed: "+e.getMessage());
             close();
-        } catch (Exception e) {
+        }catch (Exception e) {
             System.err.println("Error in " + getClass().getSimpleName());
             Game.report(e);
             close();
@@ -161,7 +165,7 @@ public class ConnectionToServer implements Closeable,Runnable {
             return "[Not Connected]";
         } else {
             InetAddress add=socket.getInetAddress();
-            return add.toString();
+            return add.getHostAddress();
         }
     }
 

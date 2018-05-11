@@ -2,6 +2,7 @@ package at.playify.boxgamereloaded.gui;
 
 import at.playify.boxgamereloaded.BoxGameReloaded;
 import at.playify.boxgamereloaded.gui.button.Button;
+import at.playify.boxgamereloaded.gui.button.ButtonConnectGui;
 import at.playify.boxgamereloaded.gui.button.LevelButton;
 import at.playify.boxgamereloaded.gui.button.StageSelector;
 import at.playify.boxgamereloaded.network.packet.PacketMainMenu;
@@ -15,6 +16,8 @@ public class GuiMainMenu extends Gui {
     private float lasty;
     private float lastx;
     private float moved=0;
+    public float uiState;
+    private boolean ui;
 
     GuiMainMenu(BoxGameReloaded game) {
         super(game);
@@ -29,22 +32,23 @@ public class GuiMainMenu extends Gui {
             buttons.add(new LevelButton(game, i, this));
         }
         buttons.add(new StageSelector(game, this));
+        buttons.add(new ButtonConnectGui(game));
     }
 
     @Override
     public void draw() {
-        final float v=1;
-        game.d.cube(-v, -v, 1, game.aspectratio+2*v, 1+2*v, 0, 0xFF000000, false, false, false, false, true, false);
         super.draw();
         Finger finger=game.fingers[0];
         if (!finger.down&&clicked){
             clicked=false;
-            if (moved<game.d.getHeight()/50f){
-                super.click(finger);
+            if (moved<game.d.getHeight()/25f){
+                if (!super.click(finger)) {
+                    ui^=true;
+                }
             }
             moved=0;
         }
-        if (clicked) {
+        if (clicked&&ui) {
             float dx=lastx-finger.getX();
             float dy=lasty-finger.getY();
             scroll+=dy/game.d.getHeight();
@@ -61,6 +65,8 @@ public class GuiMainMenu extends Gui {
             clicked=true;
             lasty=finger.getY();
             lastx=finger.getX();
+            moved=0;
+            return true;
         }
         return true;
     }
@@ -78,6 +84,12 @@ public class GuiMainMenu extends Gui {
         }
         if (Math.abs(shouldScroll-scroll)<1E-20f)scroll=shouldScroll;
         game.paused=true;
-        return super.tick()&&scroll==shouldScroll;
+        if (ui) {
+            uiState= Math.min(1f, uiState+ 1 / 8f);
+        } else {
+            uiState= Math.max(0, uiState- 1 / 8f);
+        }
+        super.tick();
+        return false;
     }
 }

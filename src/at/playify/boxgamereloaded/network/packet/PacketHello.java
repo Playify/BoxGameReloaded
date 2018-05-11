@@ -42,9 +42,14 @@ public class PacketHello extends Packet{
     @Override
     public void handle(Server server, ConnectionToClient connectionToClient) {
         System.out.println("Hello from Client "+name);
-        connectionToClient.name=name;
-        connectionToClient.sendPacket(new PacketHello());
-        connectionToClient.sendPacket(new PacketSetPauseMode(server.getPausemode()));
+        if (server.getByName(name)!=null) {
+            connectionToClient.name=name;
+            connectionToClient.close("Already Connected");
+        }else {
+            connectionToClient.name=name;
+            connectionToClient.sendPacket(new PacketHello());
+            connectionToClient.sendPacket(new PacketSetPauseMode(server.getPausemode()));
+        }
     }
 
     @Override

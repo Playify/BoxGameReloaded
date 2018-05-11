@@ -14,7 +14,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 //Dies spart neuerstellen und im Speicher behalten von alten Variablen
 @SuppressWarnings({"WeakerAccess", "unused"})
 public class Borrow {
-    private static long borrowed=0;
+    public static long borrowed=0;
     private static final Queue<BorrowedCollisionData> datas=new ConcurrentLinkedQueue<>();
     private static final Queue<BorrowedBoundingBox> bounds=new ConcurrentLinkedQueue<>();
     private static final Queue<BorrowedBoundingBox3d> bounds3d=new ConcurrentLinkedQueue<>();

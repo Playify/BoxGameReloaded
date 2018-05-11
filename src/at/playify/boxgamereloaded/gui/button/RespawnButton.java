@@ -28,6 +28,7 @@ public class RespawnButton extends Button {
     @Override
     public void draw(Drawer d) {
         if (visibleState==0) return;
+        if (game.gui.isMainMenuVisible()) return;
         int color = color();
         d.translate(0.5f, 0, 0);
         float z = (bound.maxX - bound.minX) / (bound.maxZ - bound.minZ);
@@ -70,6 +71,7 @@ public class RespawnButton extends Button {
 
     @Override
     public boolean click(Finger finger) {
+        if (game.gui.isMainMenuVisible()) return false;
         if (visibleState==1) {
             if (mainState>150/255f) {
                 game.connection.leaveWorld();

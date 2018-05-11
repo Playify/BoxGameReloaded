@@ -26,14 +26,15 @@ public abstract class Button implements Comparable<Button> {
         BoundingBox3d bound=bound();
         d.cube(0, 0, 0, 1, 1, 1, color());
         float v=(bound.maxY-bound.minY);
-        d.scale(1, 1/v,1);
-        d.drawStringCenter(text(), .5f, v/4, v/2);
+        float v2=(bound.maxX-bound.minX);
+        d.scale(1/v2, 1/v,1);
+        d.drawStringCenter(text(), v2/2, v/4, v/2);
         d.popMatrix();
     }
 
     @Override
     public int compareTo(Button o) {
-        return Float.compare(bound().maxZ, o.bound().maxZ);
+        return Float.compare(bound().minZ, o.bound().minZ);
     }
 
     public abstract boolean click(Finger finger);

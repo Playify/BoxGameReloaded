@@ -45,18 +45,19 @@ public class LevelButton extends Button {
 
     @Override
     public BoundingBox3d bound() {
-        int index=this.index;
-        float scroll=main.scroll;
-        float height=.2f;
-        float y=1-(index*(height+.05f))-height-.2f-.05f;
-        while(y+scroll>1.5f){
-            y-=1.75f;
-            index+=7;
-        }
         if (game.levels.containsKey(game.vars.stage)){
             ArrayList<String> list=game.levels.get(game.vars.stage);
             if (index<list.size()) {
-                bound.set(game.aspectratio/2+0.05f, y+scroll, 0, game.aspectratio-.05f, y +height+scroll, 0.025f);
+                int index=this.index;
+                float scroll=main.scroll;
+                float height=.2f;
+                float y=1-(index*(height+.05f))-height-.2f-.05f;
+                while(y+scroll>1.5f){
+                    y-=1.75f;
+                    index+=7;
+                }
+                float dx=(1-main.uiState)*(game.aspectratio/2+.1f);
+                bound.set(game.aspectratio/2+0.05f+dx, y+scroll, 0, game.aspectratio-.05f+dx, y +height+scroll, 0.025f);
                 return bound;
             }
         }
@@ -66,18 +67,21 @@ public class LevelButton extends Button {
 
     @Override
     public boolean click(Finger finger) {
+        if (main.uiState!=1) return false;
         if (finger.getY()<game.d.getHeight()*.2f) {
             return false;
         }
         String text=text();
         game.joinWorld(text.substring(0,text.indexOf('=')));
         game.gui.closeMainMenu();
+        game.paused=false;
         game.pauseLock.unlock();
         return true;
     }
 
     @Override
     public void draw(Drawer d) {
+        if (main.uiState==0) return;
         d.pushMatrix();
         BoundingBox3d bound=bound();
         d.cube(0, 0, 0, 1, 1, 1, color());

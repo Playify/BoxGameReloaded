@@ -23,13 +23,14 @@ public class StageSelector extends Button {
 
     @Override
     public BoundingBox3d bound() {
-        bound.set(game.aspectratio/2, .8f, -0.05f, game.aspectratio, 1, 0.05f);
+        float dx=(1-main.uiState)*(game.aspectratio/2+.2f);
+        bound.set(game.aspectratio/2+dx, .8f, -0.05f, game.aspectratio+dx, 1, 0.05f);
         return bound;
     }
 
     @Override
     public boolean click(Finger finger) {
-        //TODO
+        if (main.uiState==0) return false;
         ArrayList<String> list=game.levels.get("list");
         if (list!=null&&!list.isEmpty()) {
             if (finger.getX()-game.d.getWidth()*3/4f<0) {
@@ -48,6 +49,7 @@ public class StageSelector extends Button {
 
     @Override
     public void draw(Drawer d) {
+        //if (main.uiState==0) return;
         int color=color();
         d.cube(0,0,2/3f,1,1,1/3f, color,true,false,true,false);
         d.cube(0,0,1/6f,1,1,1/6f, color,true,false,true,false);

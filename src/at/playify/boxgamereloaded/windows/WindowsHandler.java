@@ -56,7 +56,7 @@ public class WindowsHandler extends Handler {
                             String s;
                             while ((s=br.readLine())!=null) {
                                 if (!s.equals("\b\b")) {
-                                    game.runcmd(s);
+                                    game.cmd.run(s);
                                 }
                             }
                         } catch (SocketException ignored) {

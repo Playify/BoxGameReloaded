@@ -26,6 +26,22 @@ public class OptionsButton extends Button {
 
     @Override
     public void draw(Drawer d) {
+        if (game.gui.isMainMenuVisible()&&game.gui.main.uiState==0)return;
+        d.pushMatrix();
+        float visibleState=game.gui.main==null?1:game.gui.main.uiState;
+        d.translate(0.5f, 0, 0);
+        float z=(bound.maxX-bound.minX)/(bound.maxZ-bound.minZ);
+        d.scale(1, 1, z);
+        float zz=(bound.maxZ-bound.minZ)*2;
+        d.translate(0, 0, zz);
+
+        d.translate(0, 1, 0);
+        d.scale(visibleState, visibleState, visibleState);
+        d.translate(0, -.5f, 0);
+        d.rotate((float) Math.sin(Math.toRadians((1-visibleState)*500))*10f, 0, 0, 1);
+        d.translate(-.5f, -.5f, 0);
+        d.translate(0, 0, -zz);
+        d.scale(1, 1, 1/z);
         int color = color();
         d.cube(0, 0, 0, 1, 1 / 7f, 1, color, true, false, true, false);
         d.cube(0, 6 / 7f, 0, 1, 1 / 7f, 1, color, true, false, true, false);
@@ -37,11 +53,13 @@ public class OptionsButton extends Button {
             d.cube(-3 / 14f, -3 / 14f, 0, 1 / 7f, 3 / 7f, 1, color, false, true, false, true);
             d.rotate(90, 0, 0, 1);
         }
+        d.popMatrix();
     }
 
     @Override
     public boolean click(Finger finger) {
         game.cheatCode('a');
+        if (game.gui.isMainMenuVisible()&&game.gui.main.uiState!=1)return false;
         if (game.gui.isOptionsVisible()) {
             game.gui.closeOptions();
         } else {
@@ -70,6 +88,4 @@ public class OptionsButton extends Button {
         }
         return settingsRotate == 0;
     }
-
-
 }

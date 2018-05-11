@@ -44,6 +44,7 @@ public class PlayerSP extends Player {
             return;
         }
         if (game.d!=null) {
+            motionY/=((bound.w()+bound.h())/2)/0.8f;
             boolean left=false, right=false;
             //wenn nicht spiel pausiert ist
             if (!game.paused) {
@@ -64,7 +65,6 @@ public class PlayerSP extends Player {
                 this.rightKey=right;
                 this.jumpKey=jump;
                 //springen nur beim drücken nicht beim halten
-                motionY/=((bound.w()+bound.h())/2)/0.8f;
                 if (!game.vars.fly) {
                     if (this.jump!=jump) {
                         this.jump=jump;
@@ -98,8 +98,12 @@ public class PlayerSP extends Player {
                 motionX=0;
                 //motionX=Math.abs(this.motionX) <= 0.01f ? 0 : motionX * 0.75f;
             }
-            if (game.vars.geometry_dash) {
-                motionX=.11f;
+            if (game.vars.geometry_dash||game.gui.isMainMenuVisible()) {
+                boolean walk=true;
+                if (Math.abs(bound.h()%.4)>.001f&&game.level.get((int)bound.cx(),(int)bound.cy())==game.blocks.RESIZE) {
+                    if (Math.abs(bound.cx()%1)>.45f)walk=false;
+                }
+                if (walk)motionX=.11f;
             }
             motionX*=((bound.w()+bound.h())/2)/0.8f;
 
@@ -128,7 +132,7 @@ public class PlayerSP extends Player {
                         }
                     }
                     if (block instanceof NoCollideable) {
-                        ((NoCollideable) block).onNoCollide(this, game.level, arr);
+                        ((NoCollideable) block).onNoCollide(this, game.level);
                     }
                 }
             }
@@ -138,7 +142,6 @@ public class PlayerSP extends Player {
         if (game.connection!=null) {//Server position updaten
             if (!game.connection.serverbound.equals(bound)) {
                 game.connection.sendPacket(new PacketMove(bound));
-                game.connection.serverbound.set(bound);
             }
         }
     }

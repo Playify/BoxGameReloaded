@@ -41,6 +41,7 @@ public class PlayerMP extends Player {
     public void draw() {
         super.draw();
         if (display!=null&&game.vars.nameTags) {
+            game.d.pushMatrix();
             game.d.depth(false);
             game.d.translate(bound.cx(), bound.yh()+bound.h()/7, .5f);
             float strWidth=game.d.getStringWidth(display)*.3f;
@@ -49,6 +50,7 @@ public class PlayerMP extends Player {
             game.d.drawStringCenter(display, 0, 0, .3f);
             game.d.translate(0, -bound.h()/10, -.5f);
             game.d.depth(true);
+            game.d.popMatrix();
         }
     }
 }

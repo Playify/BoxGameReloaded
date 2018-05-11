@@ -7,6 +7,49 @@ import at.playify.boxgamereloaded.util.Finger;
 
 public class HoveringPlayIcon extends Button {
     private float pauseState;
+    private final float[][] vertex=new float[8][9];
+
+    {
+        float v = 0.03f;
+        float[] verts = {
+                -1, -1, v,
+                -1, 1, v,
+                1, 0, v
+        };
+        int i=0;
+        System.arraycopy(verts,0,vertex[i++],0,9);
+        //bottom
+        verts[4] = -1;
+        verts[5] = -v;
+        System.arraycopy(verts,0,vertex[i++],0,9);
+        verts[0] = 1;
+        verts[1] = 0;
+        verts[2] = -v;
+        System.arraycopy(verts,0,vertex[i++],0,9);
+        //top
+        verts[3] = -1;
+        verts[4] = 1;
+        verts[5] = -v;
+        System.arraycopy(verts,0,vertex[i++],0,9);
+        verts[0] = -1;
+        verts[1] = 1;
+        verts[2] = v;
+        System.arraycopy(verts,0,vertex[i++],0,9);
+        //wall
+        verts[6] = -1;
+        verts[7] = -1;
+        verts[8] = v;
+        System.arraycopy(verts,0,vertex[i++],0,9);
+        verts[0] = -1;
+        verts[1] = -1;
+        verts[2] = -v;
+        System.arraycopy(verts,0,vertex[i++],0,9);
+        verts[6] = 1;
+        verts[7] = 0;
+        verts[8] = -v;
+        System.arraycopy(verts,0,vertex[i],0,9);
+    }
+
 
     public HoveringPlayIcon(BoxGameReloaded game) {
         super(game);
@@ -19,8 +62,12 @@ public class HoveringPlayIcon extends Button {
 
     @Override
     public BoundingBox3d bound() {
-        float v = (game.aspectratio - 1 + .1f) / 2;
-        bound.set(v, .1f, -.5f, game.aspectratio - v, 1, -1.5f);
+        if(pauseState!=0&&!game.gui.isMainMenuVisible()&&!game.gui.isOptionsVisible()) {
+            float v=(game.aspectratio-1+.1f)/2;
+            bound.set(v, .1f, -.5f, game.aspectratio-v, 1, -1.5f);
+        }else{
+            bound.set(0,0,0,0,0,0);
+        }
         return bound;
     }
 
@@ -45,43 +92,15 @@ public class HoveringPlayIcon extends Button {
             d.rotate(angle, 0, 1, 0);
             d.translate(0, ((float) Math.sin(Math.toRadians(angle * 2))) * .04f);
             d.scale(.15f, .15f);
-            float v = 0.03f;
-            float[] verts = {
-                    -1, -1, v,
-                    -1, 1, v,
-                    1, 0, v
-            };
-            d.vertex(verts, 0xFF005C7A, 1);
-            //bottom
-            verts[4] = -1;
-            verts[5] = -v;
-            d.vertex(verts, 0xFF005C7A, 0.8f);
-            verts[0] = 1;
-            verts[1] = 0;
-            verts[2] = -v;
-            d.vertex(verts, 0xFF005C7A, 0.8f);
-            //top
-            verts[3] = -1;
-            verts[4] = 1;
-            verts[5] = -v;
-            d.vertex(verts, 0xFF005C7A, 0.9f);
-            verts[0] = -1;
-            verts[1] = 1;
-            verts[2] = v;
-            d.vertex(verts, 0xFF005C7A, 0.9f);
-            //wall
-            verts[6] = -1;
-            verts[7] = -1;
-            verts[8] = v;
-            d.vertex(verts, 0xFF005C7A, 0.95f);
-            verts[0] = -1;
-            verts[1] = -1;
-            verts[2] = -v;
-            d.vertex(verts, 0xFF005C7A, 0.95f);
-            verts[6] = 1;
-            verts[7] = 0;
-            verts[8] = -v;
-            d.vertex(verts, 0xFF005C7A, 1);
+            int i=0;
+            d.vertex(vertex[i++], 0xFF005C7A, 1);
+            d.vertex(vertex[i++], 0xFF005C7A, 0.8f);
+            d.vertex(vertex[i++], 0xFF005C7A, 0.8f);
+            d.vertex(vertex[i++], 0xFF005C7A, 0.9f);
+            d.vertex(vertex[i++], 0xFF005C7A, 0.9f);
+            d.vertex(vertex[i++], 0xFF005C7A, 0.95f);
+            d.vertex(vertex[i++], 0xFF005C7A, 0.95f);
+            d.vertex(vertex[i], 0xFF005C7A, 1);
             d.popMatrix();
         }
     }

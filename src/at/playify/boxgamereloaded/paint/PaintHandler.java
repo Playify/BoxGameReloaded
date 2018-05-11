@@ -28,8 +28,7 @@ public class PaintHandler {
         this.game=game;
         fakeLevel=new FakeLevel(game);
         paint=game.player;
-        list.add(new PlayPaint());
-        //list.add(new ScrollPaint(game));
+        list.add(new PlayPaint(game));
         list.addAll(game.blocks.list);
         list.add(game.player);
         list.add(new SpawnPaint(game));
@@ -88,7 +87,6 @@ public class PaintHandler {
             }
             if (!game.connection.serverbound.equals(game.player.bound)) {
                 game.connection.sendPacket(new PacketMove(game.player.bound));
-                game.connection.serverbound.set(game.player.bound);
             }
             wasdrawing=drawing;
             if (paint instanceof Tickable) {

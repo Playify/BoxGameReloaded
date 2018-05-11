@@ -14,8 +14,8 @@ import java.util.ArrayList;
 public class Level {
     public int sizeX,sizeY;//Levelgröße nur setzen mit der Methode setSize(x,y)
     protected BoxGameReloaded game;
-    private Block[] blocks;//Blöcke im Level
-    private int[] metas;//Metadaten der Blöcke
+    public Block[] blocks;//Blöcke im Level
+    public int[] metas;//Metadaten der Blöcke
     public final RectBound spawnPoint=new RectBound(.1f, 0f, .8f, .8f);
     public Level(BoxGameReloaded game) {
         this.game = game;
@@ -28,7 +28,7 @@ public class Level {
         if ((x|y)>=0&&x<sizeX&&y<sizeY){
             Block block = blocks[y * sizeX + x];
             return block!=null?block:game.blocks.AIR;
-        } else if (game.vars.geometry_dash && y >= 0 && y < sizeY) {
+        } else if ((game.vars.geometry_dash||game.gui.isMainMenuVisible()) && y >= 0 && y < sizeY) {
             if (x >= sizeX + 6) return game.blocks.FINISH;
             return game.blocks.AIR;
         }else{
@@ -41,7 +41,7 @@ public class Level {
         if ((x|y)>=0&&x<sizeX&&y<sizeY){
             Block block = blocks[y * sizeX + x];
             return block!=null?block:game.blocks.AIR;
-        } else if (game.vars.geometry_dash && y >= 0 && y < sizeY) {
+        } else if ((game.vars.geometry_dash||game.gui.isMainMenuVisible()) && y >= 0 && y < sizeY) {
             if (x == sizeX + 6) return game.blocks.FINISH;
             return game.blocks.AIR;
         }else{
@@ -153,14 +153,16 @@ public class Level {
             }
         }
         RectBound bound=game.vars.check.bound;
-        float d=(bound.w()+bound.h())/2;
-        if (game.vars.cubic) {
-            game.d.lineCube(bound.x(), bound.y(), .5f-d/2, bound.w(), bound.h(), d, 0xFF000000);
-        } else {
-            game.d.lineRect(bound.x(), bound.y(), bound.w(), bound.h(), 0xFF000000);
+        if (!(game.gui.isMainMenuVisible()&&bound.equals(spawnPoint))) {
+            float d=(bound.w()+bound.h())/2;
+            if (game.vars.cubic) {
+                game.d.lineCube(bound.x(), bound.y(), .5f-d/2, bound.w(), bound.h(), d, 0xFF000000);
+            } else {
+                game.d.lineRect(bound.x(), bound.y(), bound.w(), bound.h(), 0xFF000000);
+            }
         }
         game.player.draw();
-        if (game.connection!=null) {
+        if (game.connection!=null&&!game.gui.isMainMenuVisible()) {
             Player[] players=game.connection.players;
             for (Player player : players) {
                 player.draw();

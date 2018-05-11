@@ -2,8 +2,11 @@ package at.playify.boxgamereloaded.network.connection;
 
 import at.playify.boxgamereloaded.BoxGameReloaded;
 import at.playify.boxgamereloaded.network.Server;
+import at.playify.boxgamereloaded.network.connection.stream.PipedInputStream;
+import at.playify.boxgamereloaded.network.connection.stream.PipedOutputStream;
 
 import java.io.*;
+
 
 //Verbindung zum SinglePlayer Server [WIP]
 @SuppressWarnings("WeakerAccess")
@@ -31,22 +34,28 @@ public class ConnectionSinglePlayer extends ConnectionToServer implements Closea
 
 
     public boolean isLanWorld() {
-        return server.getState() != Thread.State.NEW;
+        return server.running();
     }
 
     public void openLanWorld() {
-        if (!isLanWorld()) {
+        if (!server.running()) {
             server.start();
+        }
+    }
+    public void closeLanWorld() {
+        if (server.running()) {
+            server.stop();
         }
     }
 
     @Override
     public boolean isClosed() {
-        return closed;
+        return closed||out.checkError()||server.isClosed();
     }
 
     public void close() {
         server.close();
+        closed=true;
     }
 
     @Override

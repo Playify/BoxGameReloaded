@@ -12,7 +12,6 @@ import at.playify.boxgamereloaded.network.connection.ConnectionSinglePlayer;
 import at.playify.boxgamereloaded.network.connection.ConnectionToServer;
 import at.playify.boxgamereloaded.network.connection.EmptyConnection;
 import at.playify.boxgamereloaded.network.packet.PacketFinish;
-import at.playify.boxgamereloaded.network.packet.PacketHello;
 import at.playify.boxgamereloaded.network.packet.PacketSetPauseMode;
 import at.playify.boxgamereloaded.network.packet.PacketSetWorld;
 import at.playify.boxgamereloaded.paint.PaintHandler;
@@ -51,11 +50,9 @@ public class BoxGameReloaded extends Game {
     private RectBound leveldrawbound = new RectBound();
     private boolean prevPauseState = false;
     private ArrayList<String> txt = new ArrayList<>();
-    @SuppressWarnings("CanBeFinal")
     private int[] lastframes = new int[10];
     private int lastframeindex;
     private long lastframetime;
-    @SuppressWarnings("CanBeFinal")
     private int[] lastticks=new int[10];
     private int lasttickindex;
     long lastticktime;
@@ -115,16 +112,15 @@ public class BoxGameReloaded extends Game {
             cmd.error("Connection closed! reconnecting to SinglePlayer");
             connection.close();
             connection=new ConnectionSinglePlayer(this);
-            connection.sendPacket(new PacketHello());
-            connection.sendPacket(new PacketSetWorld(vars.world));
         }
         boolean pause = false;
         if (connection != null) {
             pause = connection.isPaused(false);
-            if (prevPauseState!=(paused||gui.isOptionsVisible())) {
-                prevPauseState=(paused||gui.isOptionsVisible());
+            boolean p=!gui.isMainMenuVisible()&&(paused||gui.isOptionsVisible());
+            if (prevPauseState!=p) {
+                prevPauseState=p;
                 if (connection.userpause) {
-                    connection.sendPacket(new PacketSetPauseMode((paused||gui.isOptionsVisible()) ? 3 : 2));
+                    connection.sendPacket(new PacketSetPauseMode(p ? 3 : 2));
                 }
             }
             connection.handleSoon();
@@ -141,7 +137,7 @@ public class BoxGameReloaded extends Game {
         //Pausestatus bekommen
         boolean lock=gui.tick();
 
-        if ((connection==null||connection.userpause ? gui.backgroundState()==0 : !connection.pause)&&(!painter.pause())) {
+        if (((connection==null||connection.userpause ? gui.backgroundState()==0 : !connection.pause)&&(!painter.pause()))||gui.isMainMenuVisible()) {
             float shouldX=Utils.clamp(player.bound.cx(), 0, level.sizeX);
             float x=shouldX-zoom_x;
             float shouldY=Utils.clamp(player.bound.cy(), 0, level.sizeY);
@@ -209,7 +205,7 @@ public class BoxGameReloaded extends Game {
             }
             d.scale(zoom);
             d.translate(-zoom_x + (vars.display_size * aspectratio / 2f) / zoom, -zoom_y + (vars.display_size / 2f) / zoom);
-            if (vars.geometry_dash) {
+            if (vars.geometry_dash||gui.isMainMenuVisible()) {
                 if (vars.cubic) {
                     float v = vars.display_size;
                     d.cube(zoom_x - v, -1, 0, 2 * v, 1, 1, 0xFFFFFF00, true, false, true, false);
@@ -277,11 +273,10 @@ public class BoxGameReloaded extends Game {
         }
         txt.clear();
         str.setLength(0);
-        str.append(dm.format(tps)).append("TPS,");
-        str.append(dm.format(lastframes.length * 1000000000d / l)).append("FPS,").append(vertexcount).append("Verts");
-        txt.add(str.toString());
-        str.setLength(0);
-        str.append(Borrow.info());
+        str.append("TPS:").append(dm.format(tps));
+        str.append(",FPS:").append(dm.format(lastframes.length * 1000000000d / l));
+        str.append(",VTS:").append(vertexcount);
+        str.append(",BRW:").append(Borrow.borrowed);
         txt.add(str.toString());
         str.setLength(0);
         str.append("POS:").append(player.bound.toSimpleString(",", true));
@@ -300,15 +295,12 @@ public class BoxGameReloaded extends Game {
         super.start();
     }
 
-    @Override
-    public void runcmd(String text) {
-        cmd.run(text);
-    }
-
     //Tastaturstatusänderungen
     @Override
     protected void keyStateChanged(int keyChar) {
         pauseLock.unlock();
+        if (gui.key((char) keyChar,keys[keyChar]))return;
+
         if (keyChar==257) {//ESC key
             if (painter.draw) keyChar='o';
             else if (paused) keyChar='p';
@@ -347,7 +339,7 @@ public class BoxGameReloaded extends Game {
                 optionsKeyDown = false;
             }
         }
-        if (keyChar=='r'&&!keys['r']) {
+        if (keyChar=='r'&&!keys['r']&&!gui.isMainMenuVisible()) {
             player.killedByButton();
         }
         if (keyChar=='c'&&!keys['c']&&vars.debug.console) {

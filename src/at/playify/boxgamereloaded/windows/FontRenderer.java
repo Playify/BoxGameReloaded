@@ -251,4 +251,13 @@ class FontRenderer {
         }
         return lines;
     }
+
+    public float charWidth(char c) {
+        int i=indexOf(c);
+        if (i != -1) {
+            return charWidth[c]/8f;
+        }else{
+            return 0;
+        }
+    }
 }

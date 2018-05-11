@@ -93,6 +93,11 @@ public class PacketSpawn extends Packet {
 
     @Override
     public void handle(Server server, ConnectionToClient connectionToClient) {
-        nopermission(server, connectionToClient);
+        RectBound spawnPoint=server.getLevel(connectionToClient.world).spawnPoint;
+        spawnPoint.set(x,y,w,h);
+        server.broadcast(new PacketSpawn(spawnPoint),connectionToClient.world,null);
+        for (ConnectionToClient client : server.getLastBroadcast()) {
+            client.sendPacket((new PacketMove(spawnPoint)));
+        }
     }
 }
