@@ -7,20 +7,14 @@ import at.playify.boxgamereloaded.paint.Paintable;
 import at.playify.boxgamereloaded.util.BoundingBox3d;
 import at.playify.boxgamereloaded.util.Finger;
 
-import java.util.ArrayList;
-
 public class PaintSelectButton extends Button {
     private final int index;
     private final GuiDraw gui;
-    public Paintable paint;
 
-    public PaintSelectButton(BoxGameReloaded game, ArrayList<Paintable> p, int index, GuiDraw gui) {
+    public PaintSelectButton(BoxGameReloaded game, int index, GuiDraw gui) {
         super(game);
         this.index=--index;
         this.gui=gui;
-        if (index<p.size()) {
-            paint=p.get(index);
-        }
     }
 
     @Override
@@ -41,6 +35,7 @@ public class PaintSelectButton extends Button {
     @Override
     public boolean click(Finger finger) {
         if (gui.state!=1) return false;
+        Paintable paint=game.painter.get(index);
         if (paint==null) return false;
         game.painter.paint(paint);
         game.painter.quick=false;
@@ -51,10 +46,10 @@ public class PaintSelectButton extends Button {
     @Override
     public void draw(Drawer d) {
         if (gui.state==0) return;
+        Paintable paint=game.painter.get(index);
         if (paint==null) return;
         int color=color();
         final float v=.1f;
-        //d.rotate(100,0,1,0);
         d.cube(0, 0, 0, 1, v, v, color, true, false, true, false);
         d.cube(0, 1-v, 0, 1, v, v, color, true, false, true, false);
         d.cube(0, 0, 0, v, 1, v, color, false, true, false, true);
@@ -62,10 +57,9 @@ public class PaintSelectButton extends Button {
         d.translate(.5f, .5f, -.2f);
         d.scale(.4f);
         d.translate(-.5f, -.5f, 0);
-        if (paint!=null) {
-            game.d.back(true);
-            paint.draw(0);
-            game.d.back(false);
-        }
+        boolean back=game.d.back();
+        game.d.back(true);
+        paint.draw(0);
+        game.d.back(back);
     }
 }

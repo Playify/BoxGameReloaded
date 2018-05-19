@@ -1,11 +1,11 @@
 package at.playify.boxgamereloaded.interfaces;
 
-import java.util.HashMap;
-
 import at.playify.boxgamereloaded.BoxGameReloaded;
 import at.playify.boxgamereloaded.player.Player;
 import at.playify.boxgamereloaded.util.Borrow;
 import at.playify.boxgamereloaded.util.BoundingBox3d;
+
+import java.util.HashMap;
 
 public class TailData {
     private final BoxGameReloaded game;
@@ -17,7 +17,7 @@ public class TailData {
         this.game=game;
         map.put("false", def=new TailData.None());
         map.put("none", def);
-        map.put("off0", def);
+        map.put("off", def);
         map.put("true", new TailData.Normal());
         map.put("dot", new TailData.Dot());
         map.put("ground", new TailData.Ground());

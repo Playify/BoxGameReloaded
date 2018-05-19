@@ -8,4 +8,6 @@ public interface Paintable {
     String name(int data);
 
     void paint(float x, float y, boolean click, Finger finger);
+
+    boolean canDraw();
 }

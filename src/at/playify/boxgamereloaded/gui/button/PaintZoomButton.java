@@ -18,7 +18,7 @@ public class PaintZoomButton extends Button {
     }
 
     @Override
-    public BoundingBox3d bound() {//max-v*(min-max)
+    public BoundingBox3d bound() {
         bound.set(0, 0, 0, 1/7f, 1/7f, 1/7f);
         return bound;
     }
@@ -44,7 +44,6 @@ public class PaintZoomButton extends Button {
         }
         int color=color();
         final float v=.1f;
-        //d.rotate(100,0,1,0);
         d.cube(0, 0, 0, 1, v, v, color, true, false, true, false);
         d.cube(0, 1-v, 0, 1, v, v, color, true, false, true, false);
         d.cube(0, 0, 0, v, 1, v, color, false, true, false, true);
@@ -53,6 +52,17 @@ public class PaintZoomButton extends Button {
             float vv=1/14f;
             float max=1-2*vv;
             d.cube(vv, vv, v/2, max, max, 0, 0xA0FF0000, false, false, false, false);
+        }
+        d.translate(.5f, .5f, -.2f);
+        d.scale(.4f);
+        d.translate(0,0,.5f);
+        game.d.rotate(45,0,0,1);
+        for (int i=0;i<4;i++) {
+            float vv=.75f;
+            game.d.translate(0,-vv,0);
+            game.d.vertex(game.vertex.arrow,0xFF00FF00);
+            game.d.translate(0,vv,0);
+            game.d.rotate(90,0,0,1);
         }
     }
 }

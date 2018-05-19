@@ -163,4 +163,29 @@ public class GuiOverlay extends Gui {
         }
         return done;
     }
+    @Override
+    public boolean scroll(float f) {
+        boolean scrolled = false;
+        int size=guis.size();
+        for (int i=0;i<size;i++) {
+            Gui gui=guis.get(i);
+            if (gui.scroll(f)) {
+                scrolled=true;
+                break;
+            }
+        }
+        if (!scrolled) {
+            scrolled=drawer.scroll(f);
+        }
+        if (!scrolled) {
+            scrolled = super.scroll(f);
+        }
+        if (!scrolled&&options!=null) {
+            scrolled=options.scroll(f);
+        }
+        if (!scrolled&&main!=null) {
+            scrolled=main.scroll(f);
+        }
+        return scrolled;
+    }
 }

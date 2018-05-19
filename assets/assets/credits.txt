@@ -5,11 +5,12 @@ Created by:
 
 Programming:
     Playify
+    Wingelhofer David
 
 Game Design:
     Playify
 
-Level Design
+Level Design:
     Fraberger Thomas
     Heindl Andreas
 

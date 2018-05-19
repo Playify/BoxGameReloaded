@@ -11,13 +11,9 @@ import at.playify.boxgamereloaded.util.Finger;
 import java.util.ArrayList;
 
 public class GuiMainMenu extends Gui {
-    public float scroll;
-    private boolean clicked;
-    private float lasty;
-    private float lastx;
-    private float moved=0;
     public float uiState;
-    private boolean ui;
+    public boolean ui;
+    public Scroller scroller;
 
     GuiMainMenu(BoxGameReloaded game) {
         super(game);
@@ -28,6 +24,7 @@ public class GuiMainMenu extends Gui {
 
     @Override
     public void initGui(final ArrayList<Button> buttons) {
+        this.scroller=new Scroller(game,this);
         for (int i=0;i<7;i++) {
             buttons.add(new LevelButton(game, i, this));
         }
@@ -36,53 +33,30 @@ public class GuiMainMenu extends Gui {
     }
 
     @Override
-    public void draw() {
-        super.draw();
-        Finger finger=game.fingers[0];
-        if (!finger.down&&clicked){
-            clicked=false;
-            if (moved<game.d.getHeight()/25f){
-                if (!super.click(finger)) {
-                    ui^=true;
-                }
-            }
-            moved=0;
-        }
-        if (clicked&&ui) {
-            float dx=lastx-finger.getX();
-            float dy=lasty-finger.getY();
-            scroll+=dy/game.d.getHeight();
-            moved+=dx*dx+dy*dy;
-            lastx=finger.getX();
-            lasty=finger.getY();
-            game.pauseLock.unlock();
-        }
-    }
-
-    @Override
-    public boolean click(Finger finger) {
-        if (finger.index==0&&finger.down) {
-            clicked=true;
-            lasty=finger.getY();
-            lastx=finger.getX();
-            moved=0;
-            return true;
+    public boolean clickButtons(Finger finger) {
+        if (!super.clickButtons(finger)) {
+            ui^=true;
+            return false;
         }
         return true;
     }
 
     @Override
-    public boolean tick() {
-        float shouldScroll=scroll;
+    public void draw() {
         int index=game.levels.containsKey(game.vars.stage)? game.levels.get(game.vars.stage).size():0;
-        float scrollMax=(index*(.2f+.05f))-.225f;
-        //scrollMax-=.25f;
-        if(scroll<0)shouldScroll=0;
-        if(scroll>scrollMax)shouldScroll=scrollMax;
-        if (!clicked) {
-            scroll+=(shouldScroll-scroll)/10;
-        }
-        if (Math.abs(shouldScroll-scroll)<1E-20f)scroll=shouldScroll;
+        scroller.scrollMax=(index*(.2f+.05f))-.225f;
+        scroller.draw();
+        super.draw();
+    }
+
+    @Override
+    public boolean click(Finger finger) {
+        return scroller.click(finger);
+    }
+
+    @Override
+    public boolean tick() {
+        scroller.tick();
         game.paused=true;
         if (ui) {
             uiState= Math.min(1f, uiState+ 1 / 8f);
@@ -91,5 +65,11 @@ public class GuiMainMenu extends Gui {
         }
         super.tick();
         return false;
+    }
+
+    @Override
+    public boolean scroll(float f) {
+        scroller.scroll(f);
+        return true;
     }
 }

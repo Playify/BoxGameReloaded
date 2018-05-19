@@ -25,13 +25,17 @@ public class Level {
 
     //Block auf position bekommen, wenn out of map dann Luft
     public Block get(int x, int y){
-        if ((x|y)>=0&&x<sizeX&&y<sizeY){
-            Block block = blocks[y * sizeX + x];
-            return block!=null?block:game.blocks.AIR;
-        } else if ((game.vars.geometry_dash||game.gui.isMainMenuVisible()) && y >= 0 && y < sizeY) {
-            if (x >= sizeX + 6) return game.blocks.FINISH;
-            return game.blocks.AIR;
-        }else{
+        try {
+            if ((x|y) >= 0&&x<sizeX&&y<sizeY) {
+                Block block=blocks[y*sizeX+x];
+                return block!=null ? block : game.blocks.AIR;
+            } else if ((game.vars.geometry_dash||game.gui.isMainMenuVisible())&&y >= 0&&y<sizeY) {
+                if (x >= sizeX+6) return game.blocks.FINISH;
+                return game.blocks.AIR;
+            } else {
+                return game.blocks.AIR;
+            }
+        }catch (ArrayIndexOutOfBoundsException e){
             return game.blocks.AIR;
         }
     }

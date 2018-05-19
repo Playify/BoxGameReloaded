@@ -14,18 +14,22 @@ public class VertexData {
             -0.3f, 0.3f, 0
     };
     public float[] bigtriangle=new float[]{
-            -.424264f,0,0,
-            0,-.424264f,0,
-            .424264f,0,0
+            -.424264f, 0, 0,
+            0, -.424264f, 0,
+            .424264f, 0, 0
     };
 
     public VertexData(BoxGameReloaded game) {
         this.game=game;
     }
 
-    public void drawKey(boolean rotate,int meta) {
-        int color=Utils.color(meta,8);
-        if (game.vars.cubic) {
+    public void drawKey(boolean rotate, int meta) {
+        drawKey(rotate, meta, game.vars.cubic);
+    }
+
+    public void drawKey(boolean rotate, int meta, boolean cubic) {
+        int color=Utils.color(meta, 8);
+        if (cubic) {
             game.d.pushMatrix();
             game.d.translate(.5f, .5f, .5f);
             game.d.scale(1/10f);
@@ -37,12 +41,13 @@ public class VertexData {
 
             game.d.rotate(45, 0, 0, 1);
             game.d.translate(-4, -1.5f, 0);
-            game.d.cube(0, 0, 0, 1, 1, 1, color, false, true, true, true, true, true);
-            game.d.cube(2, 0, 0, 1, 1, 1, color, false, true, true, true, true, true);
-            game.d.cube(0, 1, 0, 6, 1, 1, color, true, true, true, true, true, true);
-            game.d.cube(5, 0, 0, 3, 1, 1, color, true, true, true, true, true, true);
-            game.d.cube(7, 1, 0, 1, 1, 1, color, false, true, true, true, true, true);
-            game.d.cube(5, 2, 0, 3, 1, 1, color, true, true, true, true, true, true);
+            boolean back=rotate||game.d.back();
+            game.d.cube(0, 0, 0, 1, 1, 1, color, false, true, true, true, true, back);
+            game.d.cube(2, 0, 0, 1, 1, 1, color, false, true, true, true, true, back);
+            game.d.cube(0, 1, 0, 6, 1, 1, color, true, true, true, true, true, back);
+            game.d.cube(5, 0, 0, 3, 1, 1, color, true, true, true, true, true, back);
+            game.d.cube(7, 1, 0, 1, 1, 1, color, false, true, true, true, true, back);
+            game.d.cube(5, 2, 0, 3, 1, 1, color, true, true, true, true, true, back);
             game.d.popMatrix();
         } else {
             game.d.pushMatrix();

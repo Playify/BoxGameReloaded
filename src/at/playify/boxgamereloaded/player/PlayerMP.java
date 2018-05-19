@@ -38,6 +38,11 @@ public class PlayerMP extends Player {
     }
 
     @Override
+    public boolean canDraw() {
+        return true;//TODO
+    }
+
+    @Override
     public void draw() {
         super.draw();
         if (display!=null&&game.vars.nameTags) {

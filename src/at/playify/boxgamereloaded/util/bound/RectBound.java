@@ -19,6 +19,7 @@ public class RectBound implements Serializable, Cloneable , Bound<RectBound>{
     int y;
     int w;
     int h;
+    private StringBuilder str=new StringBuilder();
 
     public RectBound(float x, float y, float w, float h) {
         this.x(x);
@@ -146,10 +147,13 @@ public class RectBound implements Serializable, Cloneable , Bound<RectBound>{
     }
 
     public String toSimpleString(String delim, boolean fixed) {
-        if (fixed)
-            return dmf.format(x()) + delim + dmf.format(y()) + delim + dmf.format(w()) + delim + dmf.format(h());
+        if (fixed) {
+            str.setLength(0);
+            return str.append(dmf.format(x())).append(delim).append(dmf.format(y())).append(delim).append(dmf.format(w())).append(delim).append(dmf.format(h())).toString();
+        }
         else
-            return dm.format(x()) + delim + dm.format(y()) + delim + dm.format(w()) + delim + dm.format(h());
+            str.setLength(0);
+            return str.append(dm.format(x())).append(delim).append(dm.format(y())).append(delim).append(dm.format(w())).append(delim).append(dm.format(h())).toString();
     }
 
     public RectBound setCenter(float x, float y) {

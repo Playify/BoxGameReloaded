@@ -58,7 +58,7 @@ public class PacketMainMenu extends Packet {
                     for (String s : list) {
                         String lvl=s.substring(0, s.indexOf('='));
                         if (lvl.equals(game.vars.lastWorld)) {
-                            main.scroll=.25f*list.indexOf(s);
+                            main.scroller.setScroll(.25f*list.indexOf(s));
                             break;
                         }
                     }

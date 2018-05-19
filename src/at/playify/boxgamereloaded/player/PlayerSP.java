@@ -231,4 +231,9 @@ public class PlayerSP extends Player {
         game.player.bound.setCenter(x, y);
         game.player.motionX=game.player.motionY=0;
     }
+
+    @Override
+    public boolean canDraw() {
+        return true;
+    }
 }

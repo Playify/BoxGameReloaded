@@ -212,6 +212,11 @@ public class SurfaceDrawer implements Drawer {
         gl.glPopMatrix();
     }
 
+    @Override
+    public float charWidth(char c) {
+        return font.charWidth(c);
+    }
+
 
     SurfaceDrawer(GameActivity a, BoxGameReloaded game) {
         this.a=a;

@@ -61,6 +61,7 @@ public class VariableContainer {
     @ConfigValue public String lastWorld;
     @ConfigValue public String stage;
     @ConfigValue public String lastversion;
+    @ConfigValue public ArrayList<String> eggs=new ArrayList<>();
 
     public VariableContainer(Game game) {
         this.game=(BoxGameReloaded) game;

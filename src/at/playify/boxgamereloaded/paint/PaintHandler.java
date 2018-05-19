@@ -7,10 +7,11 @@ import at.playify.boxgamereloaded.network.packet.PacketMove;
 import at.playify.boxgamereloaded.util.Finger;
 import at.playify.boxgamereloaded.util.Utils;
 
+import java.util.AbstractList;
 import java.util.ArrayList;
 
 //Zuständig um sich ums zeichnen vom User zu kümmern
-public class PaintHandler {
+public class PaintHandler extends AbstractList<Paintable> {
     public final FakeLevel fakeLevel;
     public final ArrayList<Paintable> list=new ArrayList<>();
     public boolean quick;
@@ -110,16 +111,39 @@ public class PaintHandler {
     }
 
     public void paint(Paintable paint) {
-        if (paint!=null) {
+        if (paint!=null&&paint.canDraw()) {
             this.paint=paint;
         }
     }
 
     public Paintable paint() {
+        if (!paint.canDraw())paint=game.blocks.AIR;
         return paint;
     }
 
     public boolean pause() {
         return draw&&(!(paint instanceof PlayPaint)||game.painter.quick);
+    }
+
+    @Override
+    public Paintable get(int index) {
+        int v=0;
+        for (int i=0;i<list.size();i++) {
+            if (list.get(i).canDraw()) {
+                if (v==index)
+                    return list.get(i);
+                v++;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public int size() {
+        int v=0;
+        for (int i=0;i<list.size();i++)
+            if (list.get(i).canDraw())
+                v++;
+        return v;
     }
 }

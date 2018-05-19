@@ -6,7 +6,7 @@ public class BoundingBox {
     public float minY;
     public float maxY;
 
-    BoundingBox(float minX, float minY, float maxX, float maxY) {
+    public BoundingBox(float minX, float minY, float maxX, float maxY) {
         this.minX = minX;
         this.minY = minY;
         this.maxX = maxX;

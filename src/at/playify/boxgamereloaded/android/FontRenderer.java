@@ -135,4 +135,12 @@ class FontRenderer {
         }
         return w/8f;
     }
+
+    public float charWidth(char c) {
+        int i = str.indexOf(c);
+        if (i!=-1){
+            return charWidth[c]/8;
+        }
+        return 0;
+    }
 }

@@ -8,13 +8,18 @@ import at.playify.boxgamereloaded.util.bound.Bound;
 
 import java.util.ArrayList;
 
-public class BlockKey extends Block implements MultiCollideable {
-    public static final char chr='q';
+public abstract class BlockDebug extends Block {
 
-    BlockKey(BoxGameReloaded game, char c) {
+    public BlockDebug(BoxGameReloaded game, char c) {
         super(game, c);
     }
 
+    public abstract String prefix();
+
+    @Override
+    public boolean canDraw() {
+        return game.vars.debug.console;
+    }
     @Override
     public void getCollisionBox(Level level, int x, int y, Borrow.BorrowedBoundingBox bound, ArrayList<Borrow.BorrowedBoundingBox> list, PlayerSP player) {
     }
@@ -30,30 +35,24 @@ public class BlockKey extends Block implements MultiCollideable {
 
     @Override
     public void draw(int x, int y, Level level) {
-        game.d.pushMatrix();
-        game.d.translate(x,y,0);
-        game.vertex.drawKey(true,level.getMeta(x,y));
-        game.d.popMatrix();
+        if (!game.painter.draw)return;
+        if (game.vars.cubic) {
+            game.d.pushMatrix();
+            game.d.translate(x,y, .899f);
+            game.d.cube(0,0, 0.01f, 1, 1, .1f, 0xFFd40adb);
+            game.d.drawStringCenter(prefix()+level.getMeta(x,y),.5f,0.25f,.5f);
+            game.d.popMatrix();
+        } else {
+            game.d.pushMatrix();
+            game.d.rect(x, y, 1, 1, 0xFFd40adb);
+            game.d.translate(x,y,0);
+            game.d.drawStringCenter(prefix()+level.getMeta(x,y),.5f,0.25f,.5f);
+            game.d.popMatrix();
+        }
     }
 
     @Override
     public boolean isSolid() {
         return false;
-    }
-
-    @Override
-    public boolean onCollide(PlayerSP player, Level level, int meta, ArrayList<Borrow.BorrowedCollisionData> data) {
-        game.vars.keys[meta]=true;
-        return false;
-    }
-
-    @Override
-    public int metaStates() {
-        return 8;
-    }
-
-    @Override
-    public String name(int data) {
-        return "Key";
     }
 }

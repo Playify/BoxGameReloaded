@@ -365,7 +365,9 @@ public class BoxGameReloaded extends Game {
 
     public void finishLevel() {
         player.bound.set(level.spawnPoint);
-        vars.finishedLevels.add(vars.world);
+        if (!vars.finishedLevels.contains(vars.world)) {
+            vars.finishedLevels.add(vars.world);
+        }
         vars.loader.save();
         connection.sendPacket(new PacketFinish());
     }

@@ -38,4 +38,9 @@ public class SpawnPaint implements Paintable {
         bound.set(bx+.1f, by, .8f, .8f);
         game.vars.check.check(bound);
     }
+
+    @Override
+    public boolean canDraw() {
+        return true;
+    }
 }

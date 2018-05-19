@@ -27,7 +27,10 @@ public class Blocks {
     public BlockNear NEAR;
     public int blockscount;
     public BlockKey KEY;
+    public BlockKeyhole KEYHOLE;
     public BlockAction ACTION;
+    public BlockGlitch GLITCH;
+    public BlockEasterEgg EGG;
 
     //Block anhand des Zeichens bekommen
     public Block get(char c) {
@@ -54,7 +57,10 @@ public class Blocks {
         TELEPORT=new BlockTeleporter(game, BlockTeleporter.chr);
         NEAR=new BlockNear(game, BlockNear.chr);
         KEY=new BlockKey(game, BlockKey.chr);
+        KEYHOLE=new BlockKeyhole(game, BlockKeyhole.chr);
         ACTION=new BlockAction(game, BlockAction.chr);
+        GLITCH=new BlockGlitch(game, BlockGlitch.chr);
+        EGG=new BlockEasterEgg(game, BlockEasterEgg.chr);
 
     }
 }

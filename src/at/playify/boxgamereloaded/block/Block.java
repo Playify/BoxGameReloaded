@@ -99,4 +99,9 @@ public abstract class Block implements Paintable {
     }
 
     protected abstract boolean isBackGround(int meta);
+
+    @Override
+    public boolean canDraw() {
+        return true;
+    }
 }

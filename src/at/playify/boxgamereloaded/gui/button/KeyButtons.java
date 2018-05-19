@@ -4,6 +4,7 @@ import at.playify.boxgamereloaded.BoxGameReloaded;
 import at.playify.boxgamereloaded.interfaces.Drawer;
 import at.playify.boxgamereloaded.util.BoundingBox3d;
 import at.playify.boxgamereloaded.util.Finger;
+import at.playify.boxgamereloaded.util.Utils;
 
 public class KeyButtons extends Button {
     public KeyButtons(BoxGameReloaded game) {
@@ -35,5 +36,15 @@ public class KeyButtons extends Button {
                 game.vertex.drawKey(true,i);
             }
         }
+    }
+
+    @Override
+    public boolean tick() {
+        boolean ret=true;
+        for (int i=0;i<game.vars.keys.length;i++) {
+            game.blocks.KEYHOLE.state[i]=Utils.clamp(game.blocks.KEYHOLE.state[i]+(game.vars.keys[i] ? 1 : -1)/8f,0,1);
+            ret&=game.blocks.KEYHOLE.state[i]==0||game.blocks.KEYHOLE.state[i]==1;
+        }
+        return ret;
     }
 }

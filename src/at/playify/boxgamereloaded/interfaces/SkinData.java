@@ -9,6 +9,7 @@ import java.util.HashMap;
 public class SkinData {
     private final BoxGameReloaded game;
     private final Skin def;
+    public String[] egg=new String[]{"cube","gute","rein"};
     private HashMap<String,Skin> map=new HashMap<>();
 
     public SkinData(BoxGameReloaded game) {
@@ -19,7 +20,9 @@ public class SkinData {
         map.put("ground", new SkinGround());
         map.put("dust", new SkinDust());
         map.put("5350", new Skin5350());
-        map.put("gute", new SkinImage("gute"));
+        for (int i=1;i<egg.length;i++) {
+            map.put(egg[i], new SkinImage(egg[i]));
+        }
     }
 
     public Skin get(String s) {

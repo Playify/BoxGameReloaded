@@ -32,7 +32,7 @@ public class ButtonConnectGui extends Button {
 
     @Override
     public void draw(Drawer d) {
-        if (game.gui.main.uiState==0) return;
+        if (game.gui.main==null||game.gui.main.uiState==0) return;
         super.draw(d);
     }
 }

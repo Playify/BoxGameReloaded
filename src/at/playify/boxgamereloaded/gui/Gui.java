@@ -26,7 +26,8 @@ public abstract class Gui {
 
     public void draw() {
         Drawer d = game.d;
-        for (Button button : buttons) {
+        for (int i=buttons.length-1;i >= 0;i--) {
+            Button button=buttons[i];
             d.pushMatrix();
             BoundingBox3d bound=button.bound();
             d.translate(bound.minX, bound.minY, bound.minZ);
@@ -60,5 +61,22 @@ public abstract class Gui {
             freeze&=button.tick();
         }
         return freeze;
+    }
+
+    public boolean scroll(float f) {
+        return false;
+    }
+
+    public boolean clickButtons(Finger finger) {
+        float x=finger.getX()/game.d.getHeight(), y=1-finger.getY()/game.d.getHeight();
+        for (Button button : buttons) {
+            BoundingBox3d bound=button.bound();
+            if (bound.contains(x, y)) {
+                if (button.click(finger)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

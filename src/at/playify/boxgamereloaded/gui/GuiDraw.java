@@ -5,7 +5,6 @@ import at.playify.boxgamereloaded.gui.button.Button;
 import at.playify.boxgamereloaded.gui.button.PaintButton;
 import at.playify.boxgamereloaded.gui.button.PaintSelectButton;
 import at.playify.boxgamereloaded.gui.button.PaintZoomButton;
-import at.playify.boxgamereloaded.paint.Paintable;
 import at.playify.boxgamereloaded.util.BoundingBox3d;
 import at.playify.boxgamereloaded.util.Finger;
 
@@ -25,9 +24,8 @@ public class GuiDraw extends Gui {
     public void initGui(ArrayList<Button> buttons) {
         paintButton=new PaintButton(game);
         paintZoomButton=new PaintZoomButton(game);
-        ArrayList<Paintable> p=game.painter.list;
         for (int i=1;i<49;i++) {
-            buttons.add(new PaintSelectButton(game, p, i, this));
+            buttons.add(new PaintSelectButton(game, i, this));
         }
     }
 

@@ -27,10 +27,9 @@ import java.net.URLConnection;
 
 import at.playify.boxgamereloaded.BoxGameReloaded;
 import at.playify.boxgamereloaded.gui.GuiOverlay;
-import at.playify.boxgamereloaded.interfaces.Game;
 
 public class GameActivity extends Activity {
-    public Game game;
+    public BoxGameReloaded game;
     public AndroidHandler handler=new AndroidHandler(this);
     boolean doubleBackToExitPressedOnce=false;
     private GLSurfaceView view;
@@ -47,8 +46,8 @@ public class GameActivity extends Activity {
             checkUpdate();
         } else {
             ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.READ_CONTACTS},
-                    0xDEADC0DE);
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    1);
         }
         game=new BoxGameReloaded(handler);
         setContentView(view=new GameView(this));
@@ -58,6 +57,7 @@ public class GameActivity extends Activity {
     }
 
     void checkUpdate() {
+
         new Thread() {
             @Override
             public void run() {
@@ -293,7 +293,7 @@ public class GameActivity extends Activity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode==0xDEADC0DE&&grantResults[0]==PackageManager.PERMISSION_GRANTED) {
+        if (requestCode==1&&grantResults[0]==PackageManager.PERMISSION_GRANTED) {
             checkUpdate();
         }
     }

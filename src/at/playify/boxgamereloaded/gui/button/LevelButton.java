@@ -21,7 +21,7 @@ public class LevelButton extends Button {
     @Override
     public String text() {
         int index=this.index;
-        float scroll=main.scroll;
+        float scroll=main.scroller.getScroll();
         float height=.2f;
         float y=1-(index*(height+.05f))-height-.2f;
         while(y+scroll>1.5f){
@@ -49,7 +49,7 @@ public class LevelButton extends Button {
             ArrayList<String> list=game.levels.get(game.vars.stage);
             if (index<list.size()) {
                 int index=this.index;
-                float scroll=main.scroll;
+                float scroll=main.scroller.getScroll();
                 float height=.2f;
                 float y=1-(index*(height+.05f))-height-.2f-.05f;
                 while(y+scroll>1.5f){
@@ -61,7 +61,7 @@ public class LevelButton extends Button {
                 return bound;
             }
         }
-        bound.set(0,0,0,0,0,0);
+        bound.set(0,0,0,0,0,0.025f);
         return bound;
     }
 

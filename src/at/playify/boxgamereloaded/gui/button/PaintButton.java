@@ -38,9 +38,10 @@ public class PaintButton extends Button {
             d.translate(.5f, .5f, -.2f);
             d.scale(.4f);
             d.translate(-.5f, -.5f, 0);
+            boolean back=game.d.back();
             game.d.back(true);
             game.painter.paint().draw(0);
-            game.d.back(false);
+            game.d.back(back);
         }
     }
 

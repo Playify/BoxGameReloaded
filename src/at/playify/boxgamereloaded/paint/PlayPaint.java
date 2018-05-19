@@ -86,4 +86,9 @@ public class PlayPaint implements Paintable {
     @Override
     public void paint(float x, float y, boolean click, Finger finger) {
     }
+
+    @Override
+    public boolean canDraw() {
+        return true;
+    }
 }

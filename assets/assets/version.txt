@@ -1,2 +1,2 @@
-bxgmRel_0.0.5
-5
+bxgmRel_0.0.6
+6

@@ -8,12 +8,15 @@ import at.playify.boxgamereloaded.util.Finger;
 import java.util.ArrayList;
 
 public class GuiCredits extends Gui {
+    private Scroller scroller;
     private float aspect;
     private ArrayList<String> lst=new ArrayList<>();
-    private float scroll=-5;
 
     public GuiCredits(BoxGameReloaded game) {
         super(game);
+        scroller=new Scroller(game,this);
+        scroller.factor=1/(.05f*.9f/0.8f);
+        scroller.setScroll(-5);
     }
 
     @Override
@@ -23,30 +26,17 @@ public class GuiCredits extends Gui {
 
     @Override
     public void draw() {
+        scroller.scrollMin=Integer.MIN_VALUE;
+        scroller.scrollMax=Integer.MAX_VALUE;
+        scroller.draw();
         if (aspect!=game.aspectratio){
             aspect=game.aspectratio;
             lst.clear();
-            StringBuilder str=new StringBuilder();
-            float w=0,maxW=game.aspectratio/2-.1f;
             String s=game.handler.assetString("credits.txt");
-            for (char c : s.toCharArray()) {
-                if (c=='\r') continue;
-                float cw=game.d.charWidth(c);
-                if ((w+cw)*0.05f>maxW||c=='\n') {
-                    String sub=str.toString();
-                    lst.add(sub);
-                    if (!sub.isEmpty()&&sub.charAt(0)=='$') lst.add("");
-                    w=0;
-                    str.setLength(0);
-                }
-                if (c!='\n'){
-                    w+=cw;
-                    str.append(c);
-                }
-            }
-            lst.add(str.toString());
+            new TextCreator(game,lst).add(s);
         }
         game.d.cube(game.aspectratio/4,.1f,0.01f,game.aspectratio/2,.8f,.01f,0xFF00FFFF);
+        float scroll=scroller.getScroll();
         for (int i=(int)scroll-1;i<Math.min(lst.size(),scroll+9);i++) {
             if (i>=0) {
                 String s=lst.get(i);
@@ -74,8 +64,7 @@ public class GuiCredits extends Gui {
 
     @Override
     public boolean click(Finger finger) {
-        super.click(finger);
-        return true;
+        return scroller.click(finger);
     }
 
 
@@ -104,8 +93,15 @@ public class GuiCredits extends Gui {
 
     @Override
     public boolean tick() {
-        scroll+=.05f;
-        if (scroll>lst.size())scroll=scroll-lst.size()-12;
+        scroller.scroll(-.025f);
+        float scroll=scroller.getScroll();
+        if (scroll>lst.size())scroller.scroll(lst.size()+12);
+        if (scroll<-12)scroller.scroll(-lst.size()-12);
         return false;
+    }
+    @Override
+    public boolean scroll(float f) {
+        scroller.scroll(2*f);
+        return true;
     }
 }

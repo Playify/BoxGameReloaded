@@ -35,4 +35,9 @@ public class LevelSpawnPaint implements Paintable {
         int bx=(int) x, by=(int) y;
         game.level.spawnPoint.set(bx+.1f, by, .8f, .8f);
     }
+
+    @Override
+    public boolean canDraw() {
+        return true;
+    }
 }

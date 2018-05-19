@@ -6,6 +6,7 @@ import at.playify.boxgamereloaded.util.BoundingBox3d;
 import at.playify.boxgamereloaded.util.Finger;
 import at.playify.boxgamereloaded.util.Utils;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -16,10 +17,12 @@ import java.util.Iterator;
 public class GuiChangelog extends Gui implements Comparator<String> {
     private float aspect;
     private ArrayList<String> lst=new ArrayList<>();
-    private float scroll;
+    private Scroller scroller;
 
     public GuiChangelog(BoxGameReloaded game) {
         super(game);
+        scroller=new Scroller(game,this);
+        scroller.factor=1/(.05f*.9f/.8f);
     }
 
     @Override
@@ -27,35 +30,15 @@ public class GuiChangelog extends Gui implements Comparator<String> {
         buttons.add(new ButtonClose(game));
     }
 
-    private void add(StringBuilder str, String s) {
-        float w=0, maxW=game.aspectratio/2-.1f;
-        for (char c : s.toCharArray()) {
-            if (c=='\r') continue;
-            float cw=game.d.charWidth(c);
-            if ((w+cw)*0.05f>maxW||c=='\n') {
-                String sub=str.toString();
-                lst.add(sub);
-                if (!sub.isEmpty()&&sub.charAt(0)=='$') lst.add("");
-                w=0;
-                str.setLength(0);
-            }
-            if (c!='\n'){
-                w+=cw;
-                str.append(c);
-            }
-        }
-        String sub=str.toString();
-        lst.add(sub);
-        if (!sub.isEmpty()&&sub.charAt(0)=='$') lst.add("");
-        str.setLength(0);
-    }
 
     @Override
     public void draw() {
-        if (aspect!=game.aspectratio) {
+        scroller.scrollMax=lst.size()+1;
+        scroller.draw();
+        float scroll=scroller.getScroll();
+
+        if (aspect!=game.aspectratio||true) {//TODO
             aspect=game.aspectratio;
-            lst.clear();
-            StringBuilder str=new StringBuilder();
             JSONObject json=game.handler.assetJson("changelog");
             ArrayList<String> keys=new ArrayList<>();
             Iterator<String> it=json.keys();
@@ -64,12 +47,17 @@ public class GuiChangelog extends Gui implements Comparator<String> {
                 keys.add(next);
             }
             Collections.sort(keys, this);
-            for (String key : keys) {
-                add(str,"$"+key+":");
-                JSONArray arr=json.getJSONArray(key);
-                for (int i=0;i<arr.length();i++) {
-                    add(str,"-"+arr.getString(i));
+            TextCreator txt=new TextCreator(game, lst);
+            try {
+                for (String key : keys) {
+                    txt.add("$"+key+":");
+                    JSONArray arr=json.getJSONArray(key);
+                    for (int i=0;i<arr.length();i++) {
+                        txt.add("-"+arr.getString(i));
+                    }
                 }
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
         }
         game.d.cube(game.aspectratio/4, .1f, 0.01f, game.aspectratio/2, .8f, .01f, 0xFF00FFFF);
@@ -79,7 +67,7 @@ public class GuiChangelog extends Gui implements Comparator<String> {
                 if (!s.isEmpty()) {
                     if (s.charAt(0)=='$') {
                         game.d.drawString(s.substring(1), game.aspectratio/4+.05f, .7f-((i+.5f)-scroll)*.05f*.9f/0.8f, .075f);
-                    } else{
+                    } else {
                         if (s.charAt(0)=='-') {
                             game.d.drawString("-", game.aspectratio/4+.1f, .7f-((i)-scroll)*.05f*.9f/0.8f, .05f);
                             s=s.substring(1);
@@ -104,8 +92,7 @@ public class GuiChangelog extends Gui implements Comparator<String> {
 
     @Override
     public boolean click(Finger finger) {
-        super.click(finger);
-        return true;
+        return scroller.click(finger);
     }
 
     @Override
@@ -122,7 +109,7 @@ public class GuiChangelog extends Gui implements Comparator<String> {
 
 
     private class ButtonClose extends Button {
-        public ButtonClose(BoxGameReloaded game) {
+        ButtonClose(BoxGameReloaded game) {
             super(game);
         }
 
@@ -142,5 +129,11 @@ public class GuiChangelog extends Gui implements Comparator<String> {
             game.gui.close(GuiChangelog.this);
             return true;
         }
+    }
+
+    @Override
+    public boolean scroll(float f) {
+        scroller.scroll(3*f);
+        return true;
     }
 }
