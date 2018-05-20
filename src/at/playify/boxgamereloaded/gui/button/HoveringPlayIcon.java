@@ -78,9 +78,9 @@ public class HoveringPlayIcon extends Button {
             d.translate(.5f, .23f);
             d.depth(false);
             if (game.connection.userpause) {
-                d.drawStringCenter("Paused", 0, -.4f + pauseState * .4f, .15f);
+                d.drawStringCenter("Paused", 0, -.4f + pauseState * .4f, .15f, 0x66000000);
                 if (pauseState == 1 && game.connection.pauseCount != 0) {
-                    d.drawStringCenter("by " + game.connection.pauseCount + " Players", 0, -.05f, .05f);
+                    d.drawStringCenter("by " + game.connection.pauseCount + " Players", 0, -.05f, .05f, 0x66000000);
                 }
             }
             d.depth(true);

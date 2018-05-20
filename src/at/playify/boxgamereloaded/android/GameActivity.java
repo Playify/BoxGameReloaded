@@ -27,6 +27,7 @@ import java.net.URLConnection;
 
 import at.playify.boxgamereloaded.BoxGameReloaded;
 import at.playify.boxgamereloaded.gui.GuiOverlay;
+import at.playify.boxgamereloaded.interfaces.Keymap;
 
 public class GameActivity extends Activity {
     public BoxGameReloaded game;
@@ -170,41 +171,7 @@ public class GameActivity extends Activity {
         }
         System.out.println(event);
         int unicodeChar=event.getUnicodeChar();
-        if (event.getAction()==KeyEvent.ACTION_DOWN) {
-            switch (event.getKeyCode()) {
-                case KeyEvent.KEYCODE_ESCAPE:
-                    game.cheatCode('s');
-                    break;
-                case KeyEvent.KEYCODE_P:
-                    game.cheatCode('b');
-                    break;
-                case KeyEvent.KEYCODE_O:
-                    game.cheatCode('a');
-                    break;
-                case KeyEvent.KEYCODE_VOLUME_UP:
-                    game.cheatCode('u');
-                    break;
-                case KeyEvent.KEYCODE_VOLUME_DOWN:
-                    game.cheatCode('d');
-                    break;
-                case KeyEvent.KEYCODE_SPACE:
-                    game.cheatCode('u');
-                    break;
-                case KeyEvent.KEYCODE_W:
-                    game.cheatCode('u');
-                    break;
-                case KeyEvent.KEYCODE_A:
-                    game.cheatCode('l');
-                    break;
-                case KeyEvent.KEYCODE_S:
-                    game.cheatCode('d');
-                    break;
-                case KeyEvent.KEYCODE_D:
-                    game.cheatCode('r');
-                    break;
-            }
-        }
-        game.setKey(unicodeChar, event.getAction()==KeyEvent.ACTION_DOWN);
+        game.setKey(convert(event.getKeyCode()), event.getAction()==KeyEvent.ACTION_DOWN);
         if (keyCode==KeyEvent.KEYCODE_BACK) {
             game.cheatCode('s');
 
@@ -226,6 +193,59 @@ public class GameActivity extends Activity {
             return true;
         }
         return unicodeChar!=0;
+    }
+
+    private char convert(int keyCode) {
+            switch (keyCode) {
+                case KeyEvent.KEYCODE_A: return Keymap.KEY_A;
+                case KeyEvent.KEYCODE_B: return Keymap.KEY_B;
+                case KeyEvent.KEYCODE_C: return Keymap.KEY_C;
+                case KeyEvent.KEYCODE_D: return Keymap.KEY_D;
+                case KeyEvent.KEYCODE_E: return Keymap.KEY_E;
+                case KeyEvent.KEYCODE_F: return Keymap.KEY_F;
+                case KeyEvent.KEYCODE_G: return Keymap.KEY_G;
+                case KeyEvent.KEYCODE_H: return Keymap.KEY_H;
+                case KeyEvent.KEYCODE_I: return Keymap.KEY_I;
+                case KeyEvent.KEYCODE_J: return Keymap.KEY_J;
+                case KeyEvent.KEYCODE_K: return Keymap.KEY_K;
+                case KeyEvent.KEYCODE_L: return Keymap.KEY_L;
+                case KeyEvent.KEYCODE_M: return Keymap.KEY_M;
+                case KeyEvent.KEYCODE_N: return Keymap.KEY_N;
+                case KeyEvent.KEYCODE_O: return Keymap.KEY_O;
+                case KeyEvent.KEYCODE_P: return Keymap.KEY_P;
+                case KeyEvent.KEYCODE_Q: return Keymap.KEY_Q;
+                case KeyEvent.KEYCODE_R: return Keymap.KEY_R;
+                case KeyEvent.KEYCODE_S: return Keymap.KEY_S;
+                case KeyEvent.KEYCODE_T: return Keymap.KEY_T;
+                case KeyEvent.KEYCODE_U: return Keymap.KEY_U;
+                case KeyEvent.KEYCODE_V: return Keymap.KEY_V;
+                case KeyEvent.KEYCODE_W: return Keymap.KEY_W;
+                case KeyEvent.KEYCODE_X: return Keymap.KEY_X;
+                case KeyEvent.KEYCODE_Y: return Keymap.KEY_Y;
+                case KeyEvent.KEYCODE_Z: return Keymap.KEY_Z;
+                case KeyEvent.KEYCODE_0: return Keymap.KEY_0;
+                case KeyEvent.KEYCODE_1: return Keymap.KEY_1;
+                case KeyEvent.KEYCODE_2: return Keymap.KEY_2;
+                case KeyEvent.KEYCODE_3: return Keymap.KEY_3;
+                case KeyEvent.KEYCODE_4: return Keymap.KEY_4;
+                case KeyEvent.KEYCODE_5: return Keymap.KEY_5;
+                case KeyEvent.KEYCODE_6: return Keymap.KEY_6;
+                case KeyEvent.KEYCODE_7: return Keymap.KEY_7;
+                case KeyEvent.KEYCODE_8: return Keymap.KEY_8;
+                case KeyEvent.KEYCODE_9: return Keymap.KEY_9;
+                case KeyEvent.KEYCODE_SPACE: return Keymap.KEY_SPACE;
+                case KeyEvent.KEYCODE_PERIOD: return Keymap.KEY_DOT;
+                case KeyEvent.KEYCODE_BACK: return Keymap.KEY_BACK;
+                case KeyEvent.KEYCODE_ENTER: return Keymap.KEY_RETURN;
+                case KeyEvent.KEYCODE_ESCAPE: return Keymap.KEY_ESC;
+                case KeyEvent.KEYCODE_DPAD_LEFT: return Keymap.KEY_LEFT;
+                case KeyEvent.KEYCODE_DPAD_RIGHT: return Keymap.KEY_RIGHT;
+                case KeyEvent.KEYCODE_DPAD_UP: return Keymap.KEY_UP;
+                case KeyEvent.KEYCODE_DPAD_DOWN: return Keymap.KEY_DOWN;
+                case KeyEvent.KEYCODE_VOLUME_DOWN: return Keymap.KEY_VOL_DOWN;
+                case KeyEvent.KEYCODE_VOLUME_UP: return Keymap.KEY_VOL_UP;
+            }
+            return 0;
     }
 
 

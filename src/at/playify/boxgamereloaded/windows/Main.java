@@ -1,8 +1,8 @@
 package at.playify.boxgamereloaded.windows;
 
 import at.playify.boxgamereloaded.BoxGameReloaded;
+import at.playify.boxgamereloaded.interfaces.Keymap;
 import at.playify.boxgamereloaded.util.Finger;
-import at.playify.boxgamereloaded.util.Utils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -19,12 +19,9 @@ import java.util.zip.ZipInputStream;
 
 public class Main {
 
-    private static int[] chars=new int[Character.MAX_CODE_POINT];
     private static Finger finger;
     private static BoxGameReloaded game;
     static final File base=new File(System.getenv("APPDATA"), "BoxGameReloaded");
-    private static boolean down, zooming;
-    private static float lx, ly;
 
     public static void main(String[] args) {
         loadLibrary();
@@ -39,10 +36,9 @@ public class Main {
         WindowsHandler handler;
         game=new BoxGameReloaded(handler=new WindowsHandler());
         handler.game=game;
-        game.d=handler.d=new WindowsDrawer(game);
-        finger=game.fingers[0];
+        game.setDrawer(handler.d=new WindowsDrawer(game));
+        finger=game.finger(0);
         game.start();
-        game.vars.tickOnDraw=false;
 
         while (!Display.isCloseRequested()) {
             runTick();
@@ -112,108 +108,78 @@ public class Main {
             //Tastatur
             Keyboard.enableRepeatEvents(true);
             while (Keyboard.next()) {
-                int eventKey=Keyboard.getEventKey();
-                if (Keyboard.getEventKeyState()) {
-                    switch (eventKey) {
-                        case Keyboard.KEY_ESCAPE:
-                            game.cheatCode('s');
-                            break;
-                        case Keyboard.KEY_P:
-                            game.cheatCode('b');
-                            break;
-                        case Keyboard.KEY_O:
-                            game.cheatCode('a');
-                            break;
-                        case Keyboard.KEY_UP:
-                            game.cheatCode('u');
-                            break;
-                        case Keyboard.KEY_DOWN:
-                            game.cheatCode('d');
-                            break;
-                        case Keyboard.KEY_LEFT:
-                            game.cheatCode('l');
-                            break;
-                        case Keyboard.KEY_RIGHT:
-                            game.cheatCode('r');
-                            break;
-                        case Keyboard.KEY_SPACE:
-                            game.cheatCode('u');
-                            break;
-                        case Keyboard.KEY_W:
-                            game.cheatCode('u');
-                            break;
-                        case Keyboard.KEY_A:
-                            game.cheatCode('l');
-                            break;
-                        case Keyboard.KEY_S:
-                            game.cheatCode('d');
-                            break;
-                        case Keyboard.KEY_D:
-                            game.cheatCode('r');
-                            break;
-                    }
-                }
-                int eventChar=Keyboard.getEventCharacter();
-                if (Keyboard.getKeyName(eventKey).length()==1) {
-                    eventChar=Keyboard.getKeyName(eventKey).charAt(0);
-                }
-                if (eventKey==Keyboard.KEY_ESCAPE) eventChar=257;
-                if (eventChar==0) {
-                    eventChar=chars[eventKey];
-                } else {
-                    chars[eventKey]=eventChar;
-                }
-                game.setKey(eventChar, Keyboard.getEventKeyState());
+                game.setKey(convert(Keyboard.getEventKey()), Keyboard.getEventKeyState());
             }
             //Maus
             //finger.set(Mouse.getX(),Display.getHeight()-Mouse.getY());//Finger wegen MultiTouch am Handy
             while (Mouse.next()) {
                 if (Mouse.getEventButton()==0) {
                     boolean down=Mouse.getEventButtonState();
-                    finger.set(Mouse.getEventX(), Display.getHeight()-Mouse.getEventY());
-                    if (down)
-                        finger.setDown(Mouse.getEventX(), Display.getHeight()-Mouse.getEventY(), game);
+                    finger.x=Mouse.getEventX();
+                    finger.y=Display.getHeight()-Mouse.getEventY();
                     finger.down=down;
                     game.fingerStateChanged(finger);
                 } else {
-                    finger.set(Mouse.getEventX(), Display.getHeight()-Mouse.getEventY());
+                    finger.x=Mouse.getEventX();
+                    finger.y=Display.getHeight()-Mouse.getEventY();
                 }
             }
             int wheel=Mouse.getDWheel();
-            if ((wheel==0||!game.gui.scroll(wheel*0.001f))&&game.painter.draw) {
-                float v=wheel*0.001f+1;
-                game.zoom=Utils.clamp(game.zoom*v, 0.3f, 5f);
-
-                if (down!=(Mouse.isButtonDown(1)&&!finger.control)) {
-                    down^=true;
-                    if (down) {
-                        lx=finger.getX();
-                        ly=finger.getY();
-                        zooming=finger.getX()/game.d.getHeight()<1/7f;
-                    }
-                }
-                if (down) {
-                    if (zooming) {
-                        float zoom=game.zoom*((ly-finger.getY())/game.d.getHeight()+1);
-                        ly=finger.getY();
-                        game.zoom=Utils.clamp(zoom, 0.3f, 5f);
-                    } else {
-                        float w=game.d.getWidth(), h=game.d.getHeight();
-                        float x=(lx-finger.getX())*game.vars.display_size*game.aspectratio/(w*game.zoom)+game.zoom_x;
-                        float y=-(ly-finger.getY())*game.vars.display_size/(h*game.zoom)+game.zoom_y;
-
-                        lx=finger.getX();
-                        ly=finger.getY();
-
-
-                        game.zoom_x=Utils.clamp(x, 0, game.level.sizeX);
-                        game.zoom_y=Utils.clamp(y, 0, game.level.sizeY);
-                    }
-                }
-            }
+            game.scroll(wheel);
         } catch (Exception e) {
             System.err.println("Input Exception");
             e.printStackTrace();
         }
+    }
+
+    private static char convert(int eventKey) {
+        switch (eventKey) {
+            case Keyboard.KEY_A: return Keymap.KEY_A;
+            case Keyboard.KEY_B: return Keymap.KEY_B;
+            case Keyboard.KEY_C: return Keymap.KEY_C;
+            case Keyboard.KEY_D: return Keymap.KEY_D;
+            case Keyboard.KEY_E: return Keymap.KEY_E;
+            case Keyboard.KEY_F: return Keymap.KEY_F;
+            case Keyboard.KEY_G: return Keymap.KEY_G;
+            case Keyboard.KEY_H: return Keymap.KEY_H;
+            case Keyboard.KEY_I: return Keymap.KEY_I;
+            case Keyboard.KEY_J: return Keymap.KEY_J;
+            case Keyboard.KEY_K: return Keymap.KEY_K;
+            case Keyboard.KEY_L: return Keymap.KEY_L;
+            case Keyboard.KEY_M: return Keymap.KEY_M;
+            case Keyboard.KEY_N: return Keymap.KEY_N;
+            case Keyboard.KEY_O: return Keymap.KEY_O;
+            case Keyboard.KEY_P: return Keymap.KEY_P;
+            case Keyboard.KEY_Q: return Keymap.KEY_Q;
+            case Keyboard.KEY_R: return Keymap.KEY_R;
+            case Keyboard.KEY_S: return Keymap.KEY_S;
+            case Keyboard.KEY_T: return Keymap.KEY_T;
+            case Keyboard.KEY_U: return Keymap.KEY_U;
+            case Keyboard.KEY_V: return Keymap.KEY_V;
+            case Keyboard.KEY_W: return Keymap.KEY_W;
+            case Keyboard.KEY_X: return Keymap.KEY_X;
+            case Keyboard.KEY_Y: return Keymap.KEY_Y;
+            case Keyboard.KEY_Z: return Keymap.KEY_Z;
+            case Keyboard.KEY_0: return Keymap.KEY_0;
+            case Keyboard.KEY_1: return Keymap.KEY_1;
+            case Keyboard.KEY_2: return Keymap.KEY_2;
+            case Keyboard.KEY_3: return Keymap.KEY_3;
+            case Keyboard.KEY_4: return Keymap.KEY_4;
+            case Keyboard.KEY_5: return Keymap.KEY_5;
+            case Keyboard.KEY_6: return Keymap.KEY_6;
+            case Keyboard.KEY_7: return Keymap.KEY_7;
+            case Keyboard.KEY_8: return Keymap.KEY_8;
+            case Keyboard.KEY_9: return Keymap.KEY_9;
+            case Keyboard.KEY_SPACE: return Keymap.KEY_SPACE;
+            case Keyboard.KEY_PERIOD: return Keymap.KEY_DOT;
+            case Keyboard.KEY_BACK: return Keymap.KEY_BACK;
+            case Keyboard.KEY_RETURN: return Keymap.KEY_RETURN;
+            case Keyboard.KEY_ESCAPE: return Keymap.KEY_ESC;
+            case Keyboard.KEY_LEFT: return Keymap.KEY_LEFT;
+            case Keyboard.KEY_RIGHT: return Keymap.KEY_RIGHT;
+            case Keyboard.KEY_UP: return Keymap.KEY_UP;
+            case Keyboard.KEY_DOWN: return Keymap.KEY_DOWN;
+        }
+        return 0;
     }
 }

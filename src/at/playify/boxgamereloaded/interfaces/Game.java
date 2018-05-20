@@ -23,6 +23,7 @@ public abstract class Game {
     public Game(Handler handler){
         this.handler=handler;
     }
+
     public void setKey(int keyChar, boolean b) {
         keyChar=Character.toLowerCase(keyChar);
         if (keyChar < 300) {
@@ -79,4 +80,12 @@ public abstract class Game {
             str.setLength(0);
         }
     }
+
+    public Finger finger(int i) {
+        return fingers[i];
+    }
+
+    public abstract void setDrawer(Drawer drawer);
+
+    public abstract boolean scroll(int wheel);
 }

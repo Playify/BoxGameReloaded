@@ -30,16 +30,18 @@ public abstract class Gui {
             Button button=buttons[i];
             d.pushMatrix();
             BoundingBox3d bound=button.bound();
-            d.translate(bound.minX, bound.minY, bound.minZ);
-            d.scale(bound.maxX-bound.minX, bound.maxY-bound.minY, bound.maxZ-bound.minZ);
-            button.draw(d);
+            if (!bound.isEmpty()) {
+                d.translate(bound.minX, bound.minY, bound.minZ);
+                d.scale(bound.maxX-bound.minX, bound.maxY-bound.minY, bound.maxZ-bound.minZ);
+                button.draw(d);
+            }
             d.popMatrix();
         }
         d.clearDepth();
     }
 
     public boolean click(Finger finger) {
-        float x=finger.getX()/game.d.getHeight(), y=1-finger.getY()/game.d.getHeight();
+        float x=finger.x/game.d.getHeight(), y=1-finger.y/game.d.getHeight();
         for (Button button : buttons) {
             BoundingBox3d bound=button.bound();
             if (bound.contains(x, y)) {
@@ -68,7 +70,7 @@ public abstract class Gui {
     }
 
     public boolean clickButtons(Finger finger) {
-        float x=finger.getX()/game.d.getHeight(), y=1-finger.getY()/game.d.getHeight();
+        float x=finger.x/game.d.getHeight(), y=1-finger.y/game.d.getHeight();
         for (Button button : buttons) {
             BoundingBox3d bound=button.bound();
             if (bound.contains(x, y)) {

@@ -2,6 +2,7 @@ package at.playify.boxgamereloaded.network.packet;
 
 import at.playify.boxgamereloaded.BoxGameReloaded;
 import at.playify.boxgamereloaded.gui.GuiMainMenu;
+import at.playify.boxgamereloaded.network.LevelHandler;
 import at.playify.boxgamereloaded.network.Server;
 import at.playify.boxgamereloaded.network.connection.ConnectionToClient;
 import at.playify.boxgamereloaded.network.connection.ConnectionToServer;
@@ -9,8 +10,11 @@ import at.playify.boxgamereloaded.network.connection.ConnectionToServer;
 import java.util.ArrayList;
 
 public class PacketMainMenu extends Packet {
-    private ArrayList<String> list;
-    private String name;
+    public ArrayList<String> list;
+    public String name;
+
+    public PacketMainMenu() {
+    }
 
     @Override
     public String convertToString(BoxGameReloaded game) {
@@ -91,20 +95,37 @@ public class PacketMainMenu extends Packet {
     }
 
     @Override
-    public void handle(Server server, ConnectionToClient connectionToClient) {
+    public void handle(final Server server, final ConnectionToClient connectionToClient) {
+        server.levels.markDirty();
         if (name==null) {
-            name="list";
-            list=server.getStages();
-            connectionToClient.sendPacket(this);
-            for (String s : server.getStages()) {
-                PacketMainMenu packet=new PacketMainMenu();
-                packet.name=s;
-                packet.list=server.getLevels(s);
-                connectionToClient.sendPacket(packet);
-            }
+            server.levels.getStages(new LevelHandler.Action<ArrayList<String>>(){
+
+                @Override
+                public void exec(ArrayList<String> strings) {
+                    name="list";
+                    list=strings;
+                    connectionToClient.sendPacket(PacketMainMenu.this);
+                    for (String s : strings) {
+                        final PacketMainMenu packet=new PacketMainMenu();
+                        packet.name=s;
+                        server.levels.getLevels(s,new LevelHandler.Action<ArrayList<String>>() {
+                            @Override
+                            public void exec(ArrayList<String> strings) {
+                                packet.list=strings;
+                                connectionToClient.sendPacket(packet);
+                            }
+                        });
+                    }
+                }
+            });
         } else {
-            list=server.getLevels(name);
-            connectionToClient.sendPacket(this);
+            server.levels.getLevels(name,new LevelHandler.Action<ArrayList<String>>() {
+                @Override
+                public void exec(ArrayList<String> strings) {
+                    list=strings;
+                    connectionToClient.sendPacket(PacketMainMenu.this);
+                }
+            });
         }
     }
 }

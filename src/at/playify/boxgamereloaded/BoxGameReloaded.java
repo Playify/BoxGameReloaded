@@ -283,7 +283,7 @@ public class BoxGameReloaded extends Game {
         txt.add(str.toString());
         float h=.94f;
         for (String s : txt) {
-            d.drawString(s, .19f, h, .05f);
+            d.drawString(s, .19f, h, .05f, 0x66000000);
             h -= .06f;
         }
         vertexcount = 0;
@@ -295,9 +295,98 @@ public class BoxGameReloaded extends Game {
         super.start();
     }
 
+    @Override
+    public void setDrawer(Drawer drawer) {
+        d=drawer;
+    }
+
+    private boolean curScrolling;
+    private boolean zooming;
+    private float lx, ly;
+    @Override
+    public boolean scroll(int wheel) {
+        Finger finger=fingers[0];
+        if ((wheel==0||!this.gui.scroll(wheel*0.001f))&&this.painter.draw) {
+            float v=wheel*0.001f+1;
+            this.zoom=Utils.clamp(this.zoom*v, 0.3f, 5f);
+
+            if (curScrolling!=(handler.isScrolling()&&!finger.control)) {
+                curScrolling^=true;
+                if (curScrolling) {
+                    lx=finger.x;
+                    ly=finger.y;
+                    zooming=finger.x/this.d.getHeight()<1/7f;
+                }
+            }
+            if (curScrolling) {
+                if (zooming) {
+                    float zoom=this.zoom*((ly-finger.y)/this.d.getHeight()+1);
+                    ly=finger.y;
+                    this.zoom=Utils.clamp(zoom, 0.3f, 5f);
+                } else {
+                    float w=this.d.getWidth(), h=this.d.getHeight();
+                    float x=(lx-finger.x)*this.vars.display_size*this.aspectratio/(w*this.zoom)+this.zoom_x;
+                    float y=-(ly-finger.y)*this.vars.display_size/(h*this.zoom)+this.zoom_y;
+
+                    lx=finger.x;
+                    ly=finger.y;
+
+
+                    this.zoom_x=Utils.clamp(x, 0, this.level.sizeX);
+                    this.zoom_y=Utils.clamp(y, 0, this.level.sizeY);
+                }
+            }
+        }
+        return true;
+    }
+
     //Tastaturstatusänderungen
     @Override
     protected void keyStateChanged(int keyChar) {
+        if (keys[keyChar]){
+
+            switch (keyChar) {
+                case Keymap.KEY_ESC:
+                    cheatCode('s');
+                    break;
+                case Keymap.KEY_P:
+                    cheatCode('b');
+                    break;
+                case Keymap.KEY_O:
+                    cheatCode('a');
+                    break;
+                case Keymap.KEY_UP:
+                case Keymap.KEY_VOL_UP:
+                    cheatCode('u');
+                    break;
+                case Keymap.KEY_DOWN:
+                case Keymap.KEY_VOL_DOWN:
+                    cheatCode('d');
+                    break;
+                case Keymap.KEY_LEFT:
+                    cheatCode('l');
+                    break;
+                case Keymap.KEY_RIGHT:
+                    cheatCode('r');
+                    break;
+                case Keymap.KEY_SPACE:
+                    cheatCode('u');
+                    break;
+                case Keymap.KEY_W:
+                    cheatCode('u');
+                    break;
+                case Keymap.KEY_A:
+                    cheatCode('l');
+                    break;
+                case Keymap.KEY_S:
+                    cheatCode('d');
+                    break;
+                case Keymap.KEY_D:
+                    cheatCode('r');
+                    break;
+            }
+        }
+
         pauseLock.unlock();
         if (gui.key((char) keyChar,keys[keyChar]))return;
 
@@ -361,6 +450,7 @@ public class BoxGameReloaded extends Game {
     @SuppressWarnings("WeakerAccess")
     public void joinWorld(String name) {
         connection.sendPacketSoon(new PacketSetWorld(name));
+        pauseLock.unlock();
     }
 
     public void finishLevel() {

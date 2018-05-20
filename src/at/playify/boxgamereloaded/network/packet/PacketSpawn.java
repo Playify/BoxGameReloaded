@@ -1,6 +1,8 @@
 package at.playify.boxgamereloaded.network.packet;
 
 import at.playify.boxgamereloaded.BoxGameReloaded;
+import at.playify.boxgamereloaded.level.ServerLevel;
+import at.playify.boxgamereloaded.network.LevelHandler;
 import at.playify.boxgamereloaded.network.Server;
 import at.playify.boxgamereloaded.network.connection.ConnectionToClient;
 import at.playify.boxgamereloaded.network.connection.ConnectionToServer;
@@ -92,12 +94,17 @@ public class PacketSpawn extends Packet {
     }
 
     @Override
-    public void handle(Server server, ConnectionToClient connectionToClient) {
-        RectBound spawnPoint=server.getLevel(connectionToClient.world).spawnPoint;
-        spawnPoint.set(x,y,w,h);
-        server.broadcast(new PacketSpawn(spawnPoint),connectionToClient.world,null);
-        for (ConnectionToClient client : server.getLastBroadcast()) {
-            client.sendPacket((new PacketMove(spawnPoint)));
-        }
+    public void handle(final Server server, final ConnectionToClient connectionToClient) {
+        server.levels.getLevel(connectionToClient.world, new LevelHandler.Action<ServerLevel>() {
+            @Override
+            public void exec(ServerLevel level) {
+                RectBound spawnPoint=level.spawnPoint;
+                spawnPoint.set(x,y,w,h);
+                server.broadcast(new PacketSpawn(spawnPoint),connectionToClient.world,null);
+                for (ConnectionToClient client : server.getLastBroadcast()) {
+                    client.sendPacket((new PacketMove(spawnPoint)));
+                }
+            }
+        });
     }
 }

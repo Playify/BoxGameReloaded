@@ -175,4 +175,9 @@ class AndroidHandler extends Handler {
         thread.setName("Command Executor");
         thread.start();
     }
+
+    @Override
+    public boolean isScrolling(){
+        return false;
+    }
 }

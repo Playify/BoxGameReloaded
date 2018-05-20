@@ -1,8 +1,6 @@
 package at.playify.boxgamereloaded.network;
 
 import at.playify.boxgamereloaded.interfaces.Handler;
-import at.playify.boxgamereloaded.level.EmptyServerLevel;
-import at.playify.boxgamereloaded.level.ServerLevel;
 import at.playify.boxgamereloaded.level.compress.CompressionHandler;
 import at.playify.boxgamereloaded.network.connection.ConnectionToClient;
 import at.playify.boxgamereloaded.network.packet.Packet;
@@ -16,7 +14,6 @@ import java.net.BindException;
 import java.net.ServerSocket;
 import java.net.SocketException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -24,12 +21,11 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class Server implements Runnable{
     public CompressionHandler compresser=new CompressionHandler();
     public boolean pauseForSingleUser=true;
+    public LevelHandler levels;
     private ConnectionList connected=new ConnectionList();
-    private HashMap<String, ServerLevel> levelmap=new HashMap<>();
     private int pausemode=0;
     public Handler handler;
 
-    private ServerLevel empty;
     private final ThreadLocal<ArrayList<ConnectionToClient>> last = new ThreadLocal<>();
     private ServerSocket socket;
     private boolean closed;
@@ -37,7 +33,7 @@ public class Server implements Runnable{
 
     public Server(Handler handler) {
         this.handler=handler;
-
+        this.levels=new LevelHandler(this);
     }
 
     public int getPausemode() {
@@ -52,12 +48,6 @@ public class Server implements Runnable{
             }
         }
         return pausemode;
-    }
-
-    @SuppressWarnings("unused")
-    public void setPausemode(int pausemode) {
-        this.pausemode = pausemode;
-        System.out.println("Pause Mode changed to "+pausemode);
     }
 
     public void run() {
@@ -80,49 +70,6 @@ public class Server implements Runnable{
         } catch (IOException e) {
             e.printStackTrace();
             close();
-        }
-    }
-
-    public ServerLevel getLevel(String world) {
-        if (levelmap.containsKey(world)) {
-            return levelmap.get(world);
-        }else {
-            try {
-                boolean paint=world.startsWith("paint");
-                JSONObject levels=world.startsWith("paint") ?handler.read("paint"):handler.assetJson( "leveldata");
-                if (paint){
-                    boolean found=false;
-                    JSONObject n=new JSONObject();
-                    Iterator<String> keys=levels.keys();
-                    while (keys.hasNext()) {
-                        String s=keys.next();
-                        if (s.startsWith("paint_")) {
-                            found=true;
-                            n.put("paint"+s.substring(6),levels.get(s));
-                        }else n.put(s,levels.get(s));
-                    }
-                    if (found){
-                        handler.write("paint",n);
-                        levels=n;
-                    }
-                }
-                if (levels.has(world)) {
-                    JSONObject object=levels.getJSONObject(world);
-                    if (object.has("data")) {
-                        ServerLevel level=new ServerLevel(this);
-                        level.loadWorldString(object.getString("data"));
-                        levelmap.put(world, level);
-                        return level;
-                    }
-                    System.err.println("Level file is incorrect");
-                    return empty==null ? empty=new EmptyServerLevel(this) : empty;
-                } else {
-                    return empty==null ? empty=new EmptyServerLevel(this) : empty;
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-                return empty==null ? empty=new EmptyServerLevel(this) : empty;
-            }
         }
     }
 
@@ -242,63 +189,6 @@ public class Server implements Runnable{
         if (thread!=null) {
             thread.interrupt();
         }
-    }
-
-    public ArrayList<String> getLevels(String name) {
-        ArrayList<String> list=new ArrayList<>();
-        try {
-            JSONObject levels=handler.assetJson("levels");
-            if (levels.has(name)) {
-                JSONArray arr=levels.getJSONArray(name);
-                for(int i=0; i<arr.length(); i++) {
-                    list.add(arr.getString(i));
-                }
-            }
-            return list;
-        }catch (Exception e){
-            e.printStackTrace();
-            return list;
-        }
-    }
-
-    public ArrayList<String> getStages() {
-        ArrayList<String> list=new ArrayList<>();
-        try {
-            JSONObject levels=handler.assetJson("levels");
-            if (levels.has("list")) {
-                JSONArray arr=levels.getJSONArray("list");
-                for(int i=0; i<arr.length(); i++) {
-                    list.add(arr.getString(i));
-                }
-            }
-            return list;
-        }catch (Exception e){
-            e.printStackTrace();
-            return list;
-        }
-    }
-
-    public boolean isLevel(String s) {
-        try {
-            s+="=";
-            JSONObject levels=handler.assetJson("levels");
-            Iterator<String> keys=levels.keys();
-            while (keys.hasNext()) {
-                String key=keys.next();
-                if (!key.equals("list")) {
-                    JSONArray arr=levels.getJSONArray(key);
-                    int length=arr.length();
-                    for(int i=0; i<length; i++) {
-                        if (arr.getString(i).startsWith(s)) {
-                            return true;
-                        }
-                    }
-                }
-            }
-        }catch (JSONException e){
-            e.printStackTrace();
-        }
-        return false;
     }
 
     public boolean isClosed() {

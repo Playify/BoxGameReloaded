@@ -39,7 +39,7 @@ public class PlayerMP extends Player {
 
     @Override
     public boolean canDraw() {
-        return true;//TODO
+        return true;
     }
 
     @Override
@@ -52,7 +52,7 @@ public class PlayerMP extends Player {
             float strWidth=game.d.getStringWidth(display)*.3f;
             float v=1/8f*.3f;
             game.d.rect(-strWidth/2-v, -v, strWidth+v, .3f+2*v, 0x30000000);
-            game.d.drawStringCenter(display, 0, 0, .3f);
+            game.d.drawStringCenter(display, 0, 0, .3f, 0x66000000);
             game.d.translate(0, -bound.h()/10, -.5f);
             game.d.depth(true);
             game.d.popMatrix();

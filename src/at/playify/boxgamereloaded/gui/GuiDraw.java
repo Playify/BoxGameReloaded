@@ -31,7 +31,7 @@ public class GuiDraw extends Gui {
 
     @Override
     public boolean click(Finger finger) {
-        float x=finger.getX()/game.d.getHeight(), y=1-finger.getY()/game.d.getHeight();
+        float x=finger.x/game.d.getHeight(), y=1-finger.y/game.d.getHeight();
         if (paintButton.bound().contains(x, y)&&paintButton.click(finger)) {
             return true;
         }
@@ -63,7 +63,7 @@ public class GuiDraw extends Gui {
         }
         if (!game.painter.draw||game.painter.quick) return;
         String name=game.painter.paint().name(0);
-        game.d.drawString(name, game.aspectratio-1/7f-0.01f-game.d.getStringWidth(name)*0.05f, 0.01f, 0.05f);
+        game.d.drawString(name, game.aspectratio-1/7f-0.01f-game.d.getStringWidth(name)*0.05f, 0.01f, 0.05f, 0x66000000);
     }
 
     @Override

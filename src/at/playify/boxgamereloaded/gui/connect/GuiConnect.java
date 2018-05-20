@@ -31,7 +31,7 @@ public class GuiConnect extends Gui {
     public void draw() {
         game.d.cube(game.aspectratio/4,.1f,0.01f,game.aspectratio/2,.8f,.01f,0xFF00FFFF);
         game.d.cube(game.aspectratio/4+.02f,.69f,0,game.aspectratio/2-.04f,.11f,.01f,0xFFAAAAAA);
-        game.d.drawStringCenter(ip,game.aspectratio/2,.7f,.08f);
+        game.d.drawStringCenter(ip,game.aspectratio/2,.7f,.08f, 0x66000000);
         super.draw();
     }
 
@@ -167,7 +167,6 @@ public class GuiConnect extends Gui {
             x-=h*1.5f;
             y-=.25f;
             bound.set(x+v,y+v,0,x+h-v,y+h-v,.01f);
-            //TODO
             return bound;
         }
 

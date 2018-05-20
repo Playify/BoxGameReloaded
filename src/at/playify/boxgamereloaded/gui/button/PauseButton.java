@@ -90,7 +90,7 @@ public class PauseButton extends Button {
         } else {
             pauseState=Math.max(0, pauseState-1/8f);
         }
-        return (pauseState==0||pauseState==1)&&(visibleState==0||visibleState==1);
+        return pauseState==1&&(visibleState==0||visibleState==1);
     }
 }
 

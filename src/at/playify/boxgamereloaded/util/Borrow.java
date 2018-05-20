@@ -129,8 +129,9 @@ public class Borrow {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public static <T extends Borrowed> ArrayList<T> boundList() {
-        @SuppressWarnings("unchecked") ArrayList<T> poll=(ArrayList<T>) boundLists.poll();
+        ArrayList poll=boundLists.poll();
         if (poll==null) {
             borrowed++;
             return new ArrayList<>();

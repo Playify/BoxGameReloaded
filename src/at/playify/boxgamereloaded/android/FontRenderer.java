@@ -4,12 +4,11 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.opengl.GLUtils;
 
+import javax.microedition.khronos.opengles.GL10;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
-
-import javax.microedition.khronos.opengles.GL10;
 
 import static javax.microedition.khronos.opengles.GL10.*;
 
@@ -54,7 +53,7 @@ class FontRenderer {
 
         this.d=d;
     }
-    public void draw(String s, float x, float y, float height){
+    public void draw(String s, float x, float y, float height, int color){
         if (s==null)return;
         d.depth(false);
         GL10 gl = d.gl;
@@ -65,7 +64,8 @@ class FontRenderer {
 
         gl.glEnable(GL_TEXTURE_2D);
         gl.glBindTexture(GL_TEXTURE_2D,textures[0]);
-        gl.glColor4f(0,0,0,.4f);
+        float a=((color>>24)&255)/255f, r=((color>>16)&255)/255f, g=((color>>8)&255)/255f, b=((color)&255)/255f;
+        gl.glColor4f(r, g, b, a);
 
         gl.glEnableClientState(GL_VERTEX_ARRAY);
         gl.glEnableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -118,10 +118,10 @@ class FontRenderer {
         return width;
     }
 
-    void drawCenter(String s, float x, float y, float h) {
+    void drawCenter(String s, float x, float y, float h, int color) {
         if (s==null)return;
         x-=getWidth(s)*h/2;
-        draw(s, x, y, h);
+        draw(s, x, y, h, color);
     }
 
     float getWidth(String s) {

@@ -79,7 +79,7 @@ public class OptionsButton extends Button {
         } else {
             BoundingBox3d bound = bound();
             for (Finger finger : game.fingers) {
-                float x=finger.getX()/game.d.getHeight(), y=1-finger.getY()/game.d.getHeight();
+                float x=finger.x/game.d.getHeight(), y=1-finger.y/game.d.getHeight();
                 if (finger.control && bound.contains(x, y)) {
                     settingsRotate = v;
                     break;

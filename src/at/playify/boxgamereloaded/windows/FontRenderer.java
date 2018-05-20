@@ -2,6 +2,7 @@ package at.playify.boxgamereloaded.windows;
 
 import at.playify.boxgamereloaded.interfaces.Game;
 import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.GL11;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -30,7 +31,7 @@ class FontRenderer {
     }
 
     //Zeichnet Text bei den Koordinaten x,y mit der Höhe von height
-    void draw(String s, float x, float y, float height) {
+    void draw(String s, float x, float y, float height, int color) {
         if (s==null)return;
         if (textureID == -1) {
             return;
@@ -43,7 +44,8 @@ class FontRenderer {
 
         glEnable(GL_TEXTURE_2D);
         glBindTexture(GL_TEXTURE_2D, textureID);
-        glColor4f(0, 0, 0, .4f);
+        float a=((color >> 24)&255)/255f, r=((color >> 16)&255)/255f, g=((color >> 8)&255)/255f, b=((color)&255)/255f;
+        GL11.glColor4f(r, g, b, a);
 
         glEnableClientState(GL_VERTEX_ARRAY);
         glEnableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -67,9 +69,9 @@ class FontRenderer {
     }
 
     //Zeichnet Text Zentriert bei den Koordinaten x,y mit der Höhe von height
-    void drawCenter(String s, float x, float y, float h) {
+    void drawCenter(String s, float x, float y, float h,int color) {
         x -= getWidth(s) * h / 2;
-        draw(s, x, y, h);
+        draw(s, x, y, h, color);
     }
 
 

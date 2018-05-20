@@ -36,6 +36,7 @@ public class MainConsole {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        System.out.println("Console closed");
         try {
             new BufferedReader(new InputStreamReader(System.in)).readLine();
         } catch (Exception e) {

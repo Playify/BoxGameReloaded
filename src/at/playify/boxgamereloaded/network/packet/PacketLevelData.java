@@ -1,10 +1,16 @@
 package at.playify.boxgamereloaded.network.packet;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+
 import at.playify.boxgamereloaded.BoxGameReloaded;
+import at.playify.boxgamereloaded.level.ServerLevel;
+import at.playify.boxgamereloaded.network.LevelHandler;
 import at.playify.boxgamereloaded.network.Server;
 import at.playify.boxgamereloaded.network.connection.ConnectionToClient;
 import at.playify.boxgamereloaded.network.connection.ConnectionToServer;
-import org.json.JSONObject;
 
 //Packet für Leveldaten = Level zu Text,Laden von Text
 public class PacketLevelData extends Packet {
@@ -47,18 +53,40 @@ public class PacketLevelData extends Packet {
     }
 
     @Override
-    public void handle(Server server, ConnectionToClient connectionToClient) {
-        String world=this.world==null ? connectionToClient.world : this.world;
+    public void handle(final Server server, final ConnectionToClient connectionToClient) {
+        final String world=this.world==null ? connectionToClient.world : this.world;
         if (world.startsWith("paint")) {
             try {
-                JSONObject paint=server.handler.read("paint");
-                if (!paint.has(world)) {
-                    paint.put(world, new JSONObject());
-                }
-                JSONObject lvl=paint.getJSONObject(world);
-                lvl.put("data", levelstr);
-                server.handler.write("paint", paint);
-                server.getLevel(world).loadWorldString(levelstr);
+                server.levels.getLevel(world, new LevelHandler.Action<ServerLevel>() {
+                    @Override
+                    public void exec(ServerLevel level) {
+                        try {
+                            JSONObject paint=server.handler.read("paint");
+                            if (!paint.has(world)) {
+                                paint.put(world, new JSONObject());
+                            }
+                            JSONObject lvl=paint.getJSONObject(world);
+                            lvl.put("data", levelstr);
+                            if (connectionToClient.skin!=null) {
+                                lvl.put("by", connectionToClient.skin.substring(connectionToClient.skin.lastIndexOf(';')+1));
+                                final PacketMainMenu packet=new PacketMainMenu();
+
+                                server.levels.getLevels("paint", new LevelHandler.Action<ArrayList<String>>() {
+                                    @Override
+                                    public void exec(ArrayList<String> strings) {
+                                        packet.name="paint";
+                                        packet.list=strings;
+                                        server.broadcast(packet);
+                                    }
+                                });
+                            }
+                            server.handler.write("paint", paint);
+                        }catch (JSONException e){
+                            e.printStackTrace();
+                        }
+                        level.loadWorldString(levelstr);
+                    }
+                });
             } catch (Exception e) {
                 e.printStackTrace();
             }

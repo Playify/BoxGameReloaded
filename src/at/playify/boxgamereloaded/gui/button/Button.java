@@ -28,7 +28,7 @@ public abstract class Button implements Comparable<Button> {
         float v=(bound.maxY-bound.minY);
         float v2=(bound.maxX-bound.minX);
         d.scale(1/v2, 1/v,1);
-        d.drawStringCenter(text(), v2/2, v/4, v/2);
+        d.drawStringCenter(text(), v2/2, v/4, v/2, 0x66000000);
         d.popMatrix();
     }
 

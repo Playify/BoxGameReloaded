@@ -8,9 +8,9 @@ import at.playify.boxgamereloaded.util.Finger;
 
 import java.util.ArrayList;
 
-public class GuiOptions extends Gui {
+public class GuiOptionsPaint extends GuiOptions {
 
-    GuiOptions(BoxGameReloaded game) {
+    GuiOptionsPaint(BoxGameReloaded game) {
         super(game);
     }
 
@@ -20,7 +20,7 @@ public class GuiOptions extends Gui {
         buttons.add(new Button(game) {
             @Override
             public String text() {
-                return "Options Menu";
+                return "Paint Menu";
             }
 
             @Override
@@ -52,15 +52,8 @@ public class GuiOptions extends Gui {
                 return true;
             }
         });
-        buttons.add(new ButtonCredits(game));
-        buttons.add(new ButtonChangelog(game));
-    }
-
-    @Override
-    public boolean click(Finger finger) {
-        if (!super.click(finger)) {
-            game.gui.closeOptions();
-        }
-        return true;
+        buttons.add(new ButtonClipBoard(game,false));
+        buttons.add(new ButtonClipBoard(game,true));
+        buttons.add(new ButtonUpload(game));
     }
 }

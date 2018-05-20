@@ -68,9 +68,9 @@ public class GuiOverlay extends Gui {
         }
         if (!click) {
             float width = game.d.getWidth();
-            if (finger.getX()<width/4) {
+            if (finger.x<width/4) {
                 game.cheatCode('l');
-            } else if (finger.getX()<width/2) {
+            } else if (finger.x<width/2) {
                 game.cheatCode('r');
             }
         }
@@ -95,6 +95,12 @@ public class GuiOverlay extends Gui {
 
     @Override
     public boolean tick() {
+        if (options!=null){
+            boolean draw = game.painter.draw;
+            if (draw!=(options instanceof GuiOptionsPaint)) {
+                options=draw?new GuiOptionsPaint(game):new GuiOptions(game);
+            }
+        }
         boolean freeze = true;
         int size=guis.size();
         for (int i=0;i<size;i++) {

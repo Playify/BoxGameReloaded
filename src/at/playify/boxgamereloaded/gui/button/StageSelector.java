@@ -33,7 +33,7 @@ public class StageSelector extends Button {
         if (main.uiState==0) return false;
         ArrayList<String> list=game.levels.get("list");
         if (list!=null&&!list.isEmpty()) {
-            if (finger.getX()-game.d.getWidth()*3/4f<0) {
+            if (finger.x-game.d.getWidth()*3/4f<0) {
                 int i=list.indexOf(game.vars.stage)-1;
                 if (i<0) i=list.size()-1;
                 game.vars.stage=list.get(i);
@@ -73,7 +73,7 @@ public class StageSelector extends Button {
         d.vertex(game.vertex.arrow,0xFF0000FF,1,.4f);
         d.depth(true);
         d.popMatrix();
-        d.drawStringCenter(game.vars.stage, .5f, v/4, v/2);
+        d.drawStringCenter(game.vars.stage, .5f, v/4, v/2, 0x66000000);
     }
 
     @Override

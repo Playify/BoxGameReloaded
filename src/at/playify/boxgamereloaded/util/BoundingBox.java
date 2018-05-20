@@ -151,6 +151,6 @@ public class BoundingBox {
     }
 
     public boolean isEmpty() {
-        return minX==maxX||minY==maxY;
+        return minX==maxX&&minY==maxY;
     }
 }

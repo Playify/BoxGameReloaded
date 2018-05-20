@@ -26,17 +26,17 @@ public class GuiConnection extends Gui {
         game.d.cube(game.aspectratio/4,.1f,0.01f,game.aspectratio/2,.8f,.01f,0xFF00FFFF);
         game.d.cube(game.aspectratio/4+.02f,.69f,0,game.aspectratio/2-.04f,.11f,.01f,0xFFAAAAAA);
         if (!(game.connection instanceof ConnectionSinglePlayer)){
-            game.d.drawStringCenter("Connected to:",game.aspectratio/2,.8f,.08f);
-            game.d.drawStringCenter(game.connection.getIp(),game.aspectratio/2,.7f,.08f);
+            game.d.drawStringCenter("Connected to:",game.aspectratio/2,.8f,.08f, 0x66000000);
+            game.d.drawStringCenter(game.connection.getIp(),game.aspectratio/2,.7f,.08f, 0x66000000);
         }else if (((ConnectionSinglePlayer) game.connection).isLanWorld()){
-            game.d.drawStringCenter("Lan World:",game.aspectratio/2,.8f,.08f);
-            game.d.drawStringCenter(game.handler.ip(),game.aspectratio/2,.7f,.08f);
+            game.d.drawStringCenter("Lan World:",game.aspectratio/2,.8f,.08f, 0x66000000);
+            game.d.drawStringCenter(game.handler.ip(),game.aspectratio/2,.7f,.08f, 0x66000000);
         }else{
-            game.d.drawStringCenter("SinglePlayer",game.aspectratio/2,.7f,.08f);
+            game.d.drawStringCenter("SinglePlayer",game.aspectratio/2,.7f,.08f, 0x66000000);
         }
         game.d.cube(game.aspectratio*.45f+.01f,.57f,0,game.aspectratio*.3f-.03f,.1f,.01f,0xFFAAAAAA);
         if (game.connection.all!=null) {
-            game.d.drawString("Connected:"+game.connection.all.size(),game.aspectratio*.45f+.03f,.595f,0.05f);
+            game.d.drawString("Connected:"+game.connection.all.size(),game.aspectratio*.45f+.03f,.595f,0.05f, 0x66000000);
         }
         super.draw();
     }

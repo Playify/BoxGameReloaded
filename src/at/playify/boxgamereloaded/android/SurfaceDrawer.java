@@ -463,13 +463,13 @@ public class SurfaceDrawer implements Drawer {
     }
 
     @Override
-    public void drawString(String s, float x, float y, float h) {
-        font.draw(s, x, y, h);
+    public void drawString(String s, float x, float y, float h,int color) {
+        font.draw(s, x, y, h,color);
     }
 
     @Override
-    public void drawStringCenter(String s, float x, float y, float h) {
-        font.drawCenter(s, x, y, h);
+    public void drawStringCenter(String s, float x, float y, float h,int color) {
+        font.drawCenter(s, x, y, h,color);
     }
 
     @Override

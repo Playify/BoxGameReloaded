@@ -29,8 +29,14 @@ public class PacketSetWorld extends Packet {
     @Override
     public void handle(BoxGameReloaded game, ConnectionToServer connectionToServer) {
         game.vars.world=world;
-        if (!world.equals("NONE")&&!world.equals("Lobby")) {
-            game.gui.closeMainMenu();
+        if (world.equals("Lobby")){
+            if (!game.gui.isMainMenuVisible()) game.gui.openMainMenu();
+        }else if (!world.equals("NONE")) {
+            if (game.gui.isMainMenuVisible()) {
+                game.gui.closeMainMenu();
+                game.paused=false;
+                game.pauseLock.unlock();
+            }
             game.vars.lastWorld=world;
         }
     }

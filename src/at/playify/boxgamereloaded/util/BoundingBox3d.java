@@ -170,9 +170,4 @@ public class BoundingBox3d extends BoundingBox {
     public boolean intersects(BoundingBox3d b) {
         return this.intersects(b.minX, b.minY, b.minZ, b.maxX, b.maxY, b.maxZ);
     }
-
-    @Override
-    public boolean isEmpty() {
-        return super.isEmpty()||minZ==maxZ;
-    }
 }

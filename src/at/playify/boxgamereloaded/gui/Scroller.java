@@ -32,16 +32,16 @@ public class Scroller {
             moved=0;
         }
         if (clicked&&((!(gui instanceof GuiMainMenu))||((GuiMainMenu) gui).ui)) {
-            float dx=lastx-finger.getX();
-            float dy=lasty-finger.getY();
+            float dx=lastx-finger.x;
+            float dy=lasty-finger.y;
             scroll+=(dy/game.d.getHeight())*factor;
             if (!ticked){
                 if(scroll<scrollMin)scroll=scrollMin;
                 if(scroll>scrollMax)scroll=scrollMax;
             }
             moved+=dx*dx+dy*dy;
-            lastx=finger.getX();
-            lasty=finger.getY();
+            lastx=finger.x;
+            lasty=finger.y;
             game.pauseLock.unlock();
         }
 
@@ -58,8 +58,8 @@ public class Scroller {
     public boolean click(Finger finger) {
         if (finger.index==0&&finger.down) {
             clicked=true;
-            lasty=finger.getY();
-            lastx=finger.getX();
+            lasty=finger.y;
+            lastx=finger.x;
             moved=0;
         }
         return true;

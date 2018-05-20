@@ -2,6 +2,7 @@ package at.playify.boxgamereloaded.windows;
 
 import at.playify.boxgamereloaded.BoxGameReloaded;
 import at.playify.boxgamereloaded.interfaces.Handler;
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 
 import java.awt.*;
@@ -169,6 +170,11 @@ public class WindowsHandler extends Handler {
         } catch (UnsupportedFlavorException | IOException e) {
             return "";
         }
+    }
+
+    @Override
+    public boolean isScrolling() {
+        return Mouse.isButtonDown(1);
     }
 
 }

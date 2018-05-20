@@ -331,13 +331,9 @@ public class WindowsDrawer implements Drawer {
     //Derzeitige Zeichenposition,Rotation und Skalierung speichern
     @Override
     public void pushMatrix() {
-        try {
-            GL11.glPushMatrix();
+        if (matrix<30) {
             matrix++;
-        }catch (Exception e){
-            e.printStackTrace();
-            System.err.println("Stack Overflow in pushMatrix()");
-            System.exit(GL11.glGetError());
+            GL11.glPushMatrix();
         }
     }
 
@@ -449,14 +445,14 @@ public class WindowsDrawer implements Drawer {
 
     //Zeichne Text auf den Koordinaten x,y mit Höhe h
     @Override
-    public void drawString(String s, float x, float y, float h) {
-        font.draw(s, x, y, h);
+    public void drawString(String s, float x, float y, float h, int color) {
+        font.draw(s, x, y, h, color);
     }
 
     //Zeichne Text zentriert auf den Koordinaten x,y mit Höhe h
     @Override
-    public void drawStringCenter(String s, float x, float y, float h) {
-        font.drawCenter(s, x, y, h);
+    public void drawStringCenter(String s, float x, float y, float h, int color) {
+        font.drawCenter(s, x, y, h,color);
     }
 
     @Override

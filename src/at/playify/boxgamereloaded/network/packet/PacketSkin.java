@@ -12,7 +12,6 @@ public class PacketSkin extends Packet {
     private String player;
     private String skin;
 
-    @SuppressWarnings("unused")
     public PacketSkin(Player p) {
         this.player=p.name();
         this.skin=p.skin();

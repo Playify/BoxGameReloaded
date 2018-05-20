@@ -37,7 +37,7 @@ public class GuiChangelog extends Gui implements Comparator<String> {
         scroller.draw();
         float scroll=scroller.getScroll();
 
-        if (aspect!=game.aspectratio||true) {//TODO
+        if (aspect!=game.aspectratio) {
             aspect=game.aspectratio;
             JSONObject json=game.handler.assetJson("changelog");
             ArrayList<String> keys=new ArrayList<>();
@@ -66,13 +66,13 @@ public class GuiChangelog extends Gui implements Comparator<String> {
                 String s=lst.get(i);
                 if (!s.isEmpty()) {
                     if (s.charAt(0)=='$') {
-                        game.d.drawString(s.substring(1), game.aspectratio/4+.05f, .7f-((i+.5f)-scroll)*.05f*.9f/0.8f, .075f);
+                        game.d.drawString(s.substring(1), game.aspectratio/4+.05f, .7f-((i+.75f)-scroll)*.05f*.9f/0.8f, .075f, 0x66000000);
                     } else {
                         if (s.charAt(0)=='-') {
-                            game.d.drawString("-", game.aspectratio/4+.1f, .7f-((i)-scroll)*.05f*.9f/0.8f, .05f);
+                            game.d.drawString("-", game.aspectratio/4+.1f, .7f-((i)-scroll)*.05f*.9f/0.8f, .05f, 0x66000000);
                             s=s.substring(1);
                         }
-                        game.d.drawString(s, game.aspectratio/4+.15f, .7f-(i-scroll)*.05f*.9f/0.8f, .05f);
+                        game.d.drawString(s, game.aspectratio/4+.15f, .7f-(i-scroll)*.05f*.9f/0.8f, .05f, 0x66000000);
                     }
                 }
             }
@@ -86,7 +86,7 @@ public class GuiChangelog extends Gui implements Comparator<String> {
         game.d.cube(game.aspectratio/4, .235f, 0, game.aspectratio/2, .005f, .005f, 0xFFFFFFFF, true, false, true, false);
         game.d.cube(game.aspectratio*3/4-.005f, .235f, 0, .005f, .525f, .005f, 0xFFFFFFFF, false, true, false, true);
         game.d.cube(game.aspectratio/4, .235f, 0, .005f, .525f, .005f, 0xFFFFFFFF, false, true, false, true);
-        game.d.drawStringCenter("Changelog", game.aspectratio/2, .8f, .08f);
+        game.d.drawStringCenter("Changelog", game.aspectratio/2, .8f, .08f, 0x66000000);
         super.draw();
     }
 
@@ -97,11 +97,11 @@ public class GuiChangelog extends Gui implements Comparator<String> {
 
     @Override
     public int compare(String s1, String s2) {
-        String[] a1=s1.split("."), a2=s2.split(".");
+        String[] a1=s1.split("\\."), a2=s2.split("\\.");
         int ret=a2.length-a1.length;
         if (ret!=0) return ret;
         for (int i=0;i<a1.length;i++) {
-            ret=Integer.compare(Utils.parseInt(a1[i], -1), Utils.parseInt(a2[i], -1));
+            ret=-Integer.compare(Utils.parseInt(a1[i], -1), Utils.parseInt(a2[i], -1));
             if (ret!=0) return ret;
         }
         return s1.compareTo(s2);

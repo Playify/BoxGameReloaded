@@ -24,7 +24,6 @@ public abstract class Handler {
     public abstract void setKeyboardVisible(boolean b);
 
     //Json aus datei lesen
-    //priv wird privat gespeichert (Android) um sicher spielfortschritt speichern zu können
     public JSONObject read(String filename) {
         try {
             File file=new File(baseDir(filename), filename+".json");
@@ -34,7 +33,8 @@ public abstract class Handler {
                 }
             }
             try (Scanner inputStream=new Scanner(file)) {
-                JSONTokener tokener=new JSONTokener(inputStream.useDelimiter("\\Z").next());
+                String s=file.length()==0?"":inputStream.useDelimiter("\\A").next();
+                JSONTokener tokener=new JSONTokener(s);
                 JSONObject json=new JSONObject(tokener);
                 map.put(filename, json);
                 time.put(filename, file.lastModified());
@@ -134,7 +134,7 @@ public abstract class Handler {
         }catch (Exception e){
             System.err.println("Error reading Json:"+s);
             e.printStackTrace();
-            return null;
+            return new JSONObject();
         }
     }
     public String assetString(String s) {
@@ -148,4 +148,5 @@ public abstract class Handler {
 
     public abstract String getClipboard();
 
+    public abstract boolean isScrolling();
 }

@@ -20,6 +20,10 @@ public class CompressionHandler {
     }
 
     public LevelData decompress(String s) {
+        if (!s.startsWith("0")) {
+            System.err.println("Error loading Level: Text is not a LevelData");
+            return null;
+        }
         String version=s.contains(".") ? s.substring(0, s.indexOf('.')) : null;
         if (version==null) {
             return fallback.decompress(s);

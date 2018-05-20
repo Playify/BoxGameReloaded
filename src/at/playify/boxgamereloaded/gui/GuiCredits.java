@@ -42,9 +42,9 @@ public class GuiCredits extends Gui {
                 String s=lst.get(i);
                 if (!s.isEmpty()) {
                     if (s.charAt(0)=='$') {
-                        game.d.drawStringCenter(s.substring(1), game.aspectratio/2, .7f-((i+1)-scroll)*.05f*.9f/0.8f, .1f);
+                        game.d.drawStringCenter(s.substring(1), game.aspectratio/2, .7f-((i+1)-scroll)*.05f*.9f/0.8f, .1f, 0x66000000);
                     } else {
-                        game.d.drawString(s, game.aspectratio/4+.05f, .7f-(i-scroll)*.05f*.9f/0.8f, .05f);
+                        game.d.drawString(s, game.aspectratio/4+.05f, .7f-(i-scroll)*.05f*.9f/0.8f, .05f, 0x66000000);
                     }
                 }
             }
@@ -58,7 +58,7 @@ public class GuiCredits extends Gui {
         game.d.cube(game.aspectratio/4,.235f,0,game.aspectratio/2,.005f,.005f,0xFFFFFFFF,true,false,true,false);
         game.d.cube(game.aspectratio*3/4-.005f,.235f,0,.005f,.525f,.005f,0xFFFFFFFF,false,true,false,true);
         game.d.cube(game.aspectratio/4,.235f,0,.005f,.525f,.005f,0xFFFFFFFF,false,true,false,true);
-        game.d.drawStringCenter("Credits",game.aspectratio/2,.8f,.08f);
+        game.d.drawStringCenter("Credits",game.aspectratio/2,.8f,.08f, 0x66000000);
         super.draw();
     }
 

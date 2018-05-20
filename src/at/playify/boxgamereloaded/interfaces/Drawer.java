@@ -54,9 +54,9 @@ public interface Drawer {
 
     void vertex(float[] vertex, int color, float darken, float alpha);
 
-    void drawString(String s, float x, float y, float h);
+    void drawString(String s, float x, float y, float h, int color);
 
-    void drawStringCenter(String s, float x, float y, float h);
+    void drawStringCenter(String s, float x, float y, float h, int color);
 
     float getStringWidth(String s);
 

@@ -1,6 +1,7 @@
 package at.playify.boxgamereloaded.network.connection;
 
 import at.playify.boxgamereloaded.level.ServerLevel;
+import at.playify.boxgamereloaded.network.LevelHandler;
 import at.playify.boxgamereloaded.network.Server;
 import at.playify.boxgamereloaded.network.packet.*;
 import at.playify.boxgamereloaded.util.bound.RectBound;
@@ -130,31 +131,35 @@ public class ConnectionToClient extends Thread implements Closeable{
     }
 
     private ArrayList<ConnectionToClient> list=new ArrayList<>();
-    public void setWorld(String w) {
-        server.broadcast(new PacketResetPlayersInWorld(this.name), world, this);
-        ServerLevel level=server.getLevel(w);
-        boolean b=false;
-        if (!this.world.equals(w)) {
-            b=true;
-            this.world=w;
-            this.sendPacket(new PacketSetWorld(w));
-            this.sendPacket(new PacketSpawn(level.spawnPoint));
-            bound.set(level.spawnPoint);
-        }
-        server.broadcast(new PacketMove(this), world, this);
-        server.broadcast(new PacketSkin(name, skin), world, this);
-        this.sendPacket(new PacketLevelData(level.toWorldString()));
-        this.sendPacket(new PacketResetPlayersInWorld());
-        server.getByWorld(world, list);
-        list.remove(this);
-        for (int i=list.size()-1;i >= 0;i--) {
-            ConnectionToClient client=list.get(i);
-            System.out.println(bound+" "+client.bound);
-            this.sendPacket(new PacketMove(client));
-            this.sendPacket(new PacketSkin(client.name, client.skin));
-        }
-        if (b) {
-            this.sendPacket(new PacketMove(level.spawnPoint, name));
-        }
+
+    public void setWorld(final String w) {
+        server.levels.getLevel(w, new LevelHandler.Action<ServerLevel>() {
+            @Override
+            public void exec(ServerLevel level) {
+                server.broadcast(new PacketResetPlayersInWorld(name), world, ConnectionToClient.this);
+                boolean b=false;
+                if (!world.equals(w)) {
+                    b=true;
+                    world=w;
+                    sendPacket(new PacketSetWorld(w));
+                    sendPacket(new PacketSpawn(level.spawnPoint));
+                    bound.set(level.spawnPoint);
+                }
+                server.broadcast(new PacketMove(ConnectionToClient.this), world, ConnectionToClient.this);
+                server.broadcast(new PacketSkin(name, skin), world, ConnectionToClient.this);
+                sendPacket(new PacketLevelData(level.toWorldString()));
+                sendPacket(new PacketResetPlayersInWorld());
+                server.getByWorld(world, list);
+                list.remove(ConnectionToClient.this);
+                for (int i=list.size()-1;i >= 0;i--) {
+                    ConnectionToClient client=list.get(i);
+                    sendPacket(new PacketMove(client));
+                    sendPacket(new PacketSkin(client.name, client.skin));
+                }
+                if (b) {
+                    sendPacket(new PacketMove(level.spawnPoint, name));
+                }
+            }
+        });
     }
 }

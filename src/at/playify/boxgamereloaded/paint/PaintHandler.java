@@ -47,23 +47,23 @@ public class PaintHandler extends AbstractList<Paintable> {
             if (down!=(finger.down&&!finger.control)) {
                 down^=true;
                 if (down) {
-                    lx=finger.getX();
-                    ly=finger.getY();
-                    zooming=finger.getX()/game.d.getHeight()<1/7f;
+                    lx=finger.x;
+                    ly=finger.y;
+                    zooming=finger.x/game.d.getHeight()<1/7f;
                 }
             }
             if (down) {
                 if (zooming) {
-                    float zoom=game.zoom*((ly-finger.getY())/game.d.getHeight()+1);
-                    ly=finger.getY();
+                    float zoom=game.zoom*((ly-finger.y)/game.d.getHeight()+1);
+                    ly=finger.y;
                     game.zoom=Utils.clamp(zoom, 0.3f, 5f);
                 } else {
                     float w=game.d.getWidth(), h=game.d.getHeight();
-                    float x=(lx-finger.getX())*game.vars.display_size*game.aspectratio/(w*game.zoom)+game.zoom_x;
-                    float y=-(ly-finger.getY())*game.vars.display_size/(h*game.zoom)+game.zoom_y;
+                    float x=(lx-finger.x)*game.vars.display_size*game.aspectratio/(w*game.zoom)+game.zoom_x;
+                    float y=-(ly-finger.y)*game.vars.display_size/(h*game.zoom)+game.zoom_y;
 
-                    lx=finger.getX();
-                    ly=finger.getY();
+                    lx=finger.x;
+                    ly=finger.y;
 
 
                     game.zoom_x=Utils.clamp(x, 0, game.level.sizeX);
@@ -77,8 +77,8 @@ public class PaintHandler extends AbstractList<Paintable> {
             for (Finger finger : game.fingers) {
                 if (finger.down&&!finger.control) {
                     drawing=true;
-                    float x=(finger.getX()-w/2)*game.vars.display_size*game.aspectratio/(w*game.zoom)+game.zoom_x;
-                    float y=-(finger.getY()-h/2)*game.vars.display_size/(h*game.zoom)+game.zoom_y;
+                    float x=(finger.x-w/2)*game.vars.display_size*game.aspectratio/(w*game.zoom)+game.zoom_x;
+                    float y=-(finger.y-h/2)*game.vars.display_size/(h*game.zoom)+game.zoom_y;
                     draw(x, y, false, finger);
                 }
             }
@@ -104,8 +104,8 @@ public class PaintHandler extends AbstractList<Paintable> {
     public void handleFingerState(Finger finger) {
         if (!game.painter.zoom) {
             float ww=game.d.getWidth(), h=game.d.getHeight();
-            float x=(finger.getX()-ww/2)*game.vars.display_size*game.aspectratio/(ww*game.zoom)+game.zoom_x;
-            float y=-(finger.getY()-h/2)*game.vars.display_size/(h*game.zoom)+game.zoom_y;
+            float x=(finger.x-ww/2)*game.vars.display_size*game.aspectratio/(ww*game.zoom)+game.zoom_x;
+            float y=-(finger.y-h/2)*game.vars.display_size/(h*game.zoom)+game.zoom_y;
             draw(x, y, true, finger);
         }
     }

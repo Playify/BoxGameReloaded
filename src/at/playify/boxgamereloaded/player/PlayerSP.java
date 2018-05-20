@@ -55,7 +55,7 @@ public class PlayerSP extends Player {
                 float w=game.d.getWidth();
                 for (Finger finger : game.fingers) {
                     if (finger.down&&!finger.control) {
-                        float x=finger.getX()/w;
+                        float x=finger.x/w;
                         if (x<0.25) left=true;
                         else if (x<0.5) right=true;
                         else jump=true;
