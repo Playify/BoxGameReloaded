@@ -10,6 +10,7 @@ import org.json.JSONObject;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class VariableContainer {
     public final Loader loader=new Loader();
@@ -58,10 +59,16 @@ public class VariableContainer {
             game.player.skin(s);
         }
     };
-    @ConfigValue public String lastWorld;
-    @ConfigValue public String stage;
-    @ConfigValue public String lastversion;
-    @ConfigValue public ArrayList<String> eggs=new ArrayList<>();
+    @ConfigValue
+    public String lastWorld;
+    @ConfigValue
+    public String stage;
+    @ConfigValue
+    public String lastversion;
+    @ConfigValue
+    public ArrayList<String> eggs=new ArrayList<>(Arrays.asList("cube"));
+    @ConfigValue
+    public boolean blockdata;
 
     public VariableContainer(Game game) {
         this.game=(BoxGameReloaded) game;
@@ -80,6 +87,10 @@ public class VariableContainer {
         public boolean drawback;//Rückseite von Würfeln zeichnen
         @ConfigValue
         public boolean console;
+        @ConfigValue
+        public boolean paint;
+        @ConfigValue
+        public boolean text;
     }
 
     public class Checkpoint {
@@ -102,10 +113,10 @@ public class VariableContainer {
             game.player.motionY=0;
             game.player.bound.set(bound);
             if (keys.length!=vars.keys.length) keys=new boolean[keys.length];
-            System.arraycopy(keys,0,vars.keys,0,keys.length);
+            System.arraycopy(keys, 0, vars.keys, 0, keys.length);
             for (Block block : game.blocks.list) {
                 if (block instanceof NoCollideable) {
-                    ((NoCollideable) block).onNoCollide(game.player,game.level);
+                    ((NoCollideable) block).onNoCollide(game.player, game.level);
                 }
             }
         }
@@ -117,7 +128,14 @@ public class VariableContainer {
             jumps=game.player.jumps;
             bound.set(spawnPoint);
             if (keys.length!=vars.keys.length) keys=new boolean[vars.keys.length];
-            System.arraycopy(vars.keys,0,keys,0,keys.length);
+            System.arraycopy(vars.keys, 0, keys, 0, keys.length);
+        }
+
+        public void move(int x, int y) {
+            bound.move(x, y);
+        }
+        public void shift(int x, int y,int sizeX,int sizeY) {
+            bound.shift(x, y,sizeX,sizeY);
         }
     }
 
@@ -161,7 +179,7 @@ public class VariableContainer {
                             }
                         }
                     } catch (JSONException|IllegalAccessException e) {
-                        System.err.println(e.getClass().getSimpleName()+" trying to read Config var:"+field.getName()+" in json:"+json);
+                        game.logger.error(e.getClass().getSimpleName()+" trying to read Config var:"+field.getName()+" in json:"+json);
                     }
                 }
             }
@@ -196,7 +214,7 @@ public class VariableContainer {
                             save(field.get(o), json.getJSONObject(name));
                         }
                     } catch (JSONException|IllegalAccessException e) {
-                        System.err.println(e.getClass().getSimpleName()+" trying to save Config var:"+field.getName()+" in json:"+json);
+                        game.logger.error(e.getClass().getSimpleName()+" trying to save Config var:"+field.getName()+" in json:"+json);
                     }
                 }
             }

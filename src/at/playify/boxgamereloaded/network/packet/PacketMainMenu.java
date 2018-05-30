@@ -2,10 +2,10 @@ package at.playify.boxgamereloaded.network.packet;
 
 import at.playify.boxgamereloaded.BoxGameReloaded;
 import at.playify.boxgamereloaded.gui.GuiMainMenu;
-import at.playify.boxgamereloaded.network.LevelHandler;
 import at.playify.boxgamereloaded.network.Server;
 import at.playify.boxgamereloaded.network.connection.ConnectionToClient;
 import at.playify.boxgamereloaded.network.connection.ConnectionToServer;
+import at.playify.boxgamereloaded.util.Action;
 
 import java.util.ArrayList;
 
@@ -98,7 +98,7 @@ public class PacketMainMenu extends Packet {
     public void handle(final Server server, final ConnectionToClient connectionToClient) {
         server.levels.markDirty();
         if (name==null) {
-            server.levels.getStages(new LevelHandler.Action<ArrayList<String>>(){
+            server.levels.getStages(new Action<ArrayList<String>>(){
 
                 @Override
                 public void exec(ArrayList<String> strings) {
@@ -108,7 +108,7 @@ public class PacketMainMenu extends Packet {
                     for (String s : strings) {
                         final PacketMainMenu packet=new PacketMainMenu();
                         packet.name=s;
-                        server.levels.getLevels(s,new LevelHandler.Action<ArrayList<String>>() {
+                        server.levels.getLevels(s,new Action<ArrayList<String>>() {
                             @Override
                             public void exec(ArrayList<String> strings) {
                                 packet.list=strings;
@@ -119,7 +119,7 @@ public class PacketMainMenu extends Packet {
                 }
             });
         } else {
-            server.levels.getLevels(name,new LevelHandler.Action<ArrayList<String>>() {
+            server.levels.getLevels(name,new Action<ArrayList<String>>() {
                 @Override
                 public void exec(ArrayList<String> strings) {
                     list=strings;

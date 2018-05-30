@@ -65,7 +65,6 @@ public class GameView extends GLSurfaceView implements GLSurfaceView.Renderer, V
                     a.game.fingers[i].down=false;
                 }
                 if (a.game.fingers[i].down!=d) {
-                    System.out.println("CHANGED");
                     a.game.fingerStateChanged(a.game.fingers[i]);
                 }
             }

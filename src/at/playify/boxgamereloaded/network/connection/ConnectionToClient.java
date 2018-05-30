@@ -1,9 +1,9 @@
 package at.playify.boxgamereloaded.network.connection;
 
 import at.playify.boxgamereloaded.level.ServerLevel;
-import at.playify.boxgamereloaded.network.LevelHandler;
 import at.playify.boxgamereloaded.network.Server;
 import at.playify.boxgamereloaded.network.packet.*;
+import at.playify.boxgamereloaded.util.Action;
 import at.playify.boxgamereloaded.util.bound.RectBound;
 
 import java.io.*;
@@ -16,6 +16,7 @@ public class ConnectionToClient extends Thread implements Closeable{
     protected final Server server;
     public String skin;
     public Socket socket;
+    public String version;
     private BufferedReader in;
     private PrintStream out;
     private boolean closed;
@@ -112,19 +113,19 @@ public class ConnectionToClient extends Thread implements Closeable{
                         packet.loadFromString(i == -1 ? "" : s.substring(i + 1), server);
                         packet.handle(server, this);
                     } catch (ClassNotFoundException cls) {
-                        System.err.println("Unknown Packet received: " + packetName);
+                        server.logger.error("Unknown Packet received: " + packetName);
                     } catch (ClassCastException cls) {
-                        System.err.println("Wrong Packet received: " + packetName);
+                        server.logger.error("Wrong Packet received: " + packetName);
                     }
                 }catch (Exception e){
                     e.printStackTrace();
                 }
             }
         } catch (SocketException e) {
-            System.err.println("Connection lost to Player \""+name+"\" Reason: "+e.getMessage());
+            server.logger.error("Connection lost to Player \""+name+"\" Reason: "+e.getMessage());
             close();
         }catch (Exception e) {
-            System.err.println("Error in ConnectionToClient");
+            server.logger.error("Error in ConnectionToClient");
             e.printStackTrace();
             close();
         }
@@ -133,7 +134,7 @@ public class ConnectionToClient extends Thread implements Closeable{
     private ArrayList<ConnectionToClient> list=new ArrayList<>();
 
     public void setWorld(final String w) {
-        server.levels.getLevel(w, new LevelHandler.Action<ServerLevel>() {
+        server.levels.getLevel(w, new Action<ServerLevel>() {
             @Override
             public void exec(ServerLevel level) {
                 server.broadcast(new PacketResetPlayersInWorld(name), world, ConnectionToClient.this);

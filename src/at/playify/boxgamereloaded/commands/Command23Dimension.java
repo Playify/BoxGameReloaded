@@ -10,7 +10,7 @@ public class Command23Dimension extends Command {
         }else if (cmd.equals("3d")){
             game.vars.cubic=true;
         }else{
-            System.err.println("How did you do that? Only \"2d\" and \"3d\" command can be executed here");
+            game.logger.error("How did you do that? Only \"2d\" and \"3d\" command can be executed here");
         }
         game.vars.loader.save();
     }

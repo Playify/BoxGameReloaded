@@ -7,10 +7,13 @@ import at.playify.boxgamereloaded.level.compress.LevelData;
 import at.playify.boxgamereloaded.network.Server;
 import at.playify.boxgamereloaded.util.bound.RectBound;
 
+import java.util.ArrayList;
+
 public class ServerLevel {
-    int sizeX, sizeY;
-    char[] blocks;
-    int[] metas;
+    public int sizeX;
+    public int sizeY;
+    public char[] blocks;
+    public int[] metas;
     public final RectBound spawnPoint=new RectBound(.1f, 0, .8f, .8f);
     protected Server server;
 

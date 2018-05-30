@@ -1,7 +1,8 @@
-package at.playify.boxgamereloaded.gui.button;
+package at.playify.boxgamereloaded.gui.button.options;
 
 import at.playify.boxgamereloaded.BoxGameReloaded;
 import at.playify.boxgamereloaded.gui.GuiCredits;
+import at.playify.boxgamereloaded.gui.button.Button;
 import at.playify.boxgamereloaded.util.BoundingBox3d;
 import at.playify.boxgamereloaded.util.Finger;
 
@@ -17,7 +18,7 @@ public class ButtonCredits extends Button {
 
     @Override
     public BoundingBox3d bound() {
-        bound.set(.25f, .45f, -.05f, game.aspectratio/2-0.025f, .55f, 0);
+        bound.set(game.aspectratio/2+0.025f, .25f, -.05f,game.aspectratio-.25f , .35f, 0);
         return bound;
     }
 

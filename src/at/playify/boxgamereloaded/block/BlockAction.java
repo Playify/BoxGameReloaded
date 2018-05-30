@@ -8,7 +8,7 @@ import at.playify.boxgamereloaded.util.Borrow;
 import java.util.ArrayList;
 
 public class BlockAction extends BlockDebug implements NoCollideable{
-    public static final char chr='i';
+    public static final char chr='u';
     private boolean collided;
 
     BlockAction(BoxGameReloaded game, char c) {

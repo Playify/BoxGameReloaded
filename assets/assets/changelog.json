@@ -7,6 +7,12 @@
     "Bugfixes"
   ],
   "0.0.7":[
-    "Download Levels"
+    "Upload Levels",
+    "Download Levels",
+    "Gui verbessert",
+    "Leiter verbessert",
+    "Größe von Level\nsind nun veränderbar",
+    "Rückgängig Knopf",
+    "Bugfixes"
   ]
 }

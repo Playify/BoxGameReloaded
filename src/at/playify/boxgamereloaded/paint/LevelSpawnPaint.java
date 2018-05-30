@@ -40,4 +40,9 @@ public class LevelSpawnPaint implements Paintable {
     public boolean canDraw() {
         return true;
     }
+
+    @Override
+    public boolean history() {
+        return true;
+    }
 }

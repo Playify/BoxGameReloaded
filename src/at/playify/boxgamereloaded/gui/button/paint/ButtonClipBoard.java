@@ -1,6 +1,7 @@
-package at.playify.boxgamereloaded.gui.button;
+package at.playify.boxgamereloaded.gui.button.paint;
 
 import at.playify.boxgamereloaded.BoxGameReloaded;
+import at.playify.boxgamereloaded.gui.button.Button;
 import at.playify.boxgamereloaded.network.packet.PacketLevelData;
 import at.playify.boxgamereloaded.network.packet.PacketSpawn;
 import at.playify.boxgamereloaded.util.BoundingBox3d;
@@ -22,9 +23,9 @@ public class ButtonClipBoard extends Button {
     @Override
     public BoundingBox3d bound() {
         if (variant) {
-            bound.set(.25f, .25f, -.05f, game.aspectratio/2-0.025f, .4f, 0);
+            bound.set(game.aspectratio/2+0.025f, .4f, -.05f, game.aspectratio-.25f, .5f, 0);
         }else{
-            bound.set(game.aspectratio/2+0.025f, .25f, -.05f, game.aspectratio-.25f, .4f, 0);
+            bound.set(game.aspectratio/2+0.025f, .25f, -.05f, game.aspectratio-.25f, .35f, 0);
         }
         return bound;
     }
@@ -34,15 +35,16 @@ public class ButtonClipBoard extends Button {
         try {
             if (variant) {
                 game.handler.setClipboard(game.level.toWorldString());
-                System.out.println("Copied Level");
+                game.logger.show("Copied Level");
             } else {
+                game.level.saveHistory();
                 game.level.loadWorldString(game.handler.getClipboard());
                 game.connection.sendPacket(new PacketLevelData(game.level.toWorldString()));
                 game.connection.sendPacket(new PacketSpawn(game.level.spawnPoint));
-                System.out.println("Pasted Level");
+                game.logger.show("Pasted Level");
             }
         }catch (Exception e){
-            System.err.println("Error "+(variant?"copying":"pasting")+" LevelData");
+            game.logger.error("Error "+(variant?"copying":"pasting")+" LevelData");
         }
         return true;
     }

@@ -2,6 +2,8 @@ package at.playify.boxgamereloaded.gui;
 
 import at.playify.boxgamereloaded.BoxGameReloaded;
 import at.playify.boxgamereloaded.gui.button.*;
+import at.playify.boxgamereloaded.gui.button.options.ConsoleButton;
+import at.playify.boxgamereloaded.gui.button.paint.*;
 import at.playify.boxgamereloaded.interfaces.Drawer;
 import at.playify.boxgamereloaded.util.BoundingBox3d;
 import at.playify.boxgamereloaded.util.Finger;
@@ -9,6 +11,7 @@ import at.playify.boxgamereloaded.util.Finger;
 import java.util.ArrayList;
 
 public class GuiOptionsPaint extends GuiOptions {
+    public int variant;
 
     GuiOptionsPaint(BoxGameReloaded game) {
         super(game);

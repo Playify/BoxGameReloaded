@@ -28,7 +28,7 @@ public class PacketKick extends Packet {
     @Override
     public void handle(BoxGameReloaded game, ConnectionToServer connectionToServer) {
         connectionToServer.close();
-        System.out.println("Kicked from Server (Reason:"+msg+")");
+        game.logger.show("Kicked from Server (Reason:"+msg+")");
     }
 
     @Override

@@ -31,6 +31,7 @@ public class Blocks {
     public BlockAction ACTION;
     public BlockGlitch GLITCH;
     public BlockEasterEgg EGG;
+    public BlockIconDrawButton ICON;
 
     //Block anhand des Zeichens bekommen
     public Block get(char c) {
@@ -61,6 +62,7 @@ public class Blocks {
         ACTION=new BlockAction(game, BlockAction.chr);
         GLITCH=new BlockGlitch(game, BlockGlitch.chr);
         EGG=new BlockEasterEgg(game, BlockEasterEgg.chr);
+        ICON=new BlockIconDrawButton(game, BlockIconDrawButton.chr);
 
     }
 }

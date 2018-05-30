@@ -33,14 +33,29 @@ public class BlockLadder extends Block implements Collideable{
 
     @Override
     public void draw(int x, int y, Level level) {
-        if (game.vars.cubic) {
-            if (game.vars.cubic_check) {
-                game.d.cube(x, y, 0, 1, 1, 1, 0xFFA8A346, !level.get(x, y + 1).isSolid(), !level.get(x + 1, y).isSolid(), !level.get(x, y - 1).isSolid(), !level.get(x - 1, y).isSolid());
-            }else{
-                game.d.cube(x, y, 0, 1, 1, 1, 0xFFA8A346);
-            }
-        }else {
-            game.d.rect(x, y, 1, 1,0xFFA8A346);
+        game.d.pushMatrix();
+        game.d.translate(x+.5f,y,0);
+        game.d.scale(1/8f);
+
+        Block l=level.get(x-1, y,game.blocks.GROUND);
+        Block r=level.get(x+1, y,game.blocks.GROUND);
+        boolean left=l instanceof BlockGround;
+        boolean right=r instanceof BlockGround;
+        left|=l instanceof BlockLadder;
+        right|=r instanceof BlockLadder;
+        if (left&&right)left=right=false;
+        game.d.cube(left?-4:-3,0,0,left||right?7:6,8,8,0xFFFFFF00);
+        if (!left&&!right)left=right=true;
+        drawSide(left);
+        game.d.scale(-1,1,1);
+        drawSide(right);
+        game.d.popMatrix();
+    }
+
+    private void drawSide(boolean b) {
+        if (b) {
+            game.d.cube(3,1,.5f,1,2,7,0xFFA8A346,true,true,true,false);
+            game.d.cube(3,5,.5f,1,2,7,0xFFA8A346,true,true,true,false);
         }
     }
 
@@ -57,6 +72,6 @@ public class BlockLadder extends Block implements Collideable{
 
     @Override
     public String name(int data) {
-        return "Ladder [WIP]";
+        return "Ladder";
     }
 }

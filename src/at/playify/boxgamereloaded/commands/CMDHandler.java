@@ -28,6 +28,7 @@ public class CMDHandler {
             commands.put("3d", commands.get("2d"));
             commands.put("size", new CommandSize());
             commands.put("shift", new CommandShift());
+            commands.put("name", new CommandName());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -91,10 +92,10 @@ public class CMDHandler {
     }
 
     public void error(String s) {
-        System.err.println(s);
+        game.logger.error(s);
     }
 
     public void display(String s) {
-        System.out.println(s);
+        game.logger.show(s);
     }
 }

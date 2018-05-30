@@ -32,6 +32,7 @@ public class PacketResetPlayersInWorld extends Packet {
         synchronized (connectionToServer.playerLock){
             if (player==null) {
                 connectionToServer.players= new PlayerMP[0];
+                game.level.clearHistory();
             }else{
                 PlayerMP[] players = connectionToServer.players;
                 boolean rem=false;

@@ -87,7 +87,7 @@ public class BlockTeleporter extends Block implements Collideable, NoCollideable
     public boolean onCollide(PlayerSP player, Level level, int meta, ArrayList<Borrow.BorrowedCollisionData> data) {
         if (!collided) {
             Borrow.BorrowedCollisionData col=null;
-            for (int i=0;i<data.size();i++) {
+            for (int i=data.size()-1;i >= 0;i--) {
                 Borrow.BorrowedCollisionData borrowedCollisionData=data.get(i);
                 if (borrowedCollisionData.blk==this&&borrowedCollisionData.meta==meta) {
                     col=borrowedCollisionData;

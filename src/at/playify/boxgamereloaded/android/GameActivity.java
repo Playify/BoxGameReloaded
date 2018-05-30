@@ -33,7 +33,7 @@ public class GameActivity extends Activity {
     public BoxGameReloaded game;
     public AndroidHandler handler=new AndroidHandler(this);
     boolean doubleBackToExitPressedOnce=false;
-    private GLSurfaceView view;
+    public GLSurfaceView view;
     private Handler osHandler=new Handler();
 
     @Override
@@ -42,6 +42,7 @@ public class GameActivity extends Activity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        getWindow().addFlags(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)==PackageManager.PERMISSION_GRANTED) {
             checkUpdate();
@@ -104,6 +105,7 @@ public class GameActivity extends Activity {
                     });
                 } catch (IOException e) {
                     e.printStackTrace();
+                    handler.logger.error("Unable to check for Updates:"+e.getClass().getSimpleName());
                 }
             }
         }.start();
@@ -169,7 +171,6 @@ public class GameActivity extends Activity {
         if (event.getRepeatCount()!=0) {
             return true;
         }
-        System.out.println(event);
         int unicodeChar=event.getUnicodeChar();
         game.setKey(convert(event.getKeyCode()), event.getAction()==KeyEvent.ACTION_DOWN);
         if (keyCode==KeyEvent.KEYCODE_BACK) {

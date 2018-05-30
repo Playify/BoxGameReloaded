@@ -100,7 +100,7 @@ public class Main {
         try {
             game.draw();
         } catch (Exception e) {
-            System.err.println("Drawing Error");
+            game.logger.error("Drawing Error");
             e.printStackTrace();
         }
         try {
@@ -127,7 +127,7 @@ public class Main {
             int wheel=Mouse.getDWheel();
             game.scroll(wheel);
         } catch (Exception e) {
-            System.err.println("Input Exception");
+            game.logger.error("Input Exception");
             e.printStackTrace();
         }
     }

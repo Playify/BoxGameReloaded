@@ -1,6 +1,7 @@
 package at.playify.boxgamereloaded.interfaces;
 
 import at.playify.boxgamereloaded.BoxGameReloaded;
+import at.playify.boxgamereloaded.Logger;
 import at.playify.boxgamereloaded.TickThread;
 import at.playify.boxgamereloaded.block.Blocks;
 import at.playify.boxgamereloaded.level.Level;
@@ -19,8 +20,10 @@ public abstract class Game {
     public Level level;
     public Blocks blocks;
     public boolean paused;
+    public final Logger logger;
 
     public Game(Handler handler){
+        logger=handler.logger;
         this.handler=handler;
     }
 
@@ -74,9 +77,10 @@ public abstract class Game {
         }
         String s = str.toString();
         if (s.endsWith(konami)) {
-            ((BoxGameReloaded) this).vars.debug.console^=true;
+            VariableContainer.Debug debug=((BoxGameReloaded) this).vars.debug;
+            debug.console^=true;
             ((BoxGameReloaded) this).vars.loader.save();
-            System.out.println("Console activated");
+            ((BoxGameReloaded)this).logger.show("Console "+(debug.console?"activated":"deactivated"));
             str.setLength(0);
         }
     }

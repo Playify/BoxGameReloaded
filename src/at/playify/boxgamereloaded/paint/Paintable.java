@@ -10,4 +10,6 @@ public interface Paintable {
     void paint(float x, float y, boolean click, Finger finger);
 
     boolean canDraw();
+
+    boolean history();
 }

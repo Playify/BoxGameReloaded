@@ -8,7 +8,7 @@ import at.playify.boxgamereloaded.network.connection.stream.PipedOutputStream;
 import java.io.*;
 
 
-//Verbindung zum SinglePlayer Server [WIP]
+//Verbindung zum SinglePlayer Server
 @SuppressWarnings("WeakerAccess")
 public class ConnectionSinglePlayer extends ConnectionToServer implements Closeable {
 

@@ -1,6 +1,7 @@
-package at.playify.boxgamereloaded.gui.button;
+package at.playify.boxgamereloaded.gui.button.main;
 
 import at.playify.boxgamereloaded.BoxGameReloaded;
+import at.playify.boxgamereloaded.gui.button.Button;
 import at.playify.boxgamereloaded.gui.connect.GuiConnection;
 import at.playify.boxgamereloaded.interfaces.Drawer;
 import at.playify.boxgamereloaded.util.BoundingBox3d;

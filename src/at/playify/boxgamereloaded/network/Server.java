@@ -1,13 +1,11 @@
 package at.playify.boxgamereloaded.network;
 
+import at.playify.boxgamereloaded.Logger;
 import at.playify.boxgamereloaded.interfaces.Handler;
 import at.playify.boxgamereloaded.level.compress.CompressionHandler;
 import at.playify.boxgamereloaded.network.connection.ConnectionToClient;
 import at.playify.boxgamereloaded.network.packet.Packet;
 import at.playify.boxgamereloaded.network.packet.PacketAllPlayers;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.BindException;
@@ -19,7 +17,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 //Server wird auch für SinglePlayer benutzt
 public class Server implements Runnable{
-    public CompressionHandler compresser=new CompressionHandler();
+    public Logger logger=new Logger();
+    public CompressionHandler compresser=new CompressionHandler(logger);
     public boolean pauseForSingleUser=true;
     public LevelHandler levels;
     private ConnectionList connected=new ConnectionList();
@@ -55,7 +54,7 @@ public class Server implements Runnable{
             try {
                 socket=new ServerSocket(45565);
             }catch (BindException e){
-                System.err.println("Error starting Server");
+                logger.error("Error starting Server");
                 return;
             }
             while (true) {

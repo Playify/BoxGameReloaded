@@ -91,4 +91,9 @@ public class PlayPaint implements Paintable {
     public boolean canDraw() {
         return true;
     }
+
+    @Override
+    public boolean history() {
+        return false;
+    }
 }

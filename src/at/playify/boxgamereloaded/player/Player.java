@@ -15,7 +15,7 @@ public abstract class Player implements Paintable {
     public float motionY;
     private final Object tailLock=new Object();
     private final BoundingBox3d drawbound=new BoundingBox3d(0, 0, 0, 0, 0, 0);
-    String display;
+    public String display;
 
     public final RectBound bound = new RectBound(0, 0, 0.8f, 0.8f);
     Player(BoxGameReloaded game) {
@@ -119,4 +119,9 @@ public abstract class Player implements Paintable {
 
     //Spielername
     public abstract String name();
+
+    @Override
+    public boolean history() {
+        return false;
+    }
 }

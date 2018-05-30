@@ -2,9 +2,9 @@ package at.playify.boxgamereloaded.gui;
 
 import at.playify.boxgamereloaded.BoxGameReloaded;
 import at.playify.boxgamereloaded.gui.button.Button;
-import at.playify.boxgamereloaded.gui.button.PaintButton;
-import at.playify.boxgamereloaded.gui.button.PaintSelectButton;
-import at.playify.boxgamereloaded.gui.button.PaintZoomButton;
+import at.playify.boxgamereloaded.gui.button.paint.PaintButton;
+import at.playify.boxgamereloaded.gui.button.paint.PaintSelectButton;
+import at.playify.boxgamereloaded.gui.button.paint.PaintZoomButton;
 import at.playify.boxgamereloaded.util.BoundingBox3d;
 import at.playify.boxgamereloaded.util.Finger;
 
@@ -12,7 +12,6 @@ import java.util.ArrayList;
 
 public class GuiDraw extends Gui {
     public float state;
-    public boolean zoom;
     private PaintButton paintButton;
     private PaintZoomButton paintZoomButton;
 
@@ -31,18 +30,18 @@ public class GuiDraw extends Gui {
 
     @Override
     public boolean click(Finger finger) {
+        if (game.gui.isMainMenuVisible()) return false;
         float x=finger.x/game.d.getHeight(), y=1-finger.y/game.d.getHeight();
         if (paintButton.bound().contains(x, y)&&paintButton.click(finger)) {
+            paintButton.onClick();
             return true;
         }
         if (paintZoomButton.bound().contains(x, y)&&paintZoomButton.click(finger)) {
+            paintZoomButton.onClick();
             return true;
         }
-        if (game.gui.isMainMenuVisible())return false;
         return super.click(finger);
     }
-
-
 
     @Override
     public void draw() {

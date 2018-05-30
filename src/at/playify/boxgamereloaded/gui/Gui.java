@@ -46,6 +46,7 @@ public abstract class Gui {
             BoundingBox3d bound=button.bound();
             if (bound.contains(x, y)) {
                 if (button.click(finger)) {
+                    button.onClick();
                     return true;
                 }
             }
@@ -75,6 +76,7 @@ public abstract class Gui {
             BoundingBox3d bound=button.bound();
             if (bound.contains(x, y)) {
                 if (button.click(finger)) {
+                    button.onClick();
                     return true;
                 }
             }

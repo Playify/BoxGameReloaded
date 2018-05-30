@@ -2,10 +2,10 @@ package at.playify.boxgamereloaded.network.packet;
 
 import at.playify.boxgamereloaded.BoxGameReloaded;
 import at.playify.boxgamereloaded.level.ServerLevel;
-import at.playify.boxgamereloaded.network.LevelHandler;
 import at.playify.boxgamereloaded.network.Server;
 import at.playify.boxgamereloaded.network.connection.ConnectionToClient;
 import at.playify.boxgamereloaded.network.connection.ConnectionToServer;
+import at.playify.boxgamereloaded.util.Action;
 import at.playify.boxgamereloaded.util.Utils;
 import at.playify.boxgamereloaded.util.bound.RectBound;
 
@@ -95,7 +95,7 @@ public class PacketSpawn extends Packet {
 
     @Override
     public void handle(final Server server, final ConnectionToClient connectionToClient) {
-        server.levels.getLevel(connectionToClient.world, new LevelHandler.Action<ServerLevel>() {
+        server.levels.getLevel(connectionToClient.world, new Action<ServerLevel>() {
             @Override
             public void exec(ServerLevel level) {
                 RectBound spawnPoint=level.spawnPoint;

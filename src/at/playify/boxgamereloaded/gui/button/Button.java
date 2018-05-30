@@ -8,6 +8,7 @@ import at.playify.boxgamereloaded.util.Finger;
 public abstract class Button implements Comparable<Button> {
     protected final BoxGameReloaded game;
     protected final BoundingBox3d bound=new BoundingBox3d(0, 0, 0, 0, 0, 0);
+    private long time;
 
     public Button(BoxGameReloaded game) {
         this.game = game;
@@ -16,7 +17,8 @@ public abstract class Button implements Comparable<Button> {
     public abstract String text();
 
     public int color() {
-        return 0xFF005C7A;
+        if (time<System.currentTimeMillis()) return 0xFF004A60;
+        else return 0xFF005C7A;
     }
 
     public abstract BoundingBox3d bound();
@@ -43,5 +45,9 @@ public abstract class Button implements Comparable<Button> {
     //d.h. während animation false zurückgeben
     public boolean tick() {
         return true;
+    }
+
+    public void onClick() {
+        time=System.currentTimeMillis()+50;
     }
 }

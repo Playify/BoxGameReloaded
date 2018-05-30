@@ -4,42 +4,38 @@ import at.playify.boxgamereloaded.BoxGameReloaded;
 import at.playify.boxgamereloaded.network.Server;
 import at.playify.boxgamereloaded.network.connection.ConnectionToClient;
 import at.playify.boxgamereloaded.network.connection.ConnectionToServer;
-import at.playify.boxgamereloaded.util.Action;
 
-public class PacketFinish extends Packet {
+public class PacketVersion extends Packet {
+    public String name;
+
     @Override
     public String convertToString(BoxGameReloaded game) {
-        return "";
+        return game.handler.version();
     }
 
     @Override
     public void loadFromString(String s, BoxGameReloaded game) {
-
+        name=s;
     }
 
     @Override
     public void handle(BoxGameReloaded game, ConnectionToServer connectionToServer) {
-
+        name=game.handler.version();
+        connectionToServer.sendPacket(this);
     }
 
     @Override
     public String convertToString(Server server, ConnectionToClient client) {
-        return "";
+        return server.handler.version();
     }
 
     @Override
     public void loadFromString(String s, Server server) {
-
+        name=s;
     }
 
     @Override
-    public void handle(Server server, final ConnectionToClient connectionToClient) {
-        server.levels.getNext(connectionToClient.world,new Action<String>(){
-
-            @Override
-            public void exec(String s) {
-                connectionToClient.setWorld(s);
-            }
-        });
+    public void handle(Server server, ConnectionToClient connectionToClient) {
+        connectionToClient.version=name;
     }
 }

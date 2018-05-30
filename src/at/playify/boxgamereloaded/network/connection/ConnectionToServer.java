@@ -41,7 +41,7 @@ public class ConnectionToServer implements Closeable,Runnable {
             in=new BufferedReader(new InputStreamReader(socket.getInputStream()));
             out=new PrintStream(socket.getOutputStream());
         } catch (IOException e) {
-            System.err.println(e.getClass().getSimpleName()+":"+e.getMessage());
+            game.logger.error(e.getClass().getSimpleName()+":"+e.getMessage());
             closed=true;
             return;
         }
@@ -76,6 +76,7 @@ public class ConnectionToServer implements Closeable,Runnable {
 
     public void sendPacketSoon(Packet packet) {
         q.add(packet);
+        game.pauseLock.unlock();
     }
 
     public boolean isClosed() {
@@ -137,13 +138,13 @@ public class ConnectionToServer implements Closeable,Runnable {
                         packet.loadFromString(i==-1 ? "" : s.substring(i+1), game);
                         packet.handle(game, ConnectionToServer.this);
                     } catch (ClassNotFoundException cls) {
-                        System.err.println("Unknown Packet received: "+packetName);
+                        game.logger.error("Unknown Packet received: "+packetName);
                     } catch (ClassCastException cls) {
-                        System.err.println("Wrong Packet received: "+packetName);
+                        game.logger.error("Wrong Packet received: "+packetName);
                     }
                 }catch (InstantiationException e){
                     if (e.getCause() instanceof NoSuchMethodException) {
-                        System.err.println("No Constructor available.");
+                        game.logger.error("No Constructor available.");
                         Game.report(e);
                     }
                 }catch (Exception e){
@@ -151,10 +152,10 @@ public class ConnectionToServer implements Closeable,Runnable {
                 }
             }
         } catch (SocketException e) {
-            System.err.println("Connection to Server Closed: "+e.getMessage());
+            game.logger.error("Connection to Server Closed: "+e.getMessage());
             close();
         }catch (Exception e) {
-            System.err.println("Error in " + getClass().getSimpleName());
+            game.logger.error("Error in " + getClass().getSimpleName());
             Game.report(e);
             close();
         }

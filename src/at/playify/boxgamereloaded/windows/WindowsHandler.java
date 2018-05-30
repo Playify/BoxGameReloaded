@@ -2,6 +2,7 @@ package at.playify.boxgamereloaded.windows;
 
 import at.playify.boxgamereloaded.BoxGameReloaded;
 import at.playify.boxgamereloaded.interfaces.Handler;
+import at.playify.boxgamereloaded.util.Action;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 
@@ -10,6 +11,8 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.*;
@@ -79,7 +82,7 @@ public class WindowsHandler extends Handler {
 
 
             } else {
-                System.err.println("Error initializing Server");
+                game.logger.error("Error initializing Server");
                 external=false;
                 setKeyboardVisible(true);
                 external=true;
@@ -177,4 +180,66 @@ public class WindowsHandler extends Handler {
         return Mouse.isButtonDown(1);
     }
 
+    @Override
+    public void keybd(String title, boolean pw, String preEnteredText, final Action.Bool<String> action) {
+        final Dialog dialog=new Dialog((Window) null, title);
+        final TextField text=new TextField();
+        text.setFont(new Font(null,Font.PLAIN,30));
+        text.setText(preEnteredText);
+        text.setCaretPosition(preEnteredText.length());
+        if (pw) {
+            text.setEchoChar('\u2022');
+        }
+        text.setColumns(40);
+        text.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (action.exec(text.getText())) {
+                    dialog.setVisible(false);
+                }
+            }
+        });
+
+        dialog.add(text);
+        dialog.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowClosing(WindowEvent e) {
+                dialog.setVisible(false);
+            }
+
+            @Override
+            public void windowClosed(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowIconified(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowDeiconified(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowActivated(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowDeactivated(WindowEvent e) {
+
+            }
+        });
+        dialog.setAlwaysOnTop(true);
+        dialog.pack();
+        dialog.setLocationRelativeTo(null);
+        dialog.setVisible(true);
+    }
 }

@@ -1,10 +1,14 @@
 package at.playify.boxgamereloaded.level.compress;
 
+import at.playify.boxgamereloaded.Logger;
+
 public class CompressionHandler {
     private Compresser[] arr;
     private Compresser fallback;
+    private Logger logger;
 
-    public CompressionHandler() {
+    public CompressionHandler(Logger logger) {
+        this.logger=logger;
         arr=new Compresser[]{new Compresser0()};
         fallback=new CompresserFallback();
     }
@@ -20,13 +24,13 @@ public class CompressionHandler {
     }
 
     public LevelData decompress(String s) {
-        if (!s.startsWith("0")) {
-            System.err.println("Error loading Level: Text is not a LevelData");
-            return null;
-        }
         String version=s.contains(".") ? s.substring(0, s.indexOf('.')) : null;
         if (version==null) {
             return fallback.decompress(s);
+        }
+        if (!s.startsWith("0")) {
+            logger.error("Error loading Level: Text is not a LevelData");
+            return null;
         }
         for (Compresser compresser : arr) {
             if (version.equals(compresser.version())) {
@@ -37,12 +41,12 @@ public class CompressionHandler {
                     e.printStackTrace();
                 }
                 if (decompress==null) {
-                    System.err.println("Error loading Level with Version \""+version+"\" in LevelData: "+s);
+                    logger.error("Error loading Level with Version \""+version+"\" in LevelData: "+s);
                 }
                 return decompress;
             }
         }
-        System.err.println("Error loading Level: Unknown Version: \""+version+"\" in LevelData: "+s);
+        logger.error("Error loading Level: Unknown Version: \""+version+"\" in LevelData: "+s);
         return null;
     }
 

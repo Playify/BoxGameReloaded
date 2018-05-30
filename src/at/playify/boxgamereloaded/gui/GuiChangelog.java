@@ -50,10 +50,12 @@ public class GuiChangelog extends Gui implements Comparator<String> {
             TextCreator txt=new TextCreator(game, lst);
             try {
                 for (String key : keys) {
-                    txt.add("$"+key+":");
-                    JSONArray arr=json.getJSONArray(key);
-                    for (int i=0;i<arr.length();i++) {
-                        txt.add("-"+arr.getString(i));
+                    if (!key.equals("TODO")) {
+                        txt.add("$"+key+":");
+                        JSONArray arr=json.getJSONArray(key);
+                        for (int i=0;i<arr.length();i++) {
+                            txt.add("-"+arr.getString(i));
+                        }
                     }
                 }
             } catch (JSONException e) {

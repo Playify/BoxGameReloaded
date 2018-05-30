@@ -1,14 +1,14 @@
 package at.playify.boxgamereloaded.gui;
 
+import java.util.ArrayList;
+
 import at.playify.boxgamereloaded.BoxGameReloaded;
 import at.playify.boxgamereloaded.gui.button.Button;
-import at.playify.boxgamereloaded.gui.button.ButtonConnectGui;
-import at.playify.boxgamereloaded.gui.button.LevelButton;
-import at.playify.boxgamereloaded.gui.button.StageSelector;
+import at.playify.boxgamereloaded.gui.button.main.ButtonConnectGui;
+import at.playify.boxgamereloaded.gui.button.main.LevelButton;
+import at.playify.boxgamereloaded.gui.button.main.StageSelector;
 import at.playify.boxgamereloaded.network.packet.PacketMainMenu;
 import at.playify.boxgamereloaded.util.Finger;
-
-import java.util.ArrayList;
 
 public class GuiMainMenu extends Gui {
     public float uiState;
@@ -18,7 +18,7 @@ public class GuiMainMenu extends Gui {
     GuiMainMenu(BoxGameReloaded game) {
         super(game);
         if (game.connection!=null) {
-            game.connection.sendPacket(new PacketMainMenu());
+            game.connection.sendPacketSoon(new PacketMainMenu());
         }
     }
 

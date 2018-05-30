@@ -4,7 +4,6 @@ import at.playify.boxgamereloaded.BoxGameReloaded;
 import at.playify.boxgamereloaded.network.connection.ConnectionSinglePlayer;
 import at.playify.boxgamereloaded.network.connection.ConnectionToServer;
 import at.playify.boxgamereloaded.network.packet.PacketHello;
-import at.playify.boxgamereloaded.network.packet.PacketSetWorld;
 
 public class CommandConnect extends Command {
 
@@ -42,7 +41,6 @@ public class CommandConnect extends Command {
             game.connection.close();
             game.connection=new ConnectionSinglePlayer(game);
             game.connection.sendPacket(new PacketHello());
-            game.connection.sendPacket(new PacketSetWorld(game.vars.world));
             game.cmd.display("Disconnected");
         } else if (args[0].equals("lan")) {
             if (game.connection instanceof ConnectionSinglePlayer) {

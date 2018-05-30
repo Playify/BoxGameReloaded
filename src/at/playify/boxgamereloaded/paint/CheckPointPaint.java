@@ -4,11 +4,11 @@ import at.playify.boxgamereloaded.BoxGameReloaded;
 import at.playify.boxgamereloaded.util.Finger;
 import at.playify.boxgamereloaded.util.bound.RectBound;
 
-public class SpawnPaint implements Paintable {
+public class CheckPointPaint implements Paintable {
     private final BoxGameReloaded game;
     private RectBound bound=new RectBound();
 
-    SpawnPaint(BoxGameReloaded game) {
+    CheckPointPaint(BoxGameReloaded game) {
         this.game=game;
     }
 
@@ -42,5 +42,10 @@ public class SpawnPaint implements Paintable {
     @Override
     public boolean canDraw() {
         return true;
+    }
+
+    @Override
+    public boolean history() {
+        return false;
     }
 }

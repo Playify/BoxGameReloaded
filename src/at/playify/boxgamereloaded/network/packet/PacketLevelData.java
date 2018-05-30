@@ -1,16 +1,15 @@
 package at.playify.boxgamereloaded.network.packet;
 
+import at.playify.boxgamereloaded.BoxGameReloaded;
+import at.playify.boxgamereloaded.level.ServerLevel;
+import at.playify.boxgamereloaded.network.Server;
+import at.playify.boxgamereloaded.network.connection.ConnectionToClient;
+import at.playify.boxgamereloaded.network.connection.ConnectionToServer;
+import at.playify.boxgamereloaded.util.Action;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-
-import at.playify.boxgamereloaded.BoxGameReloaded;
-import at.playify.boxgamereloaded.level.ServerLevel;
-import at.playify.boxgamereloaded.network.LevelHandler;
-import at.playify.boxgamereloaded.network.Server;
-import at.playify.boxgamereloaded.network.connection.ConnectionToClient;
-import at.playify.boxgamereloaded.network.connection.ConnectionToServer;
 
 //Packet für Leveldaten = Level zu Text,Laden von Text
 public class PacketLevelData extends Packet {
@@ -57,7 +56,7 @@ public class PacketLevelData extends Packet {
         final String world=this.world==null ? connectionToClient.world : this.world;
         if (world.startsWith("paint")) {
             try {
-                server.levels.getLevel(world, new LevelHandler.Action<ServerLevel>() {
+                server.levels.getLevel(world, new Action<ServerLevel>() {
                     @Override
                     public void exec(ServerLevel level) {
                         try {
@@ -71,7 +70,7 @@ public class PacketLevelData extends Packet {
                                 lvl.put("by", connectionToClient.skin.substring(connectionToClient.skin.lastIndexOf(';')+1));
                                 final PacketMainMenu packet=new PacketMainMenu();
 
-                                server.levels.getLevels("paint", new LevelHandler.Action<ArrayList<String>>() {
+                                server.levels.getLevels("paint", new Action<ArrayList<String>>() {
                                     @Override
                                     public void exec(ArrayList<String> strings) {
                                         packet.name="paint";

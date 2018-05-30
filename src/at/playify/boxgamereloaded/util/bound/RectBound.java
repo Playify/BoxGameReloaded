@@ -304,5 +304,17 @@ public class RectBound implements Serializable, Cloneable , Bound<RectBound>{
             return offsetY;
         }
     }
+
+    public void shift(int x, int y, int sizeX, int sizeY) {
+        move(x,y);
+        if (sizeX>0) {
+            while (cx()<0) cx(cx()+sizeX);
+            while (cx()>sizeX) cx(cx()-sizeX);
+        }
+        if (sizeY>0) {
+            while (cy()<0) cy(cy()+sizeY);
+            while (cy()>sizeY) cy(cy()-sizeY);
+        }
+    }
 }
 

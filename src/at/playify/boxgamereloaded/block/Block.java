@@ -25,7 +25,7 @@ public abstract class Block implements Paintable {
         this.game=game;
         game.blocks.blockscount++;
         if (game.blocks.map[chr]!=null) {
-            System.err.println("Overriding Block "+game.blocks.map[chr]+" (chr="+chr+") with "+this);
+            game.logger.error("Overriding Block "+game.blocks.map[chr]+" (chr="+chr+") with "+this);
         }
         game.blocks.map[chr]=this;
         game.blocks.list.add(this);
@@ -102,6 +102,11 @@ public abstract class Block implements Paintable {
 
     @Override
     public boolean canDraw() {
+        return true;
+    }
+
+    @Override
+    public boolean history() {
         return true;
     }
 }

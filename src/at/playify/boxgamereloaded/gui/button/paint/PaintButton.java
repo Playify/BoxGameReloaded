@@ -1,6 +1,7 @@
-package at.playify.boxgamereloaded.gui.button;
+package at.playify.boxgamereloaded.gui.button.paint;
 
 import at.playify.boxgamereloaded.BoxGameReloaded;
+import at.playify.boxgamereloaded.gui.button.Button;
 import at.playify.boxgamereloaded.interfaces.Drawer;
 import at.playify.boxgamereloaded.util.BoundingBox3d;
 import at.playify.boxgamereloaded.util.Finger;
@@ -61,8 +62,9 @@ public class PaintButton extends Button {
             } else if (game.painter.draw) {
                 game.painter.quick^=true;
             }
-            game.painter.quick&=game.connection.pauseCount==0;
-            game.painter.zoom&=game.connection.pauseCount==0;
+            if (game.connection.pauseCount!=0) {
+                game.painter.quick=game.painter.zoom=false;
+            }
             return true;
         } else {
             game.painter.draw=false;
