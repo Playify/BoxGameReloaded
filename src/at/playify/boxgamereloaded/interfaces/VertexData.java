@@ -18,6 +18,14 @@ public class VertexData {
             0, -.424264f, 0,
             .424264f, 0, 0
     };
+    public float[] button;
+    public float[] button2;
+
+    {
+        float y=.5f, y0=.1f, y1=1-y0;
+        button=new float[]{0, 0, 0, y0, y, 0, 1-y0, y, 0, 0, 0, 0, 1, 0, 0, 1-y0, y, 0};
+        button2=new float[]{0, 0, 0, y0, y, 0, 2-y0, y, 0, 0, 0, 0, 2, 0, 0, 2-y0, y, 0};
+    }
 
     public VertexData(BoxGameReloaded game) {
         this.game=game;

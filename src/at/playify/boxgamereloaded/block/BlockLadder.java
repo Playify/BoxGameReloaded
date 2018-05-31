@@ -44,18 +44,31 @@ public class BlockLadder extends Block implements Collideable{
         left|=l instanceof BlockLadder;
         right|=r instanceof BlockLadder;
         if (left&&right)left=right=false;
-        game.d.cube(left?-4:-3,0,0,left||right?7:6,8,8,0xFFFFFF00);
-        if (!left&&!right)left=right=true;
-        drawSide(left);
-        game.d.scale(-1,1,1);
-        drawSide(right);
+        if (game.vars.cubic) {
+            game.d.cube(left ? -4 : -3, 0, 0, left||right ? 7 : 6, 8, 8, 0xFFFFFF00);
+            if (!left&&!right) left=right=true;
+            drawSide(left,true);
+            game.d.scale(-1, 1, 1);
+            drawSide(right,true);
+        }else{
+            game.d.rect(left ? -4 : -3,  0, left||right ? 7 : 6, 8,  0xFFFFFF00);
+            if (!left&&!right) left=right=true;
+            drawSide(left,false);
+            game.d.scale(-1, 1, 1);
+            drawSide(right,false);
+        }
         game.d.popMatrix();
     }
 
-    private void drawSide(boolean b) {
+    private void drawSide(boolean b, boolean cubic) {
         if (b) {
-            game.d.cube(3,1,.5f,1,2,7,0xFFA8A346,true,true,true,false);
-            game.d.cube(3,5,.5f,1,2,7,0xFFA8A346,true,true,true,false);
+            if (cubic) {
+                game.d.cube(3, 1, .5f, 1, 2, 7, 0xFFA8A346, true, true, true, false);
+                game.d.cube(3, 5, .5f, 1, 2, 7, 0xFFA8A346, true, true, true, false);
+            }else{
+                game.d.rect(3, 1,  1, 2,  0xFFA8A346);
+                game.d.rect(3, 5,  1, 2,  0xFFA8A346);
+            }
         }
     }
 

@@ -2,6 +2,7 @@ package at.playify.boxgamereloaded.gui;
 
 import at.playify.boxgamereloaded.BoxGameReloaded;
 import at.playify.boxgamereloaded.gui.button.Button;
+import at.playify.boxgamereloaded.interfaces.Drawer;
 import at.playify.boxgamereloaded.util.BoundingBox3d;
 import at.playify.boxgamereloaded.util.Finger;
 
@@ -21,7 +22,37 @@ public class GuiCredits extends Gui {
 
     @Override
     public void initGui(ArrayList<Button> buttons) {
+        buttons.add(new Button(game) {
+            @Override
+            public String text(){
+                return "";
+            }
+
+            @Override
+            public BoundingBox3d bound(){
+                bound.set(game.aspectratio/4,.1f,0.01f,game.aspectratio*3/4,.9f,0);
+                return bound;
+            }
+
+            @Override
+            public boolean click(Finger finger){
+                return true;
+            }
+
+            @Override
+            public void draw(Drawer d){
+            }
+        });
         buttons.add(new ButtonClose(game));
+    }
+
+    @Override
+    public boolean clickButtons(Finger finger){
+        boolean b=super.clickButtons(finger);
+        if (!b) {
+            game.gui.close(this);
+        }
+        return b;
     }
 
     @Override

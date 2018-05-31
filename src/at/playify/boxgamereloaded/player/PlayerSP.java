@@ -10,6 +10,7 @@ import at.playify.boxgamereloaded.util.Borrow;
 import at.playify.boxgamereloaded.util.CollisionData;
 import at.playify.boxgamereloaded.util.Finger;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 
 public class PlayerSP extends Player {
@@ -204,7 +205,7 @@ public class PlayerSP extends Player {
     public void killedByBlock() {
         game.vars.check.die();
         motionX=motionY=0;
-        game.vars.deaths++;
+        game.vars.statistics.deaths=game.vars.statistics.deaths.add(BigInteger.ONE);
         game.vars.loader.save();
     }
 
@@ -212,7 +213,7 @@ public class PlayerSP extends Player {
     public void killedByButton() {
         game.vars.check.die();
         motionX=motionY=0;
-        game.vars.deaths++;
+        game.vars.statistics.deaths=game.vars.statistics.deaths.add(BigInteger.ONE);
         game.vars.loader.save();
     }
 

@@ -46,6 +46,8 @@ public class KeyButtons extends Button {
             game.blocks.KEYHOLE.state[i]=Utils.clamp(game.blocks.KEYHOLE.state[i]+(game.vars.keys[i] ? 1 : -1)/8f,0,1);
             ret&=game.blocks.KEYHOLE.state[i]==0||game.blocks.KEYHOLE.state[i]==1;
         }
+        game.vars.switchState=Utils.clamp(game.vars.switchState+1/8f*((game.vars.switched)?1:-1),0,1);
+        ret&=game.vars.switchState==(game.vars.switched?1:0);
         return ret;
     }
 }

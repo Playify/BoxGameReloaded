@@ -211,7 +211,7 @@ public class Level {
                 block.draw(x,y,this);
             }
         }
-        if (game.vars.blockdata) {
+        if (game.vars.debug.blockdata) {
             for (int y=minY;y<maxY;y++) {
                 for (int x=minX;x<maxX;x++) {
                     int meta=getMeta(x, y);

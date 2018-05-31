@@ -242,4 +242,9 @@ public class WindowsHandler extends Handler {
         dialog.setLocationRelativeTo(null);
         dialog.setVisible(true);
     }
+
+    @Override
+    public boolean buttons() {
+        return false;
+    }
 }

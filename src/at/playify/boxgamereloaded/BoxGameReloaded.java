@@ -171,6 +171,7 @@ public class BoxGameReloaded extends Game {
                 lock=false;
             }
         }
+
         //Ticks zählen
         lasttickindex=(lasttickindex+1)%lastticks.length;
         lastticks[lasttickindex]=(int) (-lastticktime+(lastticktime=System.nanoTime()));

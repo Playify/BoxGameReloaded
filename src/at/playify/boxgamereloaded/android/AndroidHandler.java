@@ -230,4 +230,9 @@ class AndroidHandler extends Handler {
         dialog.setTitle(title);
         dialog.show();
     }
+
+    @Override
+    public boolean buttons() {
+        return true;
+    }
 }

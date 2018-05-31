@@ -17,6 +17,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.view.*;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,6 +36,7 @@ public class GameActivity extends Activity {
     boolean doubleBackToExitPressedOnce=false;
     public GLSurfaceView view;
     private Handler osHandler=new Handler();
+    public RelativeLayout layout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +54,9 @@ public class GameActivity extends Activity {
                     1);
         }
         game=new BoxGameReloaded(handler);
-        setContentView(view=new GameView(this));
+        layout=new RelativeLayout(this);
+        layout.addView(view=new GameView(this));
+        setContentView(layout);
         game.start();
 
         super.onCreate(savedInstanceState);

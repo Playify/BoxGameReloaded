@@ -116,13 +116,21 @@ public class SkinData {
             game.d.translate(bound.minX, bound.minY, game.vars.cubic?bound.minZ:0);
             game.d.scale(w, h, d);
             game.d.scale(1/5f);
-            d=game.vars.cubic?5:0;
-            game.d.cube(0, 0, 0, 3, 1, d, color, true, false, true, true);
-            game.d.cube(2, 4, 0, 3, 1, d, color, true, true, true, false);
-            game.d.cube(4, 0, 0, 1, 3, d, color, false, true, true, true);
-            game.d.cube(0, 2, 0, 1, 3, d, color, true, true, false, true);
-            game.d.cube(0, 2, 0, 5, 1, d, color, true, false, true, false);
-            game.d.cube(2, 0, 0, 1, 5, d, color, false, true, false, true);
+            if (game.vars.cubic) {
+                game.d.cube(0, 0, 0, 3, 1, 5, color, true, false, true, true);
+                game.d.cube(2, 4, 0, 3, 1, 5, color, true, true, true, false);
+                game.d.cube(4, 0, 0, 1, 3, 5, color, false, true, true, true);
+                game.d.cube(0, 2, 0, 1, 3, 5, color, true, true, false, true);
+                game.d.cube(0, 2, 0, 5, 1, 5, color, true, false, true, false);
+                game.d.cube(2, 0, 0, 1, 5, 5, color, false, true, false, true);
+            }else{
+                game.d.rect(0, 0,  3, 1, color);
+                game.d.rect(2, 4,  3, 1, color);
+                game.d.rect(4, 0,  1, 3, color);
+                game.d.rect(0, 2,  1, 3, color);
+                game.d.rect(0, 2,  5, 1, color);
+                game.d.rect(2, 0,  1, 5, color);
+            }
             game.d.popMatrix();
         }
     }
@@ -140,23 +148,29 @@ public class SkinData {
             float h=(bound.maxY-bound.minY);
             float d=(bound.maxZ-bound.minZ);
             game.d.pushMatrix();
-            game.d.translate(bound.minX, bound.minY, bound.minZ);
-            game.d.scale(w, h, d);
-            for (int i=0;i<4;i++) {
+            if (game.vars.cubic) {
+                game.d.translate(bound.minX, bound.minY, bound.minZ);
+                game.d.scale(w, h, d);
+                for (int i=0;i<4;i++) {
+                    game.d.translate(.5f, .5f, .5f);
+                    game.d.rotate(90, 0, 1, 0);
+                    game.d.translate(-.5f, -.5f, -.5f);
+                    game.d.drawImage(img);
+                }
                 game.d.translate(.5f, .5f, .5f);
-                game.d.rotate(90, 0, 1, 0);
+                game.d.rotate(90, 1, 0, 0);
                 game.d.translate(-.5f, -.5f, -.5f);
                 game.d.drawImage(img);
+                game.d.translate(.5f, .5f, .5f);
+                game.d.rotate(180, 1, 0, 0);
+                game.d.rotate(180, 0, 0, 1);
+                game.d.translate(-.5f, -.5f, -.5f);
+                game.d.drawImage(img);
+            }else{
+                game.d.translate(bound.minX, bound.minY, 0);
+                game.d.scale(w, h, 0);
+                game.d.drawImage(img);
             }
-            game.d.translate(.5f, .5f, .5f);
-            game.d.rotate(90, 1, 0, 0);
-            game.d.translate(-.5f, -.5f, -.5f);
-            game.d.drawImage(img);
-            game.d.translate(.5f, .5f, .5f);
-            game.d.rotate(180, 1, 0, 0);
-            game.d.rotate(180, 0, 0, 1);
-            game.d.translate(-.5f, -.5f, -.5f);
-            game.d.drawImage(img);
             game.d.popMatrix();
         }
     }

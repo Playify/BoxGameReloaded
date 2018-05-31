@@ -1,12 +1,12 @@
 {
-  "0.0.6":[
+  "0.0.6": [
     "Schlüssel und Schloss",
     "Hauptmenü verbessert",
     "Multiplayer hinzugefügt",
     "Autoupdater gefixt",
     "Bugfixes"
   ],
-  "0.0.7":[
+  "0.0.7": [
     "Upload Levels",
     "Download Levels",
     "Gui verbessert",
@@ -14,5 +14,10 @@
     "Größe von Level\nsind nun veränderbar",
     "Rückgängig Knopf",
     "Bugfixes"
+  ],
+  "0.0.8": [
+    "Neue Level",
+    "Optionen",
+    "Schaltbare Blöcke"
   ]
 }

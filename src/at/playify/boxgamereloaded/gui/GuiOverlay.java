@@ -28,6 +28,7 @@ public class GuiOverlay extends Gui {
         buttons.add(new PauseButton(game));
         buttons.add(new RespawnButton(game));
         buttons.add(new KeyButtons(game));
+        buttons.add(new ButtonButtons(game));
     }
 
     public void openMainMenu() {

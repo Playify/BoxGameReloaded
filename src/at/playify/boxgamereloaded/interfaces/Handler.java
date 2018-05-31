@@ -168,4 +168,6 @@ public abstract class Handler {
     public abstract boolean isScrolling();
 
     public abstract void keybd(String title, boolean pw,String preEnteredText, final Action.Bool<String> action);
+
+    public abstract boolean buttons();
 }

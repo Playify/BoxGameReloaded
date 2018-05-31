@@ -32,6 +32,7 @@ public class Blocks {
     public BlockGlitch GLITCH;
     public BlockEasterEgg EGG;
     public BlockIconDrawButton ICON;
+    public BlockSwitch SWITCH;
 
     //Block anhand des Zeichens bekommen
     public Block get(char c) {
@@ -63,6 +64,16 @@ public class Blocks {
         GLITCH=new BlockGlitch(game, BlockGlitch.chr);
         EGG=new BlockEasterEgg(game, BlockEasterEgg.chr);
         ICON=new BlockIconDrawButton(game, BlockIconDrawButton.chr);
+        SWITCH=new BlockSwitch(game, BlockSwitch.chr);
+    }
 
+    private void remaining(){
+        StringBuilder str=new StringBuilder();
+        for (int i=0;i<map.length;i++) {
+            if (i>='A'&&i<='z'&&Character.isLetter(i)&&map[i]==null) {
+                str.append((char)i);
+            }
+        }
+        System.out.println(str);
     }
 }

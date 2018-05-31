@@ -41,7 +41,7 @@ public abstract class BlockDebug extends Block {
             game.d.pushMatrix();
             game.d.translate(x,y, .899f);
             game.d.cube(0,0, 0.01f, 1, 1, .1f, 0xFFd40adb);
-            if(!game.vars.blockdata||level instanceof FakeLevel) {
+            if(!game.vars.debug.blockdata||level instanceof FakeLevel) {
                 game.d.drawStringCenter(prefix()+level.getMeta(x, y), .5f, 0.25f, .5f, 0x66010AFA);
             }
             game.d.popMatrix();
@@ -49,7 +49,7 @@ public abstract class BlockDebug extends Block {
             game.d.pushMatrix();
             game.d.rect(x, y, 1, 1, 0xFFd40adb);
             game.d.translate(x,y,0);
-            if(!game.vars.blockdata||level instanceof FakeLevel) {
+            if(!game.vars.debug.blockdata||level instanceof FakeLevel) {
                 game.d.drawStringCenter(prefix()+level.getMeta(x, y), .5f, 0.25f, .5f, 0x66010AFA);
             }
             game.d.popMatrix();

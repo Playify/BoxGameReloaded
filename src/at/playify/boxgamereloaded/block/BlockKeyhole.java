@@ -49,9 +49,15 @@ public class BlockKeyhole extends Block {
             v=dist<a ? 1 : (dist>a+b ? 0 : (float) (Math.cos(Math.PI*(dist-a)/b)+1)/2);
         }else v=0;
         v*=.9f;
-        game.d.cube(0, 0, v, 1, 1, 1-v, 0xFFFF4F49);
-        game.d.translate(0,0,v-3/5f);
-        game.vertex.drawKey(false,meta);
+        if (game.vars.cubic) {
+            game.d.cube(0, 0, v, 1, 1, 1-v, 0xFFFF4F49);
+            game.d.translate(0,0,v-3/5f);
+            game.vertex.drawKey(false,meta);
+        }else{
+            if (game.vars.keys[meta]&&!(level instanceof FakeLevel))
+            game.vertex.drawKey(false,meta);
+            game.d.rect(0,0,1,1,0xFFFF4F49);
+        }
         game.d.popMatrix();
     }
 

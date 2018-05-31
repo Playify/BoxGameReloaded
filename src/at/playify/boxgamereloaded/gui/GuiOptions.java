@@ -2,9 +2,7 @@ package at.playify.boxgamereloaded.gui;
 
 import at.playify.boxgamereloaded.BoxGameReloaded;
 import at.playify.boxgamereloaded.gui.button.*;
-import at.playify.boxgamereloaded.gui.button.options.ButtonChangelog;
-import at.playify.boxgamereloaded.gui.button.options.ButtonCredits;
-import at.playify.boxgamereloaded.gui.button.options.ConsoleButton;
+import at.playify.boxgamereloaded.gui.button.options.*;
 import at.playify.boxgamereloaded.interfaces.Drawer;
 import at.playify.boxgamereloaded.util.BoundingBox3d;
 import at.playify.boxgamereloaded.util.Finger;
@@ -57,6 +55,9 @@ public class GuiOptions extends Gui {
         });
         buttons.add(new ButtonCredits(game));
         buttons.add(new ButtonChangelog(game));
+        buttons.add(new ButtonZoom(game));
+        buttons.add(new ButtonCubic(game));
+        buttons.add(new ButtonDrawButtons(game));
     }
 
     @Override

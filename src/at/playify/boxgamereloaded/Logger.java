@@ -45,15 +45,15 @@ public class Logger {
     }
 
     public boolean tick(){
-        boolean b=true;
+        boolean hasLine=false;
         for (int i=0;i<lines.size();i++) {
             Line line=lines.get(i);
             line.time--;
-            if (b&&line.time>0) {
-                b=false;
+            if (line.time>=0) {
+                hasLine=true;
             }
         }
-        return !b;
+        return !hasLine;
     }
 
     private class Line{

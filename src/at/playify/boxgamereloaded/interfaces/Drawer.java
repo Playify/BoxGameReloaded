@@ -83,4 +83,6 @@ public interface Drawer {
     void drawImage(String s);
 
     float charWidth(char c);
+
+    void drawButtons();
 }

@@ -115,6 +115,7 @@ public class SurfaceDrawer implements Drawer {
     };
     public boolean ready;
     private float[] lineVertex=new float[]{0,0,0,1,1,1};
+    private FloatBuffer fb2;
 
     public boolean ready(){
         return ready;
@@ -215,6 +216,37 @@ public class SurfaceDrawer implements Drawer {
     @Override
     public float charWidth(char c) {
         return font.charWidth(c);
+    }
+
+    @Override
+    public void drawButtons() {
+
+        float y=.5f, y0=.1f;
+        float[][] arr=new float[][]{{0,0,0,y0,y,0,1-y0,y,0,0,0,0,1,0,0,1-y0,y,0},
+                {1,0,0,1+y0,y,1,2-y0,y,1,1,0,0,2,0,1,2-y0,y,0},
+                {2,0,0,2+y0,y,2,4-y0,y,0,2,0,0,4,0,2,4-y0,y,0}};
+        FloatBuffer verticesBuffer=checkFloatBuffer(arr[0].length);
+        gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+        FloatBuffer colorBuffer=checkColorFloatBuffer(6*4);
+        colorBuffer.position(0);
+        for(int i=0; i<6; i++) {
+            int color=(((i)^(i >> 1))&1)==0?0xC000FF00:0x0000FF00;
+            float a=((color>>24)&255)/255f, r=((color>>16)&255)/255f, g=((color>>8)&255)/255f, b=((color)&255)/255f;
+            colorBuffer.put(r).put(g).put(b).put(a);
+        }
+        gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+        gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
+        for(float[] vertex : arr) {
+            verticesBuffer.put(vertex);
+            verticesBuffer.position(0);
+            colorBuffer.position(0);
+            gl.glColorPointer(4,GL10.GL_FLOAT,0,colorBuffer);
+            gl.glVertexPointer(3, GL10.GL_FLOAT, 0, verticesBuffer);
+            gl.glDrawArrays(GL10.GL_TRIANGLES,0, vertex.length/3);
+            game.vertexcount+=vertex.length/3;
+        }
+        gl.glDisableClientState(GL10.GL_COLOR_ARRAY);
+        gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
     }
 
 
@@ -335,6 +367,15 @@ public class SurfaceDrawer implements Drawer {
         }
         fb.position(0);
         return fb;
+    }
+    private FloatBuffer checkColorFloatBuffer(int length) {
+        if(fb2==null||fb2.capacity()<length) {
+            ByteBuffer vbb=ByteBuffer.allocateDirect(length*4);
+            vbb.order(ByteOrder.nativeOrder());
+            fb2=vbb.asFloatBuffer();
+        }
+        fb2.position(0);
+        return fb2;
     }
 
     public void vertex(float[] vertex, int color) {
