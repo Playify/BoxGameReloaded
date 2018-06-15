@@ -27,7 +27,7 @@ public class BlockResize extends Block implements Collideable {
     }
 
     @Override
-    protected boolean isBackGround(int meta) {
+    public boolean isBackGround(int meta) {
         return true;
     }
 
@@ -39,13 +39,13 @@ public class BlockResize extends Block implements Collideable {
             if (c.blk==this) {
                 switch (c.meta) {
                     case 2:
-                        size+=.4;
+                        size+=.4f;
                         break;
                     case 0:
-                        size+=.8;
+                        size+=.8f;
                         break;
                     case 1:
-                        size+=1.2;
+                        size+=1.2f;
                         break;
                 }
                 count++;

@@ -22,7 +22,7 @@ public class BlockLadder extends Block implements Collideable{
     }
 
     @Override
-    protected boolean isBackGround(int meta) {
+    public boolean isBackGround(int meta) {
         return false;
     }
 
@@ -49,13 +49,17 @@ public class BlockLadder extends Block implements Collideable{
             if (!left&&!right) left=right=true;
             drawSide(left,true);
             game.d.scale(-1, 1, 1);
+            game.d.flipCullface();
             drawSide(right,true);
+            game.d.flipCullface();
         }else{
             game.d.rect(left ? -4 : -3,  0, left||right ? 7 : 6, 8,  0xFFFFFF00);
             if (!left&&!right) left=right=true;
             drawSide(left,false);
             game.d.scale(-1, 1, 1);
+            game.d.flipCullface();
             drawSide(right,false);
+            game.d.flipCullface();
         }
         game.d.popMatrix();
     }

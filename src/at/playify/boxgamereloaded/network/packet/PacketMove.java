@@ -4,33 +4,38 @@ import at.playify.boxgamereloaded.BoxGameReloaded;
 import at.playify.boxgamereloaded.network.Server;
 import at.playify.boxgamereloaded.network.connection.ConnectionToClient;
 import at.playify.boxgamereloaded.network.connection.ConnectionToServer;
+import at.playify.boxgamereloaded.network.connection.Input;
+import at.playify.boxgamereloaded.network.connection.Output;
 import at.playify.boxgamereloaded.player.PlayerMP;
-import at.playify.boxgamereloaded.util.Utils;
 import at.playify.boxgamereloaded.util.bound.RectBound;
+
+import java.io.IOException;
+import java.util.ArrayList;
 
 //Packet um den Client von Spielerbewegungen zu berichten und den Server von Clientbewegungen
 public class PacketMove extends Packet {
-    public String player;
+    public String player="";
     public float x=.1f;
     public float y=.1f;
     public float w=.8f;
     public float h=.8f;
 
     public PacketMove(ConnectionToClient client) {
-        this.player=client.name;
+        this.player=client.name==null?"":client.name;
         x=client.bound.x();
         y=client.bound.y();
         w=client.bound.w();
         h=client.bound.h();
     }
     public PacketMove(RectBound bound, String player) {
-        this.player=player;
+        this.player=player==null?"":player;
         x=bound.x();
         y=bound.y();
         w=bound.w();
         h=bound.h();
     }
     public PacketMove(float x,float y,float w,float h,String player) {
+        this.player=player==null?"":player;
         this.x=x;
         this.y=y;
         this.w=w;
@@ -43,38 +48,9 @@ public class PacketMove extends Packet {
         w=bound.w();
         h=bound.h();
     }
-    @SuppressWarnings("unused")
-    public PacketMove() {
+
+    public PacketMove(){
         player="";
-    }
-
-    @Override
-    public String convertToString(BoxGameReloaded game) {
-        return ((int)(x*100))+";"+((int)(y*100))+";"+((int)(w*100))+";"+((int)(h*100))+";"+player;
-    }
-
-    @Override
-    public void loadFromString(String s, BoxGameReloaded game) {
-        String[] split=new String[]{"","","","",""};
-        StringBuilder stringBuilder = new StringBuilder();
-        int index=0;
-        for (char c : s.toCharArray()) {
-            if (c==';'){
-                split[index++]=stringBuilder.toString();
-                stringBuilder.setLength(0);
-                if (index>split.length) {
-                    return;
-                }
-            }else {
-                stringBuilder.append(c);
-            }
-        }
-        split[index]=stringBuilder.toString();
-        x= Utils.parseInt(split[0],10)/100f;
-        y= Utils.parseInt(split[1],10)/100f;
-        w= Utils.parseInt(split[2],80)/100f;
-        h= Utils.parseInt(split[3],80)/100f;
-        player=split[4];
     }
 
     @Override
@@ -107,37 +83,23 @@ public class PacketMove extends Packet {
     }
 
     @Override
-    public String convertToString(Server server, ConnectionToClient client) {
-        return ((int)(x*100))+";"+((int)(y*100))+";"+((int)(w*100))+";"+((int)(h*100))+";"+player;
-    }
-
-    @Override
-    public void loadFromString(String s, Server server) {
-        String[] split=new String[]{"","","","",""};
-        StringBuilder stringBuilder = new StringBuilder();
-        int index=0;
-        for (char c : s.toCharArray()) {
-            if (c==';'){
-                split[index++]=stringBuilder.toString();
-                stringBuilder.setLength(0);
-                if (index>split.length) {
-                    return;
-                }
-            }else {
-                stringBuilder.append(c);
-            }
-        }
-        x= Utils.parseInt(split[0],10)/100f;
-        y= Utils.parseInt(split[1],10)/100f;
-        w= Utils.parseInt(split[2],80)/100f;
-        h= Utils.parseInt(split[3],80)/100f;
-        player=split[4];
-    }
-
-    @Override
     public void handle(Server server, ConnectionToClient connectionToClient) {
         if (player==null||player.isEmpty()||player.equals(connectionToClient.name)) {
             player=connectionToClient.name;
+            if ((server.pausemode & 4) != 0) {
+                ArrayList<ConnectionToClient> list=new ArrayList<>();
+                server.getByWorld(connectionToClient.world, list);
+                for (int i=list.size()-1;i >= 0;i--) {
+                    RectBound bound=list.get(i).bound;
+                    if (!bound.collide(connectionToClient.bound)) {
+                        if (bound.collide(connectionToClient.collider.set(x, y, w, h))) {
+                            System.out.println("Moved back Player:"+connectionToClient.name);
+                            connectionToClient.sendPacket(new PacketMove(connectionToClient.bound,connectionToClient.name));
+                            return;
+                        }
+                    }
+                }
+            }
             connectionToClient.bound.set(x,y,w,h);
             server.broadcast(this,connectionToClient.world,connectionToClient);
         } else {//Draw other players
@@ -163,5 +125,41 @@ public class PacketMove extends Packet {
         if (player==null||player.isEmpty()||player.equals(connectionToClient.name)) {
             connectionToClient.bound.set(x,y,w,h);
         }
+    }
+
+    @Override
+    public void send(Output out, Server server, ConnectionToClient con) throws IOException{
+        out.writeString(player);
+        out.writeFloat(x);
+        out.writeFloat(y);
+        out.writeFloat(w);
+        out.writeFloat(h);
+    }
+
+    @Override
+    public void send(Output out, BoxGameReloaded game, ConnectionToServer con) throws IOException{
+        out.writeString(player);
+        out.writeFloat(x);
+        out.writeFloat(y);
+        out.writeFloat(w);
+        out.writeFloat(h);
+    }
+
+    @Override
+    public void receive(Input in, Server server, ConnectionToClient con) throws IOException{
+        player=in.readString();
+        x=in.readFloat();
+        y=in.readFloat();
+        w=in.readFloat();
+        h=in.readFloat();
+    }
+
+    @Override
+    public void receive(Input in, BoxGameReloaded game, ConnectionToServer con) throws IOException{
+        player=in.readString();
+        x=in.readFloat();
+        y=in.readFloat();
+        w=in.readFloat();
+        h=in.readFloat();
     }
 }

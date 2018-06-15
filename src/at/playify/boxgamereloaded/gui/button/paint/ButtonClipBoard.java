@@ -16,18 +16,18 @@ public class ButtonClipBoard extends Button {
     }
 
     @Override
-    public String text() {
+    public String genText() {
         return (variant?"Copy":"Paste")+" Level";
     }
 
     @Override
-    public BoundingBox3d bound() {
+    public BoundingBox3d genBound() {
         if (variant) {
-            bound.set(game.aspectratio/2+0.025f, .4f, -.05f, game.aspectratio-.25f, .5f, 0);
+            buttonBound.set(game.aspectratio/2+0.025f, .4f, -.05f, game.aspectratio-.25f, .5f, 0);
         }else{
-            bound.set(game.aspectratio/2+0.025f, .25f, -.05f, game.aspectratio-.25f, .35f, 0);
+            buttonBound.set(game.aspectratio/2+0.025f, .25f, -.05f, game.aspectratio-.25f, .35f, 0);
         }
-        return bound;
+        return buttonBound;
     }
 
     @Override

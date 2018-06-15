@@ -19,18 +19,18 @@ public class PaintSelectButton extends Button {
     }
 
     @Override
-    public String text() {
+    public String genText() {
         return "Draw:"+index;
     }
 
     @Override
-    public BoundingBox3d bound() {
+    public BoundingBox3d genBound() {
         int a=7;
         int index=this.index+1;
         float x=1/7f+gui.state*((index%a+1)/(float) a-1/7f);
         float y=gui.state*((index/a+1)/(float) a-1/7f);
-        bound.set(game.aspectratio-x, y, -0.01f, game.aspectratio-x+1f/a, y+1f/a, 1f/a-0.01f);
-        return bound;
+        buttonBound.set(game.aspectratio-x, y, -0.01f, game.aspectratio-x+1f/a, y+1f/a, 1f/a-0.01f);
+        return buttonBound;
     }
 
     @Override
@@ -49,7 +49,7 @@ public class PaintSelectButton extends Button {
         if (gui.state==0) return;
         Paintable paint=game.painter.get(index);
         if (paint==null) return;
-        int color=color();
+        int color=genColor();
         final float v=.1f;
         d.cube(0, 0, 0, 1, v, v, color, true, false, true, false);
         d.cube(0, 1-v, 0, 1, v, v, color, true, false, true, false);

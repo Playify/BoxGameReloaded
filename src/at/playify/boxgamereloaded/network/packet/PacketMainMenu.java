@@ -5,54 +5,28 @@ import at.playify.boxgamereloaded.gui.GuiMainMenu;
 import at.playify.boxgamereloaded.network.Server;
 import at.playify.boxgamereloaded.network.connection.ConnectionToClient;
 import at.playify.boxgamereloaded.network.connection.ConnectionToServer;
+import at.playify.boxgamereloaded.network.connection.Input;
+import at.playify.boxgamereloaded.network.connection.Output;
 import at.playify.boxgamereloaded.util.Action;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class PacketMainMenu extends Packet {
     public ArrayList<String> list;
     public String name;
 
-    public PacketMainMenu() {
+    public PacketMainMenu(){
     }
 
     @Override
-    public String convertToString(BoxGameReloaded game) {
-        return name==null?"":name;
-    }
-
-    @Override
-    public void loadFromString(String s, BoxGameReloaded game) {
-        if (s.isEmpty()) {
-            list=null;
-            name=null;
-        }else{
-            StringBuilder str=new StringBuilder();
-            char[] chars=s.toCharArray();
-            list=new ArrayList<>();
-            for (char c : chars) {
-                if (c==';') {
-                    list.add(str.toString());
-                    str.setLength(0);
-                } else {
-                    str.append(c);
-                }
-            }
-            if (str.length()!=0) {
-                list.add(str.toString());
-            }
-            name=list.remove(0);
-        }
-    }
-
-    @Override
-    public void handle(BoxGameReloaded game, ConnectionToServer connectionToServer) {
-        if (name==null||list==null) {
+    public void handle(BoxGameReloaded game, ConnectionToServer connectionToServer){
+        if (name.isEmpty()||list==null) {
             game.gui.openMainMenu();
-        }else{
+        } else {
             GuiMainMenu main=game.gui.main;
             if (main!=null) {
-                game.levels.put(name,list);
+                game.levels.put(name, list);
                 if (game.vars.stage==null) {
                     if (!name.equals("list")) {
                         game.vars.stage=name;
@@ -72,45 +46,22 @@ public class PacketMainMenu extends Packet {
     }
 
     @Override
-    public String convertToString(Server server, ConnectionToClient client) {
-        if (name==null||list==null) {
-            return "";
-        }
-        StringBuilder str=new StringBuilder();
-        str.append(name);
-        for (String s : list) {
-            str.append(";").append(s);
-        }
-        return str.toString();
-    }
-
-    @Override
-    public void loadFromString(String s, Server server) {
-        if (s.isEmpty()) {
-            name=null;
-        }else{
-            name=s;
-        }
-        list=null;
-    }
-
-    @Override
-    public void handle(final Server server, final ConnectionToClient connectionToClient) {
+    public void handle(final Server server, final ConnectionToClient connectionToClient){
         server.levels.markDirty();
         if (name==null) {
-            server.levels.getStages(new Action<ArrayList<String>>(){
+            server.levels.getStages(new Action<ArrayList<String>>() {
 
                 @Override
-                public void exec(ArrayList<String> strings) {
+                public void exec(ArrayList<String> strings){
                     name="list";
                     list=strings;
                     connectionToClient.sendPacket(PacketMainMenu.this);
                     for (String s : strings) {
                         final PacketMainMenu packet=new PacketMainMenu();
                         packet.name=s;
-                        server.levels.getLevels(s,new Action<ArrayList<String>>() {
+                        server.levels.getLevels(s, new Action<ArrayList<String>>() {
                             @Override
-                            public void exec(ArrayList<String> strings) {
+                            public void exec(ArrayList<String> strings){
                                 packet.list=strings;
                                 connectionToClient.sendPacket(packet);
                             }
@@ -119,13 +70,67 @@ public class PacketMainMenu extends Packet {
                 }
             });
         } else {
-            server.levels.getLevels(name,new Action<ArrayList<String>>() {
+            server.levels.getLevels(name, new Action<ArrayList<String>>() {
                 @Override
-                public void exec(ArrayList<String> strings) {
+                public void exec(ArrayList<String> strings){
                     list=strings;
                     connectionToClient.sendPacket(PacketMainMenu.this);
                 }
             });
+        }
+    }
+
+    @Override
+    public void send(Output out, Server server, ConnectionToClient con) throws IOException{
+        out.writeString(name==null ? "" : name);
+        if (list==null) out.writeInt(-1);
+        else{
+            out.writeInt(list.size());
+            for (int i=0;i<list.size();i++) {
+                out.writeString(list.get(i));
+            }
+        }
+    }
+
+    @Override
+    public void send(Output out, BoxGameReloaded game, ConnectionToServer con) throws IOException{
+        out.writeString(name==null ? "" : name);
+        if (list==null) out.writeInt(-1);
+        else{
+            out.writeInt(list.size());
+            for (int i=0;i<list.size();i++) {
+                out.writeString(list.get(i));
+            }
+        }
+    }
+
+    @Override
+    public void receive(Input in, Server server, ConnectionToClient con) throws IOException{
+        String s=in.readString();
+        name=s.isEmpty()?null:s;
+        int size=in.readInt();
+        if (size==-1) {
+            list=null;
+        }else{
+            list=new ArrayList<>(size);
+            for (int i=0;i<size;i++) {
+                list.add(in.readString());
+            }
+        }
+    }
+
+    @Override
+    public void receive(Input in, BoxGameReloaded game, ConnectionToServer con) throws IOException{
+        String s=in.readString();
+        name=s.isEmpty()?null:s;
+        int size=in.readInt();
+        if (size==-1) {
+            list=null;
+        }else{
+            list=new ArrayList<>(size);
+            for (int i=0;i<size;i++) {
+                list.add(in.readString());
+            }
         }
     }
 }

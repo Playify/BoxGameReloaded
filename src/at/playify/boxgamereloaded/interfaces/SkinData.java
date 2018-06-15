@@ -9,7 +9,7 @@ import java.util.HashMap;
 public class SkinData {
     private final BoxGameReloaded game;
     private final Skin def;
-    public String[] egg=new String[]{"cube","gute","rein"};
+    public String[] egg=new String[]{"cube","gute","rein","dave"};
     private HashMap<String,Skin> map=new HashMap<>();
 
     public SkinData(BoxGameReloaded game) {

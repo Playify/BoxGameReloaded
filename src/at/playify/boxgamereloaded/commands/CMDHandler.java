@@ -9,18 +9,17 @@ import java.util.HashMap;
 
 public class CMDHandler {
 
-    private final HashMap<String,Command> commands;
+    private final HashMap<String,Command> commands=new HashMap<>();
     private final BoxGameReloaded game;
 
     public CMDHandler(BoxGameReloaded game) {
         this.game=game;
-        commands=new HashMap<>();
         Class<? extends VariableContainer> vars=game.vars.getClass();
         try {
-            commands.put("fly",new CommandBoolean("fly", vars.getField("fly"), game.vars));
-            commands.put("gravity",new CommandBoolean("gravity", vars.getField("inverted_gravity"), game.vars));
-            commands.put("noclip",new CommandBoolean("noclip", vars.getField("noclip"), game.vars));
-            commands.put("god",new CommandBoolean("god", vars.getField("god"), game.vars));
+            commands.put("fly",new CommandBoolean("fly", game.vars));
+            commands.put("gravity",new CommandBoolean("gravity", game.vars));
+            commands.put("noclip",new CommandBoolean("noclip", game.vars));
+            commands.put("god",new CommandBoolean("god", game.vars));
             commands.put("connect",new CommandConnect());
             commands.put("skin", new CommandSkin());
             commands.put("tail", commands.get("skin"));
@@ -39,7 +38,8 @@ public class CMDHandler {
         char[] chars=s.toCharArray();
         StringBuilder str=new StringBuilder();
         boolean escape=false, quote=false;
-        for (char c : chars) {
+        for (char curr : chars) {
+            char c=curr;
             if (!escape&&c=='\\') escape=true;
             else if (!escape&&c=='"') quote^=true;
             else if (!escape&&!quote&&c==' ') {
@@ -73,7 +73,8 @@ public class CMDHandler {
             error("Empty Command");
             return;
         }
-        String cmd=strings.remove(0);
+        String cmd=strings.get(0);
+        strings.remove(0);
         String[] args=strings.toArray(new String[0]);
         execute(cmd, args);
     }

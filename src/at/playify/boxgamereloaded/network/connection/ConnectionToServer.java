@@ -15,7 +15,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 //Verbindung zum Server
-public class ConnectionToServer implements Closeable,Runnable {
+public class ConnectionToServer implements Closeable, Runnable {
     public PlayerMP[] players=new PlayerMP[0];
     public boolean connected;
     public String servername;
@@ -23,23 +23,30 @@ public class ConnectionToServer implements Closeable,Runnable {
     public boolean userpause;
     public int pauseCount;
     public ArrayList<String> all;
+    public boolean switch0;
+    public boolean switch1;
+    public int switchState;
+    public boolean collide;
     protected BoxGameReloaded game;
     private Socket socket;
-    protected BufferedReader in;
-    protected PrintStream out;
+    protected Input input;
+    protected Output output;
     boolean closed;
     public final RectBound serverbound=new RectBound(-1, -1, -1, -1);
     private final Queue<Packet> q=new LinkedList<>();
     public final Object playerLock=new Object();
+    private final Object packetLock=new Object();
+    private boolean errored;
 
-    public ConnectionToServer() {}
+    public ConnectionToServer(){
+    }
 
-    public ConnectionToServer(final BoxGameReloaded game, String ip) {
+    public ConnectionToServer(final BoxGameReloaded game, String ip){
         this.game=game;
         try {
             socket=new Socket(InetAddress.getByName(ip), 45565);
-            in=new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            out=new PrintStream(socket.getOutputStream());
+            input=new Input(socket.getInputStream());
+            output=new Output(socket.getOutputStream());
         } catch (IOException e) {
             game.logger.error(e.getClass().getSimpleName()+":"+e.getMessage());
             closed=true;
@@ -50,7 +57,8 @@ public class ConnectionToServer implements Closeable,Runnable {
         thread.start();
         initPackets();
     }
-    protected void initPackets() {
+
+    void initPackets(){
         sendPacket(new PacketHello());
         sendPacket(new PacketSetWorld(game.vars.world));
         if (game.gui.isMainMenuVisible()) {
@@ -58,32 +66,56 @@ public class ConnectionToServer implements Closeable,Runnable {
         }
     }
 
-    protected ConnectionToServer(BoxGameReloaded game) {
-        this.game = game;
+    protected ConnectionToServer(BoxGameReloaded game){
+        this.game=game;
     }
 
-    public void leaveWorld() {
+    public void leaveWorld(){
         sendPacketSoon(new PacketSetWorld("Lobby"));
     }
 
-    public void sendPacket(Packet packet) {
-        if (out!=null) {
-            out.println(packet.getClass().getSimpleName().substring(6)+":"+packet.convertToString(game));
-            out.flush();
-            packet.onSend(game, this);
+
+    public void sendPacket(Packet packet){
+        if (output!=null&&!isClosed()) {
+            try {
+                synchronized (packetLock) {
+                    output.writeString(packet.getClass().getSimpleName().substring(6));
+                    packet.send(output, game, this);
+                    output.flush();
+                }
+                packet.onSend(game, this);
+            } catch (SocketException e) {
+                if (!errored) {
+                    errored=true;
+                    String message=e.getMessage();
+                    if (message.startsWith("Software caused connection abort: ")) {
+                        message=message.substring("Software caused connection abort: ".length());
+                    }
+                    game.logger.error("Connection to Server Closed: "+message);
+                }
+                closed=true;
+                close();
+            } catch (Exception e) {
+                if (!errored) {
+                    errored=true;
+                    game.logger.error("Error in "+getClass().getSimpleName());
+                }
+                closed=true;
+                close();
+            }
         }
     }
 
-    public void sendPacketSoon(Packet packet) {
+    public void sendPacketSoon(Packet packet){
         q.add(packet);
         game.pauseLock.unlock();
     }
 
-    public boolean isClosed() {
-        return closed||socket==null||socket.isClosed()||out.checkError();
+    public boolean isClosed(){
+        return closed||socket==null||socket.isClosed();
     }
 
-    public void handleSoon() {
+    public void handleSoon(){
         while (true) {
             Packet poll=q.poll();
             if (poll==null) {
@@ -95,7 +127,7 @@ public class ConnectionToServer implements Closeable,Runnable {
     }
 
     @Override
-    public void close() {
+    public void close(){
         sendPacket(new PacketKick());
         closed=true;
         try {
@@ -107,8 +139,8 @@ public class ConnectionToServer implements Closeable,Runnable {
         }
     }
 
-    public boolean isPaused(boolean partly) {
-        if (game.gui.isMainMenuVisible())return false;
+    public boolean isPaused(boolean partly){
+        if (game.gui.isMainMenuVisible()) return false;
         if (userpause) {
             return game.paused||(!partly&&game.gui.backgroundState()!=0);
         } else {
@@ -122,46 +154,56 @@ public class ConnectionToServer implements Closeable,Runnable {
     }
 
     @Override
-    public void run() {
+    public void run(){
+        String packetName="";
         try {
-            String s;
-            while ((s=in.readLine())!=null) {
-                try {
-                    if (isClosed())
-                        return;
-                    int i=s.indexOf(':');
-                    String packetName=i==-1 ? s : s.substring(0, i);
-                    try {
-                        @SuppressWarnings("unchecked")
-                        Class<? extends Packet> cls=(Class<? extends Packet>) Class.forName(Packet.class.getName()+packetName);
-                        Packet packet=cls.newInstance();
-                        packet.loadFromString(i==-1 ? "" : s.substring(i+1), game);
-                        packet.handle(game, ConnectionToServer.this);
-                    } catch (ClassNotFoundException cls) {
-                        game.logger.error("Unknown Packet received: "+packetName);
-                    } catch (ClassCastException cls) {
-                        game.logger.error("Wrong Packet received: "+packetName);
-                    }
-                }catch (InstantiationException e){
-                    if (e.getCause() instanceof NoSuchMethodException) {
-                        game.logger.error("No Constructor available.");
-                        Game.report(e);
-                    }
-                }catch (Exception e){
-                    Game.report(e);
+            while (true) {
+                packetName=input.readString();
+                Object packet=Class.forName(Packet.class.getName()+packetName).newInstance();
+                if (packet instanceof Packet) {
+                    ((Packet) packet).receive(input, game, this);
+                    ((Packet) packet).handle(game, this);
                 }
             }
-        } catch (SocketException e) {
-            game.logger.error("Connection to Server Closed: "+e.getMessage());
+        } catch (ClassNotFoundException cls) {
+            if (!errored) {
+                errored=true;
+                game.logger.error("Unknown Packet received: "+packetName);
+            }
             close();
-        }catch (Exception e) {
-            game.logger.error("Error in " + getClass().getSimpleName());
+        } catch (ClassCastException cls) {
+            if (!errored) {
+                errored=true;
+                game.logger.error("Wrong Packet received: "+packetName);
+            }
+            close();
+        } catch (InstantiationException cls) {
+            if (!errored) {
+                errored=true;
+                game.logger.error("Illegal Packet received: "+packetName);
+            }
+            close();
+        } catch (SocketException e) {
+            if (!errored) {
+                errored=true;
+                String message=e.getMessage();
+                if (message.startsWith("Software caused connection abort: ")) {
+                    message=message.substring("Software caused connection abort: ".length());
+                }
+                game.logger.error("Connection to Server Closed: "+message);
+            }
+            close();
+        } catch (Exception e) {
+            if (!errored) {
+                errored=true;
+                game.logger.error("Error in "+getClass().getSimpleName());
+            }
             Game.report(e);
             close();
         }
     }
 
-    public String getIp() {
+    public String getIp(){
         if (socket==null) {
             return "[Not Connected]";
         } else {

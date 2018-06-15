@@ -26,7 +26,7 @@ public class BlockCheckPoint extends Block implements Collideable{
     }
 
     @Override
-    protected boolean isBackGround(int meta) {
+    public boolean isBackGround(int meta) {
         return true;
     }
 

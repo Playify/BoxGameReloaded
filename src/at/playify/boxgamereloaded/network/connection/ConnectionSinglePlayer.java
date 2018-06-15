@@ -19,8 +19,8 @@ public class ConnectionSinglePlayer extends ConnectionToServer implements Closea
         server=new Server(game.handler);
         PipedInputStream toClient = new PipedInputStream();
         PipedOutputStream fromClient = new PipedOutputStream();
-        this.in = new BufferedReader(new InputStreamReader(toClient));
-        this.out = new PrintStream(fromClient);
+        input=new Input(toClient);
+        output=new Output(fromClient);
         try {
             server.connect(new ConnectionToClient(new PipedInputStream(fromClient), new PipedOutputStream(toClient), server));
         } catch (IOException e) {
@@ -50,7 +50,7 @@ public class ConnectionSinglePlayer extends ConnectionToServer implements Closea
 
     @Override
     public boolean isClosed() {
-        return closed||out.checkError()||server.isClosed();
+        return closed||server.isClosed();
     }
 
     public void close() {

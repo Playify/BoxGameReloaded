@@ -32,11 +32,11 @@ public class GuiDraw extends Gui {
     public boolean click(Finger finger) {
         if (game.gui.isMainMenuVisible()) return false;
         float x=finger.x/game.d.getHeight(), y=1-finger.y/game.d.getHeight();
-        if (paintButton.bound().contains(x, y)&&paintButton.click(finger)) {
+        if (paintButton.genBound().contains(x, y)&&paintButton.click(finger)) {
             paintButton.onClick();
             return true;
         }
-        if (paintZoomButton.bound().contains(x, y)&&paintZoomButton.click(finger)) {
+        if (paintZoomButton.genBound().contains(x, y)&&paintZoomButton.click(finger)) {
             paintZoomButton.onClick();
             return true;
         }
@@ -46,13 +46,13 @@ public class GuiDraw extends Gui {
     @Override
     public void draw() {
         game.d.pushMatrix();
-        BoundingBox3d bound=paintButton.bound();
+        BoundingBox3d bound=paintButton.genBound();
         game.d.translate(bound.minX, bound.minY, bound.minZ);
         game.d.scale(bound.maxX-bound.minX, bound.maxY-bound.minY, bound.maxZ-bound.minZ);
         paintButton.draw(game.d);
         game.d.popMatrix();
         game.d.pushMatrix();
-        bound=paintZoomButton.bound();
+        bound=paintZoomButton.genBound();
         game.d.translate(bound.minX, bound.minY, bound.minZ);
         game.d.scale(bound.maxX-bound.minX, bound.maxY-bound.minY, bound.maxZ-bound.minZ);
         paintZoomButton.draw(game.d);

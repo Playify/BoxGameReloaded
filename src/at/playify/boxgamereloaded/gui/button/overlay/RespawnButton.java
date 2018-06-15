@@ -15,32 +15,32 @@ public class RespawnButton extends Button {
     }
 
     @Override
-    public String text() {
+    public String genText() {
         return "Respawn";
     }
 
     @Override
-    public BoundingBox3d bound() {
+    public BoundingBox3d genBound() {
         float aspect=game.d.getWidth()/game.d.getHeight();
-        bound.set(aspect-1/6f-1/5f, 5/6f, 0, aspect-1/5f, 1, .025f);
-        return bound;
+        buttonBound.set(aspect-1/6f-1/5f, 5/6f, 0, aspect-1/5f, 1, .025f);
+        return buttonBound;
     }
 
     @Override
     public void draw(Drawer d) {
         if (visibleState==0) return;
         if (game.gui.isMainMenuVisible()) return;
-        int color=color();
+        int color=genColor();
         d.translate(0.5f, 0, 0);
-        float z=(bound.maxX-bound.minX)/(bound.maxZ-bound.minZ);
+        float z=(buttonBound.maxX-buttonBound.minX)/(buttonBound.maxZ-buttonBound.minZ);
         d.scale(1, 1, z);
-        float zz=(bound.maxZ-bound.minZ)*2;
+        float zz=(buttonBound.maxZ-buttonBound.minZ)*2;
         d.translate(0, 0, zz);
 
         d.translate(0, 1, 0);
         d.scale(visibleState, visibleState, visibleState);
         d.translate(0, -.5f, 0);
-        d.rotate((float) Math.sin(Math.toRadians((1-visibleState)*500))*10f, 0, 0, 1);
+        d.rotate((float) Math.sin(Math.PI/180*((1-visibleState)*500))*10f, 0, 0, 1);
         d.translate(0, -.5f, 0);
 
         d.rotate(180*mainState, 0, 1, 0);

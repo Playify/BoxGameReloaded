@@ -25,7 +25,7 @@ public class BlockArrow extends Block {
     }
 
     @Override
-    protected boolean isBackGround(int meta) {
+    public boolean isBackGround(int meta) {
         return true;
     }
 

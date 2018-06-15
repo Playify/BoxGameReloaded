@@ -4,8 +4,12 @@ import at.playify.boxgamereloaded.BoxGameReloaded;
 import at.playify.boxgamereloaded.network.Server;
 import at.playify.boxgamereloaded.network.connection.ConnectionToClient;
 import at.playify.boxgamereloaded.network.connection.ConnectionToServer;
+import at.playify.boxgamereloaded.network.connection.Input;
+import at.playify.boxgamereloaded.network.connection.Output;
 import at.playify.boxgamereloaded.player.Player;
 import at.playify.boxgamereloaded.player.PlayerMP;
+
+import java.io.IOException;
 
 public class PacketSkin extends Packet {
 
@@ -17,39 +21,16 @@ public class PacketSkin extends Packet {
         this.skin=p.skin();
     }
 
-    @SuppressWarnings("unused")
-    public PacketSkin() {
-    }
-
-    @SuppressWarnings("WeakerAccess")
     public PacketSkin(String player, String skin) {
         this.player=player;
         this.skin=skin;
     }
-
-    @Override
-    public String convertToString(BoxGameReloaded game) {
-        if (skin==null) {
-            return player;
-        }
-        return player+';'+skin;
-    }
-
-    @Override
-    public void loadFromString(String s, BoxGameReloaded game) {
-        int ind=s.indexOf(';');
-        if (ind==-1) {
-            player=s;
-            skin=null;
-        } else {
-            player=s.substring(0, ind);
-            skin=s.substring(ind+1);
-        }
+    public PacketSkin(){
     }
 
     @Override
     public void handle(BoxGameReloaded game, ConnectionToServer connectionToServer) {
-        if (skin!=null) {
+        if (!skin.isEmpty()) {
             PlayerMP[] players=connectionToServer.players;
             Player p=null;
             if (player==null||player.isEmpty()||player.equals(game.player.name())) {
@@ -64,27 +45,6 @@ public class PacketSkin extends Packet {
             if (p!=null) {
                 p.skin(skin);
             }
-
-        }
-    }
-
-    @Override
-    public String convertToString(Server server, ConnectionToClient client) {
-        if (skin==null) {
-            return player;
-        }
-        return player+';'+skin;
-    }
-
-    @Override
-    public void loadFromString(String s, Server server) {
-        int ind=s.indexOf(';');
-        if (ind==-1) {
-            player=s;
-            skin=null;
-        } else {
-            player=s.substring(0, ind);
-            skin=s.substring(ind+1);
         }
     }
 
@@ -100,5 +60,31 @@ public class PacketSkin extends Packet {
                 connectionToClient.sendPacket(new PacketSkin(player, con.skin));
             }
         }
+    }
+
+    @Override
+    public void send(Output out, Server server, ConnectionToClient con) throws IOException{
+        out.writeString(player);
+        out.writeString(skin==null?"":skin);
+    }
+
+    @Override
+    public void send(Output out, BoxGameReloaded game, ConnectionToServer con) throws IOException{
+        out.writeString(player);
+        out.writeString(skin==null?"":skin);
+    }
+
+    @Override
+    public void receive(Input in, Server server, ConnectionToClient con) throws IOException{
+        player=in.readString();
+        skin=in.readString();
+    }
+
+
+    @Override
+    public void receive(Input in, BoxGameReloaded game, ConnectionToServer con) throws IOException{
+        player=in.readString();
+        skin=in.readString();
+
     }
 }

@@ -16,30 +16,31 @@ import java.util.Iterator;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 //Server wird auch für SinglePlayer benutzt
-public class Server implements Runnable{
-    public Logger logger=new Logger();
-    public CompressionHandler compresser=new CompressionHandler(logger);
+public class Server implements Runnable {
     public boolean pauseForSingleUser=true;
+    public int pausemode=0b100;
+    public Logger logger=new Logger("S:");
+    public CompressionHandler compresser=new CompressionHandler(logger);
     public LevelHandler levels;
     private ConnectionList connected=new ConnectionList();
-    private int pausemode=0;
     public Handler handler;
 
-    private final ThreadLocal<ArrayList<ConnectionToClient>> last = new ThreadLocal<>();
+    private final ThreadLocal<ArrayList<ConnectionToClient>> last=new ThreadLocal<>();
     private ServerSocket socket;
     private boolean closed;
     private Thread thread;
+    private boolean errored;
 
-    public Server(Handler handler) {
+    public Server(Handler handler){
         this.handler=handler;
         this.levels=new LevelHandler(this);
     }
 
-    public int getPausemode() {
-        if (pauseForSingleUser&&connected.size()==1){
-            return connected.get(0).paused?3:2;
+    public int getPausemode(){
+        if (pauseForSingleUser&&connected.size()==1) {
+            return connected.get(0).paused ? 3 : 2;
         }
-        if ((pausemode & 2) != 0) {
+        if ((pausemode&2)!=0) {
             for (ConnectionToClient connectionToClient : connected) {
                 if (connectionToClient.paused) {
                     return 3;
@@ -49,52 +50,50 @@ public class Server implements Runnable{
         return pausemode;
     }
 
-    public void run() {
+    public void run(){
         try {
             try {
                 socket=new ServerSocket(45565);
-            }catch (BindException e){
+            } catch (BindException e) {
+                if (!errored) errored=true;
+                else return;
                 logger.error("Error starting Server");
                 return;
             }
             while (true) {
-                if (isClosed()||thread==null||thread.isInterrupted())return;
+                if (isClosed()||thread==null||thread.isInterrupted()) return;
                 connected.add(new ConnectionToClient(socket.accept(), this));
             }
         } catch (SocketException e) {
             if (socket!=null) {
-                System.out.println("Server closed");
+                if (!errored){
+                    errored=true;
+                    handler.logger.show("Server closed");
+                }
                 close();
             }
         } catch (IOException e) {
             e.printStackTrace();
+            if (!errored){
+                errored=true;
+                handler.logger.show("Server closed");
+            }
             close();
         }
     }
 
-    public void broadcast(Packet packet) {
+    public void broadcast(Packet packet){
         if (last.get()==null) {
             last.set(new ArrayList<ConnectionToClient>());
         }
         last.get().clear();
         for (ConnectionToClient connectionToClient : connected) {
             connectionToClient.sendPacket(packet);
-                last.get().add(connectionToClient);
-        }
-    }
-    @SuppressWarnings("WeakerAccess")
-    public void broadcastRaw(String s) {
-        if (last.get()==null) {
-            last.set(new ArrayList<ConnectionToClient>());
-        }
-        last.get().clear();
-        for (ConnectionToClient connectionToClient : connected) {
-            connectionToClient.sendRaw(s);
-                last.get().add(connectionToClient);
+            last.get().add(connectionToClient);
         }
     }
 
-    public void broadcast(Packet packet, ConnectionToClient except) {
+    public void broadcast(Packet packet, ConnectionToClient except){
         if (last.get()==null) {
             last.set(new ArrayList<ConnectionToClient>());
         }
@@ -107,30 +106,30 @@ public class Server implements Runnable{
         }
     }
 
-    public void broadcast(Packet packet, String world, ConnectionToClient except) {
+    public void broadcast(Packet packet, String world, ConnectionToClient except){
         if (last.get()==null) {
             last.set(new ArrayList<ConnectionToClient>());
         }
         last.get().clear();
         for (ConnectionToClient connectionToClient : connected) {
-            if (connectionToClient!=except&&world.equals(connectionToClient.world)){
+            if (connectionToClient!=except&&world.equals(connectionToClient.world)) {
                 connectionToClient.sendPacket(packet);
                 last.get().add(connectionToClient);
             }
         }
     }
 
-    public void checkConnected() {
-        if (last.get() == null) {
+    public void checkConnected(){
+        if (last.get()==null) {
             last.set(new ArrayList<ConnectionToClient>());
         }
         while (true) {
-            boolean done = true;
+            boolean done=true;
             last.get().clear();
             for (ConnectionToClient next : connected) {
                 if (next.isClosed()) {
                     next.close();
-                    done = false;
+                    done=false;
                     break;
                 } else {
                     last.get().add(next);
@@ -142,7 +141,7 @@ public class Server implements Runnable{
         }
     }
 
-    public ConnectionToClient getByName(String name) {
+    public ConnectionToClient getByName(String name){
         for (ConnectionToClient connectionToClient : connected) {
             if (name.equals(connectionToClient.name)) {
                 return connectionToClient;
@@ -151,19 +150,19 @@ public class Server implements Runnable{
         return null;
     }
 
-    public ArrayList<ConnectionToClient> getLastBroadcast() {
+    public ArrayList<ConnectionToClient> getLastBroadcast(){
         return last.get();
     }
 
-    public void disconnect(ConnectionToClient connectionToClient) {
+    public void disconnect(ConnectionToClient connectionToClient){
         connected.remove(connectionToClient);
     }
 
-    public void connect(ConnectionToClient connectionToClient) {
+    public void connect(ConnectionToClient connectionToClient){
         connected.add(connectionToClient);
     }
 
-    public void getByWorld(String world, ArrayList<ConnectionToClient> list) {
+    public void getByWorld(String world, ArrayList<ConnectionToClient> list){
         list.clear();
         for (ConnectionToClient connectionToClient : connected) {
             if (world.equals(connectionToClient.world)) {
@@ -172,7 +171,11 @@ public class Server implements Runnable{
         }
     }
 
-    public void close() {
+    public int count(){
+        return connected.size();
+    }
+
+    public void close(){
         for (ConnectionToClient connectionToClient : connected) {
             connectionToClient.close("Server Closed");
         }
@@ -190,19 +193,19 @@ public class Server implements Runnable{
         }
     }
 
-    public boolean isClosed() {
+    public boolean isClosed(){
         if (closed||(socket!=null&&socket.isClosed())) {
             close();
             return true;
-        }else return false;
+        } else return false;
     }
 
-    public boolean running() {
+    public boolean running(){
         return thread!=null&&thread.isAlive();
     }
 
-    public void start() {
-        if (!running()){
+    public void start(){
+        if (!running()) {
             if (thread!=null) {
                 thread.interrupt();
             }
@@ -211,8 +214,9 @@ public class Server implements Runnable{
             thread.start();
         }
     }
-    public void stop() {
-        if (running()){
+
+    public void stop(){
+        if (running()) {
             if (thread==null) {
                 return;
             }
@@ -229,61 +233,63 @@ public class Server implements Runnable{
 
 
     @SuppressWarnings("WeakerAccess")
-    public class ConnectionList implements Iterable<ConnectionToClient>{
+    public class ConnectionList implements Iterable<ConnectionToClient> {
         private final CopyOnWriteArrayList<ConnectionToClient> lst=new CopyOnWriteArrayList<>();
 
-        private void changed() {
+        private void changed(){
             for (ConnectionToClient con : lst) {
                 con.sendPacket(new PacketAllPlayers());
             }
         }
 
-        public void add(ConnectionToClient con) {
+        public void add(ConnectionToClient con){
             lst.add(con);
             changed();
         }
 
 
-        public void remove(ConnectionToClient con) {
+        public void remove(ConnectionToClient con){
             lst.remove(con);
             changed();
         }
-        public void clear() {
+
+        public void clear(){
             lst.clear();
             changed();
         }
 
         @Override
-        public Iterator<ConnectionToClient> iterator() {
+        public Iterator<ConnectionToClient> iterator(){
             return new ConnectionIterator();
         }
 
-        public int size() {
+        public int size(){
             return lst.size();
         }
 
-        public ConnectionToClient get(int i) {
+        public ConnectionToClient get(int i){
             return lst.get(i);
         }
 
         private class ConnectionIterator implements Iterator<ConnectionToClient> {
             private final Iterator<ConnectionToClient> it;
+
             private ConnectionIterator(){
                 it=lst.iterator();
             }
 
             @Override
-            public boolean hasNext() {
+            public boolean hasNext(){
                 return it.hasNext();
             }
 
             @Override
-            public ConnectionToClient next() {
+            public ConnectionToClient next(){
                 return it.next();
             }
 
             @Override
-            public void remove() {
+            public void remove(){
                 it.remove();
                 changed();
             }

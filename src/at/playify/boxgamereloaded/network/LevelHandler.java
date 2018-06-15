@@ -6,9 +6,9 @@ import at.playify.boxgamereloaded.level.ServerLevel;
 import at.playify.boxgamereloaded.network.connection.ConnectionToClient;
 import at.playify.boxgamereloaded.util.Action;
 import at.playify.boxgamereloaded.util.Utils;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import at.playify.boxgamereloaded.util.json.JSONArray;
+import at.playify.boxgamereloaded.util.json.JSONException;
+import at.playify.boxgamereloaded.util.json.JSONObject;
 
 import java.io.IOException;
 import java.net.SocketException;

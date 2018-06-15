@@ -12,14 +12,14 @@ public class ButtonDrawButtons extends Button {
     }
 
     @Override
-    public String text() {
+    public String genText() {
         return "Steuerung zeigen";
     }
 
     @Override
-    public BoundingBox3d bound() {
-        bound.set(.3f,.25f,-.05f,game.aspectratio/2-.025f,.35f,0);
-        return bound;
+    public BoundingBox3d genBound() {
+        buttonBound.set(.3f,.25f,-.05f,game.aspectratio/2-.025f,.35f,0);
+        return buttonBound;
     }
 
     @Override
@@ -32,12 +32,12 @@ public class ButtonDrawButtons extends Button {
     @Override
     public void draw(Drawer d) {
         d.pushMatrix();
-        BoundingBox3d bound=bound();
-        d.cube(0, 0, 0, 1, 1, 1, color());
+        BoundingBox3d bound=genBound();
+        d.cube(0, 0, 0, 1, 1, 1, genColor());
         float v=(bound.maxY-bound.minY);
         float v2=(bound.maxX-bound.minX);
         d.scale(1/v2, 1/v,1);
-        d.drawStringCenter(text(), v2/2, v/4, v/2, game.vars.buttons?0xFF00FF00:0xFFFF0000);
+        d.drawStringCenter(genText(), v2/2, v/4, v/2, game.vars.buttons?0xFF00FF00:0xFFFF0000);
         d.popMatrix();
     }
 }

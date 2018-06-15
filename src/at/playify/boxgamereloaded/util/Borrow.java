@@ -6,7 +6,6 @@ import at.playify.boxgamereloaded.interfaces.Game;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 //Ausborgbares
@@ -15,11 +14,11 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 @SuppressWarnings({"WeakerAccess", "unused"})
 public class Borrow {
     public static long borrowed=0;
-    private static final Queue<BorrowedCollisionData> datas=new ConcurrentLinkedQueue<>();
-    private static final Queue<BorrowedBoundingBox> bounds=new ConcurrentLinkedQueue<>();
-    private static final Queue<BorrowedBoundingBox3d> bounds3d=new ConcurrentLinkedQueue<>();
-    private static final Queue<ArrayList<? extends Borrowed>> boundLists=new ConcurrentLinkedQueue<>();
-    private static final Queue<ArrayList<String>> stringLists=new ConcurrentLinkedQueue<>();
+    private static final Storage<BorrowedCollisionData> datas=new Storage<>();
+    private static final Storage<BorrowedBoundingBox> bounds=new Storage<>();
+    private static final Storage<BorrowedBoundingBox3d> bounds3d=new Storage<>();
+    private static final Storage<ArrayList<? extends Borrowed>> boundLists=new Storage<>();
+    private static final Storage<ArrayList<String>> stringLists=new Storage<>();
 
     public static <T extends Borrowed> void free(T b) {
         b.free();

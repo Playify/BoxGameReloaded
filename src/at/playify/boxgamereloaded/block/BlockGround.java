@@ -39,7 +39,7 @@ public class BlockGround extends Block {
     }
 
     @Override
-    protected boolean isBackGround(int meta) {
+    public boolean isBackGround(int meta) {
         return false;
     }
 }

@@ -17,10 +17,11 @@ public class TextCreator {
 
     public void add(String s){
         float w=0,maxW=game.aspectratio/2-.11f;
+        String sub;
         for (char c : s.toCharArray()) {
             float cw=game.d.charWidth(c);
             if ((w+cw)*0.05f>maxW||c=='\n') {
-                String sub=str.toString();
+                sub=str.toString();
                 lst.add(sub);
                 if (!sub.isEmpty()&&sub.charAt(0)=='$') lst.add("");
                 w=0;
@@ -31,7 +32,7 @@ public class TextCreator {
                 str.append(c);
             }
         }
-        String sub=str.toString();
+        sub=str.toString();
         lst.add(sub);
         if (!sub.isEmpty()&&sub.charAt(0)=='$') lst.add("");
         str.setLength(0);

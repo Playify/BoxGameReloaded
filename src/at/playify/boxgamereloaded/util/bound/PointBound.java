@@ -4,7 +4,7 @@ package at.playify.boxgamereloaded.util.bound;
 import at.playify.boxgamereloaded.level.Level;
 
 //Punktförmige KollisionsBox
-public class PointBound implements Bound<PointBound>{
+public class PointBound implements Bound {
     public float x;
     public float y;
 
@@ -42,10 +42,9 @@ public class PointBound implements Bound<PointBound>{
         return this;
     }
 
-    public PointBound move(float x, float y) {
+    public void move(float x, float y) {
         this.x += x;
         this.y += y;
-        return this;
     }
 
     @Override

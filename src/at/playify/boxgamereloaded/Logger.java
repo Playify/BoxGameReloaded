@@ -5,21 +5,25 @@ import at.playify.boxgamereloaded.util.Utils;
 import java.util.ArrayList;
 
 public class Logger {
-
+    private final String prefix;
     private ArrayList<Line> lines=new ArrayList<>();
 
+    public Logger(String s){
+        prefix=s;
+    }
+
     public void error(String s){
-        lines.add(new Line(s,1));
-        System.err.println(s);
+        lines.add(new Line(prefix+s,1));
+        System.err.println(prefix+s);
     }
     public void error(Exception e){
         String s=e.getClass().getSimpleName()+":"+e.getMessage();
-        lines.add(new Line(s,1));
-        System.err.println(s);
+        lines.add(new Line(prefix+s,1));
+        System.err.println(prefix+s);
     }
     public void show(String s){
-        lines.add(new Line(s));
-        System.out.println(s);
+        lines.add(new Line(prefix+s));
+        System.out.println(prefix+s);
     }
 
     public void draw(BoxGameReloaded game){
@@ -34,7 +38,7 @@ public class Logger {
                     final float h=.05f;
                     game.d.drawString(line.s, .01f, .01f+h*(size-i-1), h, color(line));
                 }
-            }catch (IndexOutOfBoundsException ignoredö){ }
+            }catch (IndexOutOfBoundsException ignored){ }
         }
     }
 

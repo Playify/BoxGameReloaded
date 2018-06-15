@@ -5,7 +5,7 @@ import at.playify.boxgamereloaded.util.Utils;
 
 //Kreisförmige KollisionsBox
 @SuppressWarnings("WeakerAccess")
-public class CircleBound implements Bound<CircleBound>{
+public class CircleBound implements Bound {
     public float x;
     public float y;
     public float r;
@@ -43,10 +43,9 @@ public class CircleBound implements Bound<CircleBound>{
         return this;
     }
 
-    public CircleBound move(float x, float y) {
+    public void move(float x, float y) {
         this.x += x;
         this.y += y;
-        return this;
     }
 
     @Override

@@ -92,7 +92,7 @@ public class BlockIconDrawButton extends BlockDebug {
 
 
     @Override
-    protected boolean isBackGround(int meta) {
+    public boolean isBackGround(int meta) {
         return false;
     }
 }

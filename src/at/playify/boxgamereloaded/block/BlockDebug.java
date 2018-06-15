@@ -26,7 +26,7 @@ public abstract class BlockDebug extends Block {
     }
 
     @Override
-    protected boolean isBackGround(int meta) {
+    public boolean isBackGround(int meta) {
         return true;
     }
 

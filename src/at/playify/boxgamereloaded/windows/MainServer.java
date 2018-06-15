@@ -14,7 +14,7 @@ public class MainServer {
             String s;
             while ((s = br.readLine()) != null) {
                 try {
-                    server.broadcastRaw(s);
+                    //server.broadcastRaw(s);
                 }catch (Exception e){
                     e.printStackTrace();
                 }

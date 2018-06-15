@@ -8,12 +8,7 @@ public interface Drawer {
 
     float getWidth();
 
-    void setWidth(int width);
-
     float getHeight();
-
-    void setHeight(int height);
-
 
     void back(boolean b);
 
@@ -85,4 +80,6 @@ public interface Drawer {
     float charWidth(char c);
 
     void drawButtons();
+
+    void flipCullface();
 }

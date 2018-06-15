@@ -5,6 +5,7 @@ import at.playify.boxgamereloaded.level.Level;
 import at.playify.boxgamereloaded.player.PlayerSP;
 import at.playify.boxgamereloaded.util.Borrow;
 import at.playify.boxgamereloaded.util.BoundingBox;
+import at.playify.boxgamereloaded.util.Utils;
 import at.playify.boxgamereloaded.util.bound.Bound;
 
 import java.util.ArrayList;
@@ -22,13 +23,14 @@ public class BlockGlitch extends Block {
     }
 
     @Override
-    public void draw(int x, int y, Level level) {float x1=(float) Math.random();
-        float y1=(float) Math.random();
-        float x2=(float) Math.random();
-        float y2=(float) Math.random();
+    public void draw(int x, int y, Level level) {
+        float x1=Utils.randomFloat();
+        float y1=Utils.randomFloat();
+        float x2=Utils.randomFloat();
+        float y2=Utils.randomFloat();
         this.bound.set(Math.min(x1,x2),Math.min(y1,y2),Math.max(x1,x2),Math.max(y1,y2));
         super.bound.set(x+bound.minX,y+bound.minY,bound.maxX-bound.minX,bound.maxY-bound.minY);
-        int clr=(int) Double.doubleToLongBits(Math.random());
+        int clr=Utils.randomInt();
         if (game.vars.cubic) {
             if (game.vars.cubic_check) {
                 game.d.cube(super.bound.x(), super.bound.y(), 0, super.bound.w(), super.bound.h(), 1, 0xFF000000|clr, !level.get(x, y + 1).isSolid(), !level.get(x + 1, y).isSolid(), !level.get(x, y - 1).isSolid(), !level.get(x - 1, y).isSolid());
@@ -46,7 +48,7 @@ public class BlockGlitch extends Block {
     }
 
     @Override
-    protected boolean isBackGround(int meta) {
+    public boolean isBackGround(int meta) {
         return false;
     }
 

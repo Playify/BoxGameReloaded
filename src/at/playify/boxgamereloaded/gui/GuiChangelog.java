@@ -6,9 +6,8 @@ import at.playify.boxgamereloaded.interfaces.Drawer;
 import at.playify.boxgamereloaded.util.BoundingBox3d;
 import at.playify.boxgamereloaded.util.Finger;
 import at.playify.boxgamereloaded.util.Utils;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import at.playify.boxgamereloaded.util.json.JSONArray;
+import at.playify.boxgamereloaded.util.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -30,14 +29,14 @@ public class GuiChangelog extends Gui implements Comparator<String> {
     public void initGui(ArrayList<Button> buttons){
         buttons.add(new Button(game) {
             @Override
-            public String text(){
+            public String genText(){
                 return "";
             }
 
             @Override
-            public BoundingBox3d bound(){
-                bound.set(game.aspectratio/4,.1f,0.01f,game.aspectratio*3/4,.9f,0);
-                return bound;
+            public BoundingBox3d genBound(){
+                buttonBound.set(game.aspectratio/4,.1f,0.01f,game.aspectratio*3/4,.9f,0);
+                return buttonBound;
             }
 
             @Override
@@ -70,7 +69,6 @@ public class GuiChangelog extends Gui implements Comparator<String> {
             }
             Collections.sort(keys,this);
             TextCreator txt=new TextCreator(game,lst);
-            try {
                 for (String key : keys) {
                     if (!key.equals("TODO")) {
                         txt.add("$"+key+":");
@@ -80,9 +78,6 @@ public class GuiChangelog extends Gui implements Comparator<String> {
                         }
                     }
                 }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
         }
         game.d.cube(game.aspectratio/4,.1f,0.01f,game.aspectratio/2,.8f,.01f,0xFF00FFFF);
         for (int i=(int) scroll-1;i<Math.min(lst.size(),scroll+9);i++) {
@@ -134,8 +129,10 @@ public class GuiChangelog extends Gui implements Comparator<String> {
         int ret=a2.length-a1.length;
         if (ret!=0) return ret;
         for (int i=0;i<a1.length;i++) {
-            ret=-Integer.compare(Utils.parseInt(a1[i],-1),Utils.parseInt(a2[i],-1));
-            if (ret!=0) return ret;
+            int i1=Utils.parseInt(a1[i], -1);
+            int i2=Utils.parseInt(a2[i], -1);
+            if (i1<i2)return 1;
+            if (i1>i2)return -1;
         }
         return s1.compareTo(s2);
     }
@@ -147,14 +144,14 @@ public class GuiChangelog extends Gui implements Comparator<String> {
         }
 
         @Override
-        public String text(){
+        public String genText(){
             return "Close";
         }
 
         @Override
-        public BoundingBox3d bound(){
-            bound.set(game.aspectratio/4+.02f,.12f,0,game.aspectratio/2-.01f,.22f,0.01f);
-            return bound;
+        public BoundingBox3d genBound(){
+            buttonBound.set(game.aspectratio/4+.02f,.12f,0,game.aspectratio/2-.01f,.22f,0.01f);
+            return buttonBound;
         }
 
         @Override

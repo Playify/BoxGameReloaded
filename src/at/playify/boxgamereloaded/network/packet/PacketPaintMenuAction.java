@@ -5,11 +5,13 @@ import at.playify.boxgamereloaded.level.ServerLevel;
 import at.playify.boxgamereloaded.network.Server;
 import at.playify.boxgamereloaded.network.connection.ConnectionToClient;
 import at.playify.boxgamereloaded.network.connection.ConnectionToServer;
+import at.playify.boxgamereloaded.network.connection.Input;
+import at.playify.boxgamereloaded.network.connection.Output;
 import at.playify.boxgamereloaded.util.Action;
-import at.playify.boxgamereloaded.util.Utils;
-import org.json.JSONException;
-import org.json.JSONObject;
+import at.playify.boxgamereloaded.util.json.JSONException;
+import at.playify.boxgamereloaded.util.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class PacketPaintMenuAction extends Packet {
@@ -22,48 +24,20 @@ public class PacketPaintMenuAction extends Packet {
         this.buttonVariant=buttonVariant;
     }
 
-    @SuppressWarnings("unused")
     public PacketPaintMenuAction() {
-    }
-
-    @Override
-    public String convertToString(BoxGameReloaded game) {
-        return ((buttonVariant<<2)|variant)+";"+zoom;
-    }
-
-    @Override
-    public void loadFromString(String s, BoxGameReloaded game) {
-        int i=Utils.parseInt(s.substring(0,s.indexOf(";")),-1);
-        variant=i&0b11;
-        buttonVariant=i>>2;
-        zoom=Boolean.getBoolean(s.substring(s.indexOf(";")+1));
     }
 
     @Override
     public void handle(BoxGameReloaded game, ConnectionToServer connectionToServer) {/*
         int x=variant;
         int y=buttonVariant;
-        game.player.bound.move(x,y);
+        game.player.genBound.move(x,y);
         game.zoom_x+=x;
         game.zoom_y+=y;
         game.zoom_x=Utils.clamp(game.zoom_x, 0, game.level.sizeX);
         game.zoom_y=Utils.clamp(game.zoom_y, 0, game.level.sizeY);
         game.level.spawnPoint.shift(x,y,game.level.sizeX,game.level.sizeY);
         game.vars.check.shift(x,y,game.level.sizeX,game.level.sizeY);*/
-    }
-
-    @Override
-    public String convertToString(Server server, ConnectionToClient client) {
-        return ((buttonVariant<<2)|variant)+";"+zoom;
-    }
-
-    @Override
-    public void loadFromString(String s, Server server) {
-        int i=Utils.parseInt(s.substring(0,s.indexOf(";")),-1);
-        variant=i&0b11;
-        buttonVariant=i>>2;
-        zoom=Boolean.getBoolean(s.substring(s.indexOf(";")+1));
-
     }
 
     @Override
@@ -123,6 +97,34 @@ public class PacketPaintMenuAction extends Packet {
                     }
                 }
             });
+    }
+
+    @Override
+    public void send(Output out, Server server, ConnectionToClient con) throws IOException{
+        out.writeInt(variant);
+        out.writeInt(buttonVariant);
+        out.writeBoolean(zoom);
+    }
+
+    @Override
+    public void send(Output out, BoxGameReloaded game, ConnectionToServer con) throws IOException{
+        out.writeInt(variant);
+        out.writeInt(buttonVariant);
+        out.writeBoolean(zoom);
+    }
+
+    @Override
+    public void receive(Input in, Server server, ConnectionToClient con) throws IOException{
+        variant=in.readInt();
+        buttonVariant=in.readInt();
+        zoom=in.readBoolean();
+    }
+
+    @Override
+    public void receive(Input in, BoxGameReloaded game, ConnectionToServer con) throws IOException{
+        variant=in.readInt();
+        buttonVariant=in.readInt();
+        zoom=in.readBoolean();
     }
 
     private void shift(ServerLevel level, int x, int y) {

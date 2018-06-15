@@ -25,6 +25,9 @@ public class GameView extends GLSurfaceView implements GLSurfaceView.Renderer, V
         setRenderMode(RENDERMODE_CONTINUOUSLY);
 
         setOnTouchListener(this);
+
+        setFocusable(true);
+        setFocusableInTouchMode(true);
     }
 
     @Override
@@ -55,6 +58,9 @@ public class GameView extends GLSurfaceView implements GLSurfaceView.Renderer, V
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         try {
+            if (event.getActionMasked()==MotionEvent.ACTION_DOWN){
+                a.handler.setKeyboardVisible(false);
+            }
             int pointercount=event.getPointerCount();
             for(int i=0; i<a.game.fingers.length; i++) {
                 boolean d=a.game.fingers[i].down;
@@ -73,5 +79,15 @@ public class GameView extends GLSurfaceView implements GLSurfaceView.Renderer, V
             e.printStackTrace();
         }
         return true;
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        a.osHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                a.layout();
+            }
+        });
     }
 }

@@ -4,33 +4,26 @@ import at.playify.boxgamereloaded.BoxGameReloaded;
 import at.playify.boxgamereloaded.network.Server;
 import at.playify.boxgamereloaded.network.connection.ConnectionToClient;
 import at.playify.boxgamereloaded.network.connection.ConnectionToServer;
+import at.playify.boxgamereloaded.network.connection.Input;
+import at.playify.boxgamereloaded.network.connection.Output;
 import at.playify.boxgamereloaded.player.PlayerMP;
+
+import java.io.IOException;
 
 public class PacketResetPlayersInWorld extends Packet {
     public String player;
 
-    @SuppressWarnings("WeakerAccess")
     public PacketResetPlayersInWorld(String name) {
         player=name;
     }
-    @SuppressWarnings("WeakerAccess")
     public PacketResetPlayersInWorld() {
-    }
-
-    @Override
-    public String convertToString(BoxGameReloaded game) {
-        return player==null?"":player;
-    }
-
-    @Override
-    public void loadFromString(String s, BoxGameReloaded game) {
-        player=s.isEmpty()?null:s;
+        player="";
     }
 
     @Override
     public void handle(BoxGameReloaded game, ConnectionToServer connectionToServer) {
         synchronized (connectionToServer.playerLock){
-            if (player==null) {
+            if (player.isEmpty()) {
                 connectionToServer.players= new PlayerMP[0];
                 game.level.clearHistory();
             }else{
@@ -55,18 +48,27 @@ public class PacketResetPlayersInWorld extends Packet {
             }
         }
     }
-
-    @Override
-    public String convertToString(Server server, ConnectionToClient client) {
-        return player==null ? "" : player;
-    }
-
-    @Override
-    public void loadFromString(String s, Server server) {
-        player=s.isEmpty()?null:s;
-    }
-
     @Override
     public void handle(Server server, ConnectionToClient connectionToClient) {
+    }
+
+    @Override
+    public void send(Output out, Server server, ConnectionToClient con) throws IOException{
+        out.writeString(player);
+    }
+
+    @Override
+    public void send(Output out, BoxGameReloaded game, ConnectionToServer con) throws IOException{
+        out.writeString(player);
+    }
+
+    @Override
+    public void receive(Input in, Server server, ConnectionToClient con) throws IOException{
+        player=in.readString();
+    }
+
+    @Override
+    public void receive(Input in, BoxGameReloaded game, ConnectionToServer con) throws IOException{
+        player=in.readString();
     }
 }

@@ -12,18 +12,18 @@ public class ButtonButtons extends Button {
     }
 
     @Override
-    public String text() {
+    public String genText() {
         return "Buttons";
     }
 
     @Override
-    public BoundingBox3d bound() {
+    public BoundingBox3d genBound() {
         if (game.gui==null||game.gui.isMainMenuVisible()||!game.vars.buttons) {
-            bound.set(0, 0, 0, 0, 0, 0);
+            buttonBound.set(0, 0, 0, 0, 0, 0);
         } else {
-            bound.set(0, 0, 0, game.aspectratio, 1, 0);
+            buttonBound.set(0, 0, 0, game.aspectratio, 1, 0);
         }
-        return bound;
+        return buttonBound;
     }
 
     @Override
@@ -33,7 +33,7 @@ public class ButtonButtons extends Button {
 
     @Override
     public void draw(Drawer d) {
-        if (bound.isEmpty()) return;
+        if (buttonBound.isEmpty()) return;
         game.d.pushMatrix();
         game.d.scale(1/4f);
         game.d.drawButtons();

@@ -22,6 +22,7 @@ public class Main {
     private static Finger finger;
     private static BoxGameReloaded game;
     static final File base=new File(System.getenv("APPDATA"), "BoxGameReloaded");
+    private static WindowsDrawer d;
 
     public static void main(String[] args) {
         loadLibrary();
@@ -36,7 +37,7 @@ public class Main {
         WindowsHandler handler;
         game=new BoxGameReloaded(handler=new WindowsHandler());
         handler.game=game;
-        game.setDrawer(handler.d=new WindowsDrawer(game));
+        game.setDrawer(d=handler.d=new WindowsDrawer(game));
         finger=game.finger(0);
         game.start();
 
@@ -59,19 +60,20 @@ public class Main {
             System.setProperty("org.lwjgl.librarypath", libs.getAbsolutePath());
             File file=new File(Main.class.getProtectionDomain().getCodeSource().getLocation().getPath());
             if (file.isFile()) {
-                ZipInputStream zip=new ZipInputStream(new FileInputStream(file));
-                ZipEntry e;
-                byte[] buffer=new byte[1024];
-                while ((e=zip.getNextEntry())!=null) {
-                    if (e.getName().startsWith("libs/")&&!e.isDirectory()) {
-                        int len;
-                        File lib=new File(libs, e.getName().substring(e.getName().indexOf('/')+1));
-                        if (!lib.exists()) {
-                            FileOutputStream fos=new FileOutputStream(lib);
-                            while ((len=zip.read(buffer))>0) {
-                                fos.write(buffer, 0, len);
+                try (ZipInputStream zip=new ZipInputStream(new FileInputStream(file))) {
+                    ZipEntry e;
+                    byte[] buffer=new byte[1024];
+                    while ((e=zip.getNextEntry())!=null) {
+                        if (e.getName().startsWith("libs/")&&!e.isDirectory()) {
+                            int len;
+                            File lib=new File(libs, e.getName().substring(e.getName().indexOf('/')+1));
+                            if (!lib.exists()) {
+                                FileOutputStream fos=new FileOutputStream(lib);
+                                while ((len=zip.read(buffer))>0) {
+                                    fos.write(buffer, 0, len);
+                                }
+                                fos.close();
                             }
-                            fos.close();
                         }
                     }
                 }
@@ -95,8 +97,8 @@ public class Main {
 
     //Tick ausführen
     private static void runTick() {
-        game.d.setWidth(Display.getWidth());
-        game.d.setHeight(Display.getHeight());
+        d.w=Display.getWidth();
+        d.h=Display.getHeight();
         try {
             game.draw();
         } catch (Exception e) {
@@ -170,10 +172,21 @@ public class Main {
             case Keyboard.KEY_7: return Keymap.KEY_7;
             case Keyboard.KEY_8: return Keymap.KEY_8;
             case Keyboard.KEY_9: return Keymap.KEY_9;
+            case Keyboard.KEY_NUMPAD0: return Keymap.KEY_0;
+            case Keyboard.KEY_NUMPAD1: return Keymap.KEY_1;
+            case Keyboard.KEY_NUMPAD2: return Keymap.KEY_2;
+            case Keyboard.KEY_NUMPAD3: return Keymap.KEY_3;
+            case Keyboard.KEY_NUMPAD4: return Keymap.KEY_4;
+            case Keyboard.KEY_NUMPAD5: return Keymap.KEY_5;
+            case Keyboard.KEY_NUMPAD6: return Keymap.KEY_6;
+            case Keyboard.KEY_NUMPAD7: return Keymap.KEY_7;
+            case Keyboard.KEY_NUMPAD8: return Keymap.KEY_8;
+            case Keyboard.KEY_NUMPAD9: return Keymap.KEY_9;
             case Keyboard.KEY_SPACE: return Keymap.KEY_SPACE;
             case Keyboard.KEY_PERIOD: return Keymap.KEY_DOT;
             case Keyboard.KEY_BACK: return Keymap.KEY_BACK;
             case Keyboard.KEY_RETURN: return Keymap.KEY_RETURN;
+            case Keyboard.KEY_NUMPADENTER: return Keymap.KEY_RETURN;
             case Keyboard.KEY_ESCAPE: return Keymap.KEY_ESC;
             case Keyboard.KEY_LEFT: return Keymap.KEY_LEFT;
             case Keyboard.KEY_RIGHT: return Keymap.KEY_RIGHT;

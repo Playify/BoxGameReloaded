@@ -12,7 +12,7 @@ import at.playify.boxgamereloaded.network.connection.ConnectionSinglePlayer;
 import at.playify.boxgamereloaded.network.connection.ConnectionToServer;
 import at.playify.boxgamereloaded.network.connection.EmptyConnection;
 import at.playify.boxgamereloaded.network.packet.PacketFinish;
-import at.playify.boxgamereloaded.network.packet.PacketSetPauseMode;
+import at.playify.boxgamereloaded.network.packet.PacketServerSettings;
 import at.playify.boxgamereloaded.network.packet.PacketSetWorld;
 import at.playify.boxgamereloaded.paint.PaintHandler;
 import at.playify.boxgamereloaded.player.Player;
@@ -126,7 +126,7 @@ public class BoxGameReloaded extends Game {
             if (prevPauseState!=p) {
                 prevPauseState=p;
                 if (connection.userpause) {
-                    connection.sendPacket(new PacketSetPauseMode(p ? 3 : 2));
+                    connection.sendPacket(new PacketServerSettings(p ? 3 : 2));
                 }
             }
             connection.handleSoon();
@@ -356,9 +356,9 @@ public class BoxGameReloaded extends Game {
     @Override
     protected void keyStateChanged(int keyChar) {
         if (keys[keyChar]) {
-
             switch (keyChar) {
                 case Keymap.KEY_ESC:
+                case Keymap.KEY_BACK:
                     cheatCode('s');
                     break;
                 case Keymap.KEY_P:
@@ -399,15 +399,18 @@ public class BoxGameReloaded extends Game {
             }
         }
 
-        pauseLock.unlock();
-        if (gui.key((char) keyChar, keys[keyChar])) return;
+        if (gui.key((char) keyChar, keys[keyChar])){
+            pauseLock.unlock();
+            return;
+        }
 
-        if (keyChar==257) {//ESC key
+        if (keyChar==Keymap.KEY_ESC||keyChar==Keymap.KEY_BACK) {//ESC key
+            int pre=keyChar;
             if (painter.draw) keyChar='o';
             else if (paused) keyChar='p';
             else if (gui.isOptionsVisible()) keyChar='o';
             else keyChar='p';
-            keys[keyChar]=keys[257];
+            keys[keyChar]=keys[pre];
         }
         if (keyChar=='p') {
             if (paused!=keys['p']) {
@@ -452,11 +455,7 @@ public class BoxGameReloaded extends Game {
         if (keyChar=='q'&&!keys['q']&&(vars.debug.console||vars.world.startsWith("paint"))&&!gui.isMainMenuVisible()&&painter.draw) {
             painter.quick^=true;
         }
-        if (keys[keyChar]) {
-            if (Character.isDigit(keyChar)) {
-                joinWorld("paint"+((char) keyChar));
-            }
-        }
+        pauseLock.unlock();
     }
 
     @SuppressWarnings("WeakerAccess")

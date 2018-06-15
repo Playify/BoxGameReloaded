@@ -20,7 +20,7 @@ public class LevelButton extends Button {
     }
 
     @Override
-    public String text() {
+    public String genText() {
         int index=this.index;
         float scroll=main.scroller.getScroll();
         float height=.2f;
@@ -45,7 +45,7 @@ public class LevelButton extends Button {
     }
 
     @Override
-    public BoundingBox3d bound() {
+    public BoundingBox3d genBound() {
         if (game.levels.containsKey(game.vars.stage)){
             ArrayList<String> list=game.levels.get(game.vars.stage);
             if (index<list.size()) {
@@ -59,13 +59,13 @@ public class LevelButton extends Button {
                 }
                 if (index<list.size()) {
                     float dx=(1-main.uiState)*(game.aspectratio/2+.1f);
-                    bound.set(game.aspectratio/2+0.05f+dx, y+scroll, 0, game.aspectratio-.05f+dx, y+height+scroll, 0.025f);
-                    return bound;
+                    buttonBound.set(game.aspectratio/2+0.05f+dx, y+scroll, 0, game.aspectratio-.05f+dx, y+height+scroll, 0.025f);
+                    return buttonBound;
                 }
             }
         }
-        bound.set(0,0,0,0,0,0.025f);
-        return bound;
+        buttonBound.set(0,0,0,0,0,0.025f);
+        return buttonBound;
     }
 
     @Override
@@ -74,7 +74,7 @@ public class LevelButton extends Button {
         if (finger.y<game.d.getHeight()*.2f) {
             return false;
         }
-        String text=text();
+        String text=genText();
         boolean red=text.charAt(text.indexOf('=')+1)=='$';
         if (!red) {
             game.joinWorld(text.substring(0, text.indexOf('=')));
@@ -86,12 +86,12 @@ public class LevelButton extends Button {
     public void draw(Drawer d) {
         if (main.uiState==0) return;
         d.pushMatrix();
-        BoundingBox3d bound=bound();
-        d.cube(0, 0, 0, 1, 1, 1, color());
+        BoundingBox3d bound=genBound();
+        d.cube(0, 0, 0, 1, 1, 1, genColor());
         float v=(bound.maxY-bound.minY);
         float v2=(bound.maxX-bound.minX);
         d.scale(1/v2, 1/v,1);
-        String text=text();
+        String text=genText();
         boolean red=text.charAt(text.indexOf('=')+1)=='$';
         d.drawStringCenter(text.substring(text.indexOf('=')+(red?2:1), text.lastIndexOf('=')), v2/2, v/3, v/3, red ?0xFFFF0000:0x66000000);
         String by=text.substring(text.lastIndexOf('=')+1);

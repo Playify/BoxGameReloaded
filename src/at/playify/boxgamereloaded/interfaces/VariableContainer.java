@@ -3,10 +3,11 @@ package at.playify.boxgamereloaded.interfaces;
 import at.playify.boxgamereloaded.BoxGameReloaded;
 import at.playify.boxgamereloaded.block.Block;
 import at.playify.boxgamereloaded.block.NoCollideable;
+import at.playify.boxgamereloaded.network.packet.PacketSwitch;
 import at.playify.boxgamereloaded.util.bound.RectBound;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import at.playify.boxgamereloaded.util.json.JSONArray;
+import at.playify.boxgamereloaded.util.json.JSONException;
+import at.playify.boxgamereloaded.util.json.JSONObject;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
@@ -39,7 +40,7 @@ public class VariableContainer {
     public boolean tickOnDraw;
     public float tickrate=60;
     public int jumps=2;
-    public boolean inverted_gravity;
+    public boolean gravity;
     public boolean geometry_dash;
     public boolean fly;
     public boolean noclip;
@@ -71,8 +72,9 @@ public class VariableContainer {
     public ArrayList<String> eggs=new ArrayList<>(Arrays.asList("cube"));
     @ConfigValue
     public boolean buttons;
-    public float switchState;
-    public boolean switched;
+    public float switchState0;
+    public float switchState1;
+    public boolean[] liquid=new boolean[1];
 
     public VariableContainer(Game game){
         this.game=(BoxGameReloaded) game;
@@ -111,6 +113,7 @@ public class VariableContainer {
         private boolean inverted_gravity;
         public RectBound bound=new RectBound();
         public boolean[] keys=new boolean[0];
+        private int switchState;
 
         public void check(){
             check(game.player.bound);
@@ -119,7 +122,7 @@ public class VariableContainer {
         public void die(){
             VariableContainer vars=VariableContainer.this;
             vars.geometry_dash=geometry_dash;
-            vars.inverted_gravity=inverted_gravity;
+            vars.gravity=inverted_gravity;
             game.player.jumps=jumps;
             game.player.motionX=0;
             game.player.motionY=0;
@@ -131,16 +134,19 @@ public class VariableContainer {
                     ((NoCollideable) block).onNoCollide(game.player,game.level);
                 }
             }
+            game.connection.switchState=switchState;
+            game.connection.sendPacket(new PacketSwitch(game.connection.switchState));
         }
 
         public void check(RectBound spawnPoint){
             VariableContainer vars=VariableContainer.this;
             geometry_dash=vars.geometry_dash;
-            inverted_gravity=vars.inverted_gravity;
+            inverted_gravity=vars.gravity;
             jumps=game.player.jumps;
             bound.set(spawnPoint);
             if (keys.length!=vars.keys.length) keys=new boolean[vars.keys.length];
             System.arraycopy(vars.keys,0,keys,0,keys.length);
+            switchState=game.connection.switchState;
         }
 
         public void move(int x,int y){
@@ -178,8 +184,8 @@ public class VariableContainer {
                             else if (type.equals(char.class)) field.setChar(o,json.getString(name).charAt(0));
                             else if (type.equals(float.class)) field.setFloat(o,(float) json.getDouble(name));
                             else if (type.equals(double.class)) field.setDouble(o,json.getDouble(name));
-                            else if (type.equals(BigInteger.class)) field.set(o,json.getBigInteger(name));
-                            else if (type.equals(BigDecimal.class)) field.set(o,json.getBigDecimal(name));
+                            else if (type.equals(BigInteger.class)) field.set(o,new BigInteger(json.getString(name)));
+                            else if (type.equals(BigDecimal.class)) field.set(o,new BigDecimal(json.getString(name)));
                             else if (ConfigVariable.class.isAssignableFrom(type)) ((ConfigVariable) field.get(o)).set(json.getString(name));
                             else if (type.equals(ArrayList.class)) {
                                 JSONArray arr=json.getJSONArray(name);
@@ -220,7 +226,7 @@ public class VariableContainer {
                         else if (type.equals(char.class)) json.put(name,field.getChar(o)+"");
                         else if (type.equals(float.class)) json.put(name,field.getFloat(o));
                         else if (type.equals(double.class)) json.put(name,field.getDouble(o));
-                        else if (Number.class.isAssignableFrom(type)) json.put(name,field.get(o));
+                        else if (type.equals(BigInteger.class)||type.equals(BigDecimal.class)) json.put(name,String.valueOf(field.get(o)));
                         else if (ConfigVariable.class.isAssignableFrom(type)) json.put(name,((ConfigVariable) field.get(o)).get());
                         else if (type.equals(ArrayList.class)) json.put(name,new JSONArray((ArrayList) field.get(o)));
                         else {

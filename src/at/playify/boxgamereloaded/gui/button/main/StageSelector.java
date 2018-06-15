@@ -18,15 +18,15 @@ public class StageSelector extends Button {
     }
 
     @Override
-    public String text() {
+    public String genText() {
         return game.vars.stage==null?"":game.vars.stage;
     }
 
     @Override
-    public BoundingBox3d bound() {
+    public BoundingBox3d genBound() {
         float dx=(1-main.uiState)*(game.aspectratio/2+.2f);
-        bound.set(game.aspectratio/2+dx, .8f, -0.05f, game.aspectratio+dx, 1, 0.05f);
-        return bound;
+        buttonBound.set(game.aspectratio/2+dx, .8f, -0.05f, game.aspectratio+dx, 1, 0.05f);
+        return buttonBound;
     }
 
     @Override
@@ -51,14 +51,14 @@ public class StageSelector extends Button {
     @Override
     public void draw(Drawer d) {
         //if (main.uiState==0) return;
-        int color=color();
+        int color=genColor();
         d.cube(0,0,2/3f,1,1,1/3f, color,true,false,true,false);
         d.cube(0,0,1/6f,1,1,1/6f, color,true,false,true,false);
         d.cube(0,0,1/6f,.1f/game.aspectratio,1,5/6f, color);
         d.cube(1-.1f/game.aspectratio,0,1/6f,.1f/game.aspectratio,1,5/6f, color);
         d.cube(0,0,1/6f,.1f/game.aspectratio,1,5/6f, color);
         game.d.translate(0,0,1/6f);
-        float v=(bound.maxY-bound.minY);
+        float v=(buttonBound.maxY-buttonBound.minY);
         d.scale(1, 1/v,1);
         d.pushMatrix();
         d.depth(false);
@@ -78,7 +78,7 @@ public class StageSelector extends Button {
     }
 
     @Override
-    public int color() {
+    public int genColor() {
         return 0xFF004A60;
     }
 }

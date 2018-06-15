@@ -20,12 +20,12 @@ public class WindowsDrawer implements Drawer {
     private BoxGameReloaded game;
     private FontRenderer font=new FontRenderer(this);
     //Vertexes um nicht jedes Mal zeichnen neu generieren zu müssen
-    private float[] vertexFRONT=new float[]{0,0,0,0,1,0,1,1,0,0,0,0,1,0,0,1,1,0};
-    private float[] vertexDOWN=new float[]{0,0,0,0,0,1,1,0,1,0,0,0,1,0,0,1,0,1};
-    private float[] vertexUP=new float[]{0,1,0,0,1,1,1,1,1,0,1,0,1,1,0,1,1,1};
-    private float[] vertexRIGHT=new float[]{0,0,0,0,0,1,0,1,1,0,0,0,0,1,0,0,1,1};
-    private float[] vertexLEFT=new float[]{1,0,0,1,0,1,1,1,1,1,0,0,1,1,0,1,1,1};
-    private float[] vertexBACK=new float[]{0,0,1,0,1,1,1,1,1,0,0,1,1,0,1,1,1,1};
+    private float[] vertexFRONT=new float[]{0,1,0,0,0,0,1,1,0,0,0,0,1,0,0,1,1,0};
+    private float[] vertexDOWN=new float[]{0,0,0,0,0,1,1,0,1,0,0,0,1,0,1,1,0,0};
+    private float[] vertexUP=new float[]{0,1,0,1,1,1,0,1,1,0,1,0,1,1,0,1,1,1};
+    private float[] vertexRIGHT=new float[]{0,0,1,0,0,0,0,1,1,0,0,0,0,1,0,0,1,1};
+    private float[] vertexLEFT=new float[]{1,0,0,1,0,1,1,1,1,1,0,0,1,1,1,1,1,0};
+    private float[] vertexBACK=new float[]{0,0,1,0,1,1,1,1,1,0,0,1,1,1,1,1,0,1};
 
     private HashMap<String,Integer> textures=new HashMap<>();
     private int matrix;
@@ -124,20 +124,22 @@ public class WindowsDrawer implements Drawer {
         GL11.glPushMatrix();
         GL11.glTranslatef(x,y,z);
         GL11.glScalef(w,h,d);
+            GL11.glEnable(GL11.GL_CULL_FACE);
+            //back
+            if (back) vertex(vertexBACK,color);
+            //down
+            if (down) vertex(vertexDOWN,color,0.8f);
+            //up
+            if (up) vertex(vertexUP,color,0.8f);
+            //right
+            if (right) vertex(vertexRIGHT,color,0.9f);
+            //left
+            if (left) vertex(vertexLEFT,color,0.9f);
+            //front
+            if (front) vertex(vertexFRONT,color);
+            GL11.glDisable(GL11.GL_CULL_FACE);
 
 
-        //back
-        if (back) vertex(vertexBACK,color);
-        //down
-        if (down) vertex(vertexDOWN,color,0.8f);
-        //up
-        if (up) vertex(vertexUP,color,0.8f);
-        //right
-        if (right) vertex(vertexRIGHT,color,0.9f);
-        //left
-        if (left) vertex(vertexLEFT,color,0.9f);
-        //front
-        if (front) vertex(vertexFRONT,color);
         GL11.glPopMatrix();
     }
 
@@ -218,22 +220,10 @@ public class WindowsDrawer implements Drawer {
         return w;
     }
 
-    //Breite festlegen
-    @Override
-    public void setWidth(int width){
-        w=width;
-    }
-
     //Fensterhöhe
     @Override
     public float getHeight(){
         return h;
-    }
-
-    //Höhe festlegen
-    @Override
-    public void setHeight(int height){
-        h=height;
     }
 
     //Zeichnen starten
@@ -397,6 +387,12 @@ public class WindowsDrawer implements Drawer {
         }
         GL11.glEnd();
     }
+
+    @Override
+    public void flipCullface(){
+            GL11.glCullFace((cullmode^=true)?GL11.GL_FRONT:GL11.GL_BACK);
+    }
+    private boolean cullmode;
 
     //ist Rückseite zeichnen eingeschalten?
     @Override

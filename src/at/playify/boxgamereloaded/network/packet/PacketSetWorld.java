@@ -4,6 +4,10 @@ import at.playify.boxgamereloaded.BoxGameReloaded;
 import at.playify.boxgamereloaded.network.Server;
 import at.playify.boxgamereloaded.network.connection.ConnectionToClient;
 import at.playify.boxgamereloaded.network.connection.ConnectionToServer;
+import at.playify.boxgamereloaded.network.connection.Input;
+import at.playify.boxgamereloaded.network.connection.Output;
+
+import java.io.IOException;
 
 //Packet um die Welt zu setzen
 public class PacketSetWorld extends Packet {
@@ -12,18 +16,7 @@ public class PacketSetWorld extends Packet {
         this.world=world;
     }
 
-    @SuppressWarnings("unused")
-    public PacketSetWorld() {
-    }
-
-    @Override
-    public String convertToString(BoxGameReloaded game) {
-        return world;
-    }
-
-    @Override
-    public void loadFromString(String s, BoxGameReloaded game) {
-        world=s;
+    public PacketSetWorld(){
     }
 
     @Override
@@ -41,17 +34,6 @@ public class PacketSetWorld extends Packet {
         }
     }
 
-
-    @Override
-    public String convertToString(Server server, ConnectionToClient client) {
-        return world;
-    }
-
-    @Override
-    public void loadFromString(String s, Server server) {
-        world=s;
-    }
-
     @Override
     public void handle(Server server, ConnectionToClient connectionToClient) {
         connectionToClient.setWorld(world);
@@ -61,5 +43,25 @@ public class PacketSetWorld extends Packet {
     public void onSend(Server server, ConnectionToClient connectionToClient) {
         connectionToClient.world=world;
         System.out.println(connectionToClient.name+" moved in world: "+world);
+    }
+
+    @Override
+    public void send(Output out, Server server, ConnectionToClient con) throws IOException{
+        out.writeString(world);
+    }
+
+    @Override
+    public void send(Output out, BoxGameReloaded game, ConnectionToServer con) throws IOException{
+        out.writeString(world);
+    }
+
+    @Override
+    public void receive(Input in, Server server, ConnectionToClient con) throws IOException{
+        world=in.readString();
+    }
+
+    @Override
+    public void receive(Input in, BoxGameReloaded game, ConnectionToServer con) throws IOException{
+        world=in.readString();
     }
 }

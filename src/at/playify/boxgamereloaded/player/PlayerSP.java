@@ -109,7 +109,7 @@ public class PlayerSP extends Player {
             motionX*=((bound.w()+bound.h())/2)/0.8f;
 
             //bewegen
-            move(motionX, game.vars.inverted_gravity ? -motionY : motionY);
+            move(motionX, game.vars.gravity ? -motionY : motionY);
 
 
             //Spezialfähigkeiten von Blöcken mit Kollision ausführen
@@ -155,6 +155,12 @@ public class PlayerSP extends Player {
             //Bound erweitern
             Borrow.BorrowedBoundingBox boundingBox=bound.addCoord(moveX, moveY);
             ArrayList<Borrow.BorrowedBoundingBox> list1=game.level.getCollisionBoxes(this, boundingBox);
+            if (game.connection.collide){
+                PlayerMP[] players=game.connection.players;
+                for (int i=players.length-1;i >= 0;i--) {
+                    list1.add(players[i].bound.borrow());
+                }
+            }
             boundingBox.free();
 
             //Eigentliche Bewegung anhand der Kollisionsboxen begrenzen

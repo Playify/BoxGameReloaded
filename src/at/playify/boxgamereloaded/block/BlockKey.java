@@ -20,7 +20,7 @@ public class BlockKey extends Block implements MultiCollideable {
     }
 
     @Override
-    protected boolean isBackGround(int meta) {
+    public boolean isBackGround(int meta) {
         return true;
     }
 

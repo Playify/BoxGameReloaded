@@ -5,10 +5,13 @@ import at.playify.boxgamereloaded.level.ServerLevel;
 import at.playify.boxgamereloaded.network.Server;
 import at.playify.boxgamereloaded.network.connection.ConnectionToClient;
 import at.playify.boxgamereloaded.network.connection.ConnectionToServer;
+import at.playify.boxgamereloaded.network.connection.Input;
+import at.playify.boxgamereloaded.network.connection.Output;
 import at.playify.boxgamereloaded.util.Action;
-import org.json.JSONException;
-import org.json.JSONObject;
+import at.playify.boxgamereloaded.util.json.JSONException;
+import at.playify.boxgamereloaded.util.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 //Packet für Leveldaten = Level zu Text,Laden von Text
@@ -22,38 +25,14 @@ public class PacketLevelData extends Packet {
     @SuppressWarnings("unused")
     public PacketLevelData() {
     }
-
-    @Override
-    public String convertToString(BoxGameReloaded game) {
-        return (world!=null ? world+";" : "")+(levelstr==null ? game.level.toWorldString() : levelstr);
-    }
-
-    @Override
-    public void loadFromString(String s, BoxGameReloaded game) {
-        int i=s.indexOf(';');
-        world=i==-1?null:s.substring(0,i);
-        levelstr=s.substring(i+1);
-    }
-
     @Override
     public void handle(BoxGameReloaded game, ConnectionToServer connectionToServer) {
         game.level.loadWorldString(levelstr);
     }
-    @Override
-    public String convertToString(Server server, ConnectionToClient client) {
-        return levelstr;
-    }
-
-    @Override
-    public void loadFromString(String s, Server server) {
-        int i=s.indexOf(';');
-        world=i==-1?null:s.substring(0,i);
-        levelstr=s.substring(i+1);
-    }
 
     @Override
     public void handle(final Server server, final ConnectionToClient connectionToClient) {
-        final String world=this.world==null ? connectionToClient.world : this.world;
+        final String world=this.world.isEmpty() ? connectionToClient.world : this.world;
         if (world.startsWith("paint")) {
             try {
                 server.levels.getLevel(world, new Action<ServerLevel>() {
@@ -91,5 +70,29 @@ public class PacketLevelData extends Packet {
             }
         }
         server.broadcast(this, world, connectionToClient);
+    }
+
+    @Override
+    public void send(Output out, Server server, ConnectionToClient con) throws IOException{
+        out.writeString(world==null?"":world);
+        out.writeString(levelstr);
+    }
+
+    @Override
+    public void send(Output out, BoxGameReloaded game, ConnectionToServer con) throws IOException{
+        out.writeString(world==null?"":world);
+        out.writeString(levelstr);
+    }
+
+    @Override
+    public void receive(Input in, Server server, ConnectionToClient con) throws IOException{
+        world=in.readString();
+        levelstr=in.readString();
+    }
+
+    @Override
+    public void receive(Input in, BoxGameReloaded game, ConnectionToServer con) throws IOException{
+        world=in.readString();
+        levelstr=in.readString();
     }
 }

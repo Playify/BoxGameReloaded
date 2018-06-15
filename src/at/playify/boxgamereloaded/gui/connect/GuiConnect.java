@@ -3,6 +3,7 @@ package at.playify.boxgamereloaded.gui.connect;
 import at.playify.boxgamereloaded.BoxGameReloaded;
 import at.playify.boxgamereloaded.gui.Gui;
 import at.playify.boxgamereloaded.gui.button.Button;
+import at.playify.boxgamereloaded.interfaces.Drawer;
 import at.playify.boxgamereloaded.network.connection.ConnectionSinglePlayer;
 import at.playify.boxgamereloaded.network.connection.ConnectionToServer;
 import at.playify.boxgamereloaded.util.BoundingBox3d;
@@ -25,6 +26,27 @@ public class GuiConnect extends Gui {
         for (int i=0;i<12;i++) {
             buttons.add(new ButtonKey(game,keys[i],i));
         }
+        buttons.add(new Button(game) {
+            @Override
+            public String genText(){
+                return "";
+            }
+
+            @Override
+            public BoundingBox3d genBound(){
+                buttonBound.set(game.aspectratio/4,.1f,0.01f,game.aspectratio*3/4,.9f,0);
+                return buttonBound;
+            }
+
+            @Override
+            public boolean click(Finger finger){
+                return true;
+            }
+
+            @Override
+            public void draw(Drawer d){
+            }
+        });
     }
 
     @Override
@@ -37,7 +59,11 @@ public class GuiConnect extends Gui {
 
     @Override
     public boolean click(Finger finger) {
-        super.click(finger);
+        boolean b=super.click(finger);
+        if (!b) {
+            game.gui.close(this);
+            game.gui.openMenu(new GuiConnection(game));
+        }
         return true;
     }
 
@@ -53,20 +79,15 @@ public class GuiConnect extends Gui {
             }
         }
         if (down&&c=='\n'){
-            new Thread(){
-                @Override
-                public void run() {
-                    connect();
-                }
-            }.start();
+            connect();
         }
         return true;
     }
 
     private void connect() {
-        Thread thread=new Thread() {
+        new Thread(new Runnable() {
             @Override
-            public void run() {
+            public void run(){
                 try {
                     ConnectionToServer con=new ConnectionToServer(game, ip);
                     if (con.isClosed()) {
@@ -80,9 +101,7 @@ public class GuiConnect extends Gui {
                     game.connection=new ConnectionSinglePlayer(game);
                 }
             }
-        };
-        thread.setName("Connecter");
-        thread.start();
+        },"Connecter").start();
     }
 
     private class ButtonConnect extends Button {
@@ -91,14 +110,14 @@ public class GuiConnect extends Gui {
         }
 
         @Override
-        public String text() {
+        public String genText() {
             return "OK";
         }
 
         @Override
-        public BoundingBox3d bound() {
-            bound.set(game.aspectratio/2+.01f,.12f,0,game.aspectratio*3/4-.02f,.22f,0.01f);
-            return bound;
+        public BoundingBox3d genBound() {
+            buttonBound.set(game.aspectratio/2+.01f,.12f,0,game.aspectratio*3/4-.02f,.22f,0.01f);
+            return buttonBound;
         }
 
         @Override
@@ -116,14 +135,14 @@ public class GuiConnect extends Gui {
         }
 
         @Override
-        public String text() {
+        public String genText() {
             return "Close";
         }
 
         @Override
-        public BoundingBox3d bound() {
-            bound.set(game.aspectratio/4+.02f,.12f,0,game.aspectratio/2-.01f,.22f,0.01f);
-            return bound;
+        public BoundingBox3d genBound() {
+            buttonBound.set(game.aspectratio/4+.02f,.12f,0,game.aspectratio/2-.01f,.22f,0.01f);
+            return buttonBound;
         }
 
         @Override
@@ -145,17 +164,17 @@ public class GuiConnect extends Gui {
         }
 
         @Override
-        public String text() {
+        public String genText() {
             return key=='\b'?"<":key+"";
         }
 
         @Override
-        public int color() {
+        public int genColor() {
             return valid(key)?0xFF00FF00:0xFFFF0000;
         }
 
         @Override
-        public BoundingBox3d bound() {
+        public BoundingBox3d genBound() {
             float x=index%3;
             float y=3-index/3;
             float h=.1f;
@@ -166,8 +185,8 @@ public class GuiConnect extends Gui {
             float v=.01f;
             x-=h*1.5f;
             y-=.25f;
-            bound.set(x+v,y+v,0,x+h-v,y+h-v,.01f);
-            return bound;
+            buttonBound.set(x+v,y+v,0,x+h-v,y+h-v,.01f);
+            return buttonBound;
         }
 
         @Override

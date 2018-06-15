@@ -24,7 +24,6 @@ public class Blocks {
     public BlockGravityPad GRAVITY_PAD;
     public BlockArrow ARROW;
     public BlockTeleporter TELEPORT;
-    public BlockNear NEAR;
     public int blockscount;
     public BlockKey KEY;
     public BlockKeyhole KEYHOLE;
@@ -33,6 +32,8 @@ public class Blocks {
     public BlockEasterEgg EGG;
     public BlockIconDrawButton ICON;
     public BlockSwitch SWITCH;
+    public BlockSwitched SWITCHED;
+    public BlockBrick BRICK;
 
     //Block anhand des Zeichens bekommen
     public Block get(char c) {
@@ -57,7 +58,6 @@ public class Blocks {
         GRAVITY_PAD=new BlockGravityPad(game, BlockGravityPad.chr);
         ARROW=new BlockArrow(game, BlockArrow.chr);
         TELEPORT=new BlockTeleporter(game, BlockTeleporter.chr);
-        NEAR=new BlockNear(game, BlockNear.chr);
         KEY=new BlockKey(game, BlockKey.chr);
         KEYHOLE=new BlockKeyhole(game, BlockKeyhole.chr);
         ACTION=new BlockAction(game, BlockAction.chr);
@@ -65,11 +65,13 @@ public class Blocks {
         EGG=new BlockEasterEgg(game, BlockEasterEgg.chr);
         ICON=new BlockIconDrawButton(game, BlockIconDrawButton.chr);
         SWITCH=new BlockSwitch(game, BlockSwitch.chr);
+        SWITCHED=new BlockSwitched(game, BlockSwitched.chr);
+        BRICK=new BlockBrick(game, BlockBrick.chr);
     }
 
     private void remaining(){
         StringBuilder str=new StringBuilder();
-        for (int i=0;i<map.length;i++) {
+        for (char i=0;i<map.length;i++) {
             if (i>='A'&&i<='z'&&Character.isLetter(i)&&map[i]==null) {
                 str.append((char)i);
             }

@@ -14,27 +14,27 @@ public class DarkBackground extends Button {
     }
 
     @Override
-    public String text() {
+    public String genText() {
         return "Background";
     }
 
     @Override
-    public BoundingBox3d bound() {
-        bound.set(-1, -1, -1, 1+game.aspectratio, 2, -1);
-        return bound;
+    public BoundingBox3d genBound() {
+        buttonBound.set(-1, -1, -1, 1+game.aspectratio, 2, -1);
+        return buttonBound;
     }
 
     @Override
     public void draw(Drawer d) {
         if (backgroundState!=0&&!game.gui.isMainMenuVisible()) {
             game.d.depth(false);
-            d.rect(0, 0, 1, 1, color());
+            d.rect(0, 0, 1, 1, genColor());
             game.d.depth(true);
         }
     }
 
     @Override
-    public int color() {
+    public int genColor() {
         return ((int) (0.3 * backgroundState) << 24);
     }
 

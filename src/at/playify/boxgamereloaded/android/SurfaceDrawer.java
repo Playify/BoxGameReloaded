@@ -17,7 +17,6 @@ import at.playify.boxgamereloaded.BoxGameReloaded;
 import at.playify.boxgamereloaded.interfaces.Drawer;
 import at.playify.boxgamereloaded.interfaces.exceptions.DrawingException;
 
-import static javax.microedition.khronos.opengles.GL10.*;
 
 @SuppressWarnings("WeakerAccess")
 public class SurfaceDrawer implements Drawer {
@@ -29,54 +28,12 @@ public class SurfaceDrawer implements Drawer {
     private GameActivity a;
     private BoxGameReloaded game;
     private FloatBuffer fb=null;
-    private float[] vertexFRONT=new float[]{
-            0, 0, 0,
-            0, 1, 0,
-            1, 1, 0,
-            0, 0, 0,
-            1, 0, 0,
-            1, 1, 0
-    };
-    private float[] vertexBACK=new float[]{
-            0, 0, 1,
-            0, 1, 1,
-            1, 1, 1,
-            0, 0, 1,
-            1, 0, 1,
-            1, 1, 1
-    };
-    private float[] vertexDOWN=new float[]{
-            0, 0, 0,
-            0, 0, 1,
-            1, 0, 1,
-            0, 0, 0,
-            1, 0, 0,
-            1, 0, 1
-    };
-    private float[] vertexUP=new float[]{
-            0, 1, 0,
-            0, 1, 1,
-            1, 1, 1,
-            0, 1, 0,
-            1, 1, 0,
-            1, 1, 1
-    };
-    private float[] vertexRIGHT=new float[]{
-            0, 0, 0,
-            0, 0, 1,
-            0, 1, 1,
-            0, 0, 0,
-            0, 1, 0,
-            0, 1, 1
-    };
-    private float[] vertexLEFT=new float[]{
-            1, 0, 0,
-            1, 0, 1,
-            1, 1, 1,
-            1, 0, 0,
-            1, 1, 0,
-            1, 1, 1
-    };
+    private float[] vertexFRONT = new float[] {0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0};
+    private float[] vertexDOWN = new float[] {0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 0, 1, 0, 1, 1, 0, 0};
+    private float[] vertexUP = new float[] {0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1, 1};
+    private float[] vertexRIGHT = new float[] {0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 0, 0, 1, 1};
+    private float[] vertexLEFT = new float[] {1, 0, 0, 1, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0};
+    private float[] vertexBACK = new float[] {0, 0, 1, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 1};
     private float[] vertexLineRect=new float[]{
             0,0,0,
             0,1,0,
@@ -116,6 +73,7 @@ public class SurfaceDrawer implements Drawer {
     public boolean ready;
     private float[] lineVertex=new float[]{0,0,0,1,1,1};
     private FloatBuffer fb2;
+    private boolean cullface;
 
     public boolean ready(){
         return ready;
@@ -176,12 +134,12 @@ public class SurfaceDrawer implements Drawer {
                 Bitmap bitmap = BitmapFactory.decodeStream(inStream);
                 int[] id=new int[1];
                 gl.glGenTextures(1,id,0);
-                gl.glBindTexture(GL_TEXTURE_2D,id[0]);
-                gl.glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
-                gl.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,GL_NEAREST);
-                gl.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,GL_REPEAT);
-                gl.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,GL_REPEAT);
-                GLUtils.texImage2D(GL_TEXTURE_2D,0,bitmap,0);
+                gl.glBindTexture(GL10.GL_TEXTURE_2D,id[0]);
+                gl.glTexParameterf(GL10.GL_TEXTURE_2D,GL10.GL_TEXTURE_MIN_FILTER,GL10.GL_NEAREST);
+                gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER,GL10.GL_NEAREST);
+                gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S,GL10.GL_REPEAT);
+                gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T,GL10.GL_REPEAT);
+                GLUtils.texImage2D(GL10.GL_TEXTURE_2D,0,bitmap,0);
                 bitmap.recycle();
                 textures.put(s,id[0]);
             } catch (Exception e) {
@@ -190,25 +148,25 @@ public class SurfaceDrawer implements Drawer {
             }
         }
         gl.glPushMatrix();
-        gl.glEnable(GL_TEXTURE_2D);
-        gl.glBindTexture(GL_TEXTURE_2D,textures.get(s));
+        gl.glEnable(GL10.GL_TEXTURE_2D);
+        gl.glBindTexture(GL10.GL_TEXTURE_2D,textures.get(s));
         gl.glColor4f(1,1,1,1);
 
-        gl.glEnableClientState(GL_VERTEX_ARRAY);
-        gl.glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+        gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+        gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
 
         vertexBuffer.position(0);
         textureBuffer.position(0);
 
-        gl.glVertexPointer(3,GL_FLOAT,0,vertexBuffer);
-        gl.glTexCoordPointer(2,GL_FLOAT,0,textureBuffer);
-        gl.glDrawArrays(GL_TRIANGLE_STRIP,0,4);
+        gl.glVertexPointer(3,GL10.GL_FLOAT,0,vertexBuffer);
+        gl.glTexCoordPointer(2,GL10.GL_FLOAT,0,textureBuffer);
+        gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP,0,4);
 
-        gl.glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-        gl.glDisableClientState(GL_VERTEX_ARRAY);
+        gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
+        gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
 
-        gl.glBindTexture(GL_TEXTURE_2D, 0);
-        gl.glDisable(GL_TEXTURE_2D);
+        gl.glBindTexture(GL10.GL_TEXTURE_2D, 0);
+        gl.glDisable(GL10.GL_TEXTURE_2D);
 
         gl.glPopMatrix();
     }
@@ -218,13 +176,13 @@ public class SurfaceDrawer implements Drawer {
         return font.charWidth(c);
     }
 
+    private float posY=.5f, y0=.1f;
+    private float[][] arr=new float[][]{{0,0,0,y0,posY,0,1-y0,posY,0,0,0,0,1,0,0,1-y0,posY,0},
+            {1,0,0,1+y0,posY,1,2-y0,posY,1,1,0,0,2,0,1,2-y0,posY,0},
+            {2,0,0,2+y0,posY,2,4-y0,posY,0,2,0,0,4,0,2,4-y0,posY,0}};
     @Override
     public void drawButtons() {
 
-        float y=.5f, y0=.1f;
-        float[][] arr=new float[][]{{0,0,0,y0,y,0,1-y0,y,0,0,0,0,1,0,0,1-y0,y,0},
-                {1,0,0,1+y0,y,1,2-y0,y,1,1,0,0,2,0,1,2-y0,y,0},
-                {2,0,0,2+y0,y,2,4-y0,y,0,2,0,0,4,0,2,4-y0,y,0}};
         FloatBuffer verticesBuffer=checkFloatBuffer(arr[0].length);
         gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
         FloatBuffer colorBuffer=checkColorFloatBuffer(6*4);
@@ -247,6 +205,11 @@ public class SurfaceDrawer implements Drawer {
         }
         gl.glDisableClientState(GL10.GL_COLOR_ARRAY);
         gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
+    }
+
+    @Override
+    public void flipCullface() {
+        gl.glCullFace((cullface^=true)?GL10.GL_FRONT:GL10.GL_BACK);
     }
 
 
@@ -305,7 +268,7 @@ public class SurfaceDrawer implements Drawer {
         gl.glPushMatrix();
         gl.glTranslatef(x,y,z);
         gl.glScalef(w,h,d);
-
+        gl.glEnable(GL10.GL_CULL_FACE);
 
         //front
         if(front)
@@ -325,6 +288,7 @@ public class SurfaceDrawer implements Drawer {
         //left
         if(left)
             vertex(vertexLEFT, color, 0.9f);
+        gl.glDisable(GL10.GL_CULL_FACE);
         gl.glPopMatrix();
     }
 
@@ -486,16 +450,6 @@ public class SurfaceDrawer implements Drawer {
     public void clearDepth() {
         gl.glClearDepthf(1);
         gl.glClear(GL10.GL_DEPTH_BUFFER_BIT);
-    }
-
-    @Override
-    public void setWidth(int width) {
-        w=width;
-    }
-
-    @Override
-    public void setHeight(int height) {
-        h=height;
     }
 
     @Override

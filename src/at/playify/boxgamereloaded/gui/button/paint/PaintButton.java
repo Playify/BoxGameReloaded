@@ -12,15 +12,15 @@ public class PaintButton extends Button {
     }
 
     @Override
-    public String text() {
+    public String genText() {
         return "Draw";
     }
 
     @Override
-    public BoundingBox3d bound() {
+    public BoundingBox3d genBound() {
         float z=1/7f;
-        bound.set(game.aspectratio-z, 0, 0, game.aspectratio, z, z);
-        return bound;
+        buttonBound.set(game.aspectratio-z, 0, 0, game.aspectratio, z, z);
+        return buttonBound;
     }
 
     @Override
@@ -29,7 +29,7 @@ public class PaintButton extends Button {
             game.painter.quick=false;
             return;
         }
-        int color=color();
+        int color=genColor();
         final float v=.1f;
         d.cube(0, 0, 0, 1, v, v, color, true, false, true, false);
         d.cube(0, 1-v, 0, 1, v, v, color, true, false, true, false);

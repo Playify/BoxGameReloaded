@@ -12,62 +12,82 @@ import java.net.SocketException;
 import java.util.ArrayList;
 
 //Verbindung zum Client
-public class ConnectionToClient extends Thread implements Closeable{
+public class ConnectionToClient extends Thread implements Closeable {
     protected final Server server;
     public String skin;
-    public Socket socket;
+    private Socket socket;
     public String version;
-    private BufferedReader in;
-    private PrintStream out;
+    public int switchState;
+    public RectBound collider=new RectBound();
     private boolean closed;
-    public String world = "NULL";
+    public String world="NULL";
     public String name;
-    public RectBound bound = new RectBound(.1f, 0, .8f, .8f);
+    public RectBound bound=new RectBound(.1f, 0, .8f, .8f);
     public boolean paused;
+    private Input input;
+    private Output output;
+    private final Object packetLock=new Object();
+    private boolean errored;
 
-    public ConnectionToClient(Socket socket, Server server) {
-        this.server = server;
+    public ConnectionToClient(Socket socket, Server server){
+        this.server=server;
         try {
-            this.socket = socket;
-            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            out = new PrintStream(socket.getOutputStream());
+            this.socket=socket;
+            input=new Input(socket.getInputStream());
+            output=new Output(socket.getOutputStream());
         } catch (IOException e) {
             e.printStackTrace();
-            closed = true;
+            closed=true;
             return;
         }
         setName("ConnectionToClient");
         start();
-        System.out.println("Opened Connection to " + socket.getInetAddress());
+        System.out.println("Opened Connection to "+socket.getInetAddress());
     }
 
-    public ConnectionToClient(InputStream is,OutputStream os,Server server) {
-        in=new BufferedReader(new InputStreamReader(is));
-        out=new PrintStream(os);
+    public ConnectionToClient(InputStream is, OutputStream os, Server server){
+        input=new Input(is);
+        output=new Output(os);
         this.server=server;
         setName("ConnectionToSinglePlayer");
         start();
         System.out.println("Opened Connection to SinglePlayer");
     }
 
-    public void sendPacket(Packet packet) {
-        out.println(packet.getClass().getSimpleName().substring(6) + ":" + packet.convertToString(server, this));
-        if (out.checkError()) {
-            close();
+    public void sendPacket(Packet packet){
+        if (output!=null) {
+            try {
+                synchronized (packetLock) {
+                    output.writeString(packet.getClass().getSimpleName().substring(6));
+                    packet.send(output, server, this);
+                    output.flush();
+                }
+                packet.onSend(server, this);
+            } catch (EOFException e) {
+                if (!errored) {
+                    errored=true;
+                    server.logger.error("Connection lost to Player \""+name+"\" Reason: EOF("+e.getMessage()+")");
+                }
+                close();
+            } catch (SocketException e) {
+                if (!errored) {
+                    errored=true;
+                    server.logger.error("Connection lost to Player \""+name+"\" Reason: "+e.getMessage());
+                }
+                close();
+            } catch (Exception e) {
+                if (!errored) {
+                    errored=true;
+                    server.logger.error("Error in ConnectionToClient");
+                }
+                e.printStackTrace();
+                close();
+            }
         }
-        packet.onSend(server,this);
     }
 
-    public void sendRaw(String s) {
-        out.println(s);
-        if (out.checkError()) {
-            close();
-        }
-    }
-
-
-    public boolean isClosed() {
-        return closed || (socket != null && socket.isClosed());
+    public boolean isClosed(){
+        return closed||(socket!=null&&socket.isClosed());
     }
 
     public void close(String reason){
@@ -77,7 +97,7 @@ public class ConnectionToClient extends Thread implements Closeable{
 
 
     @Override
-    public void close() {
+    public void close(){
         try {
             if (socket!=null) {
                 socket.close();
@@ -86,46 +106,64 @@ public class ConnectionToClient extends Thread implements Closeable{
         } catch (IOException e) {
             e.printStackTrace();
         }
-        try{
-            server.broadcast(new PacketResetPlayersInWorld(name),world,this);
+        try {
+            server.broadcast(new PacketResetPlayersInWorld(name), world, this);
             if (paused) {
-                paused = false;
-                server.broadcast(new PacketSetPauseMode(server.getPausemode()), this);
+                paused=false;
+                server.broadcast(new PacketServerSettings(server.getPausemode()), this);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         server.disconnect(this);
     }
 
     @Override
-    public void run() {
+    public void run(){
         try {
-            String s;
-            while ((s = in.readLine()) != null) {
+            while (true) {
+                String packetName=input.readString();
                 try {
-                    int i = s.indexOf(':');
-                    String packetName = i == -1 ? s : s.substring(0, i);
                     try {
-                        @SuppressWarnings("unchecked")
-                        Class<? extends Packet> cls = (Class<? extends Packet>) Class.forName(Packet.class.getName() + packetName);
-                        Packet packet = cls.newInstance();
-                        packet.loadFromString(i == -1 ? "" : s.substring(i + 1), server);
-                        packet.handle(server, this);
+                        Object packet=Class.forName(Packet.class.getName()+packetName).newInstance();
+                        if (packet instanceof Packet) {
+                            ((Packet) packet).receive(input, server, this);
+                            ((Packet) packet).handle(server, this);
+                        }
                     } catch (ClassNotFoundException cls) {
-                        server.logger.error("Unknown Packet received: " + packetName);
+                        if (!errored) {
+                            server.logger.error("Unknown Packet received: "+packetName);
+                            errored=true;
+                        }
+                        close();
                     } catch (ClassCastException cls) {
-                        server.logger.error("Wrong Packet received: " + packetName);
+                        if (!errored) {
+                            server.logger.error("Wrong Packet received: "+packetName);
+                            errored=true;
+                        }
+                        close();
                     }
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
-        } catch (SocketException e) {
-            server.logger.error("Connection lost to Player \""+name+"\" Reason: "+e.getMessage());
+        } catch (EOFException e) {
+            if (!errored) {
+                errored=true;
+                server.logger.error("Connection lost to Player \""+name+"\" Reason: EOF("+e.getMessage()+")");
+            }
             close();
-        }catch (Exception e) {
-            server.logger.error("Error in ConnectionToClient");
+        } catch (SocketException e) {
+            if (!errored) {
+                errored=true;
+                server.logger.error("Connection lost to Player \""+name+"\" Reason: "+e.getMessage());
+            }
+            close();
+        } catch (Exception e) {
+            if (!errored) {
+                errored=true;
+                server.logger.error("Error in ConnectionToClient");
+            }
             e.printStackTrace();
             close();
         }
@@ -133,13 +171,14 @@ public class ConnectionToClient extends Thread implements Closeable{
 
     private ArrayList<ConnectionToClient> list=new ArrayList<>();
 
-    public void setWorld(final String w) {
+    public void setWorld(final String w){
         server.levels.getLevel(w, new Action<ServerLevel>() {
             @Override
-            public void exec(ServerLevel level) {
+            public void exec(ServerLevel level){
                 server.broadcast(new PacketResetPlayersInWorld(name), world, ConnectionToClient.this);
                 boolean b=false;
                 if (!world.equals(w)) {
+                    switchState=0;
                     b=true;
                     world=w;
                     sendPacket(new PacketSetWorld(w));
@@ -151,11 +190,20 @@ public class ConnectionToClient extends Thread implements Closeable{
                 sendPacket(new PacketLevelData(level.toWorldString()));
                 sendPacket(new PacketResetPlayersInWorld());
                 server.getByWorld(world, list);
-                list.remove(ConnectionToClient.this);
+                int switchState=0;
+                for (int i=list.size()-1;i >= 0;i--) {
+                    ConnectionToClient con=list.get(i);
+                    if (con!=null) {
+                        switchState|=con.switchState;
+                    }
+                }
+                sendPacket(new PacketSwitch(switchState));
                 for (int i=list.size()-1;i >= 0;i--) {
                     ConnectionToClient client=list.get(i);
-                    sendPacket(new PacketMove(client));
-                    sendPacket(new PacketSkin(client.name, client.skin));
+                    if (client!=null) {
+                        sendPacket(new PacketMove(client));
+                        sendPacket(new PacketSkin(client.name, client.skin));
+                    }
                 }
                 if (b) {
                     sendPacket(new PacketMove(level.spawnPoint, name));

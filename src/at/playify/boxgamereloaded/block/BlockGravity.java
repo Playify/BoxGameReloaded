@@ -22,7 +22,7 @@ public class BlockGravity extends Block implements Collideable, NoCollideable {
     }
 
     @Override
-    protected boolean isBackGround(int meta) {
+    public boolean isBackGround(int meta) {
         return false;
     }
 
@@ -41,7 +41,7 @@ public class BlockGravity extends Block implements Collideable, NoCollideable {
             game.d.pushMatrix();
                 game.d.cube(x, y, 0f, 1, 1, 1f, 0xFF9c06ad);
                 game.d.translate(x+.5f, y+.5f, -.001f);
-            if (game.vars.inverted_gravity)
+            if (game.vars.gravity)
                 game.d.scale(1, -1, 1);
             game.d.vertex(game.vertex.arrow, 0xFF0136c6);
             game.d.popMatrix();
@@ -49,7 +49,7 @@ public class BlockGravity extends Block implements Collideable, NoCollideable {
             game.d.pushMatrix();
                 game.d.rect(x, y, 1, 1, 0xFF9c06ad);
                 game.d.translate(x+.5f, y+.5f, -0.01f);
-            if (game.vars.inverted_gravity)
+            if (game.vars.gravity)
                 game.d.scale(1, -1, 1);
             game.d.vertex(game.vertex.arrow, 0xFF0136c6);
             game.d.popMatrix();
@@ -64,7 +64,7 @@ public class BlockGravity extends Block implements Collideable, NoCollideable {
     @Override
     public boolean onCollide(PlayerSP player, Level level, int meta, ArrayList<Borrow.BorrowedCollisionData> data) {
         if (!collided) {
-            game.vars.inverted_gravity^=true;
+            game.vars.gravity^=true;
             game.player.motionY*=-1;
             collided=true;
             game.player.jumps=0;

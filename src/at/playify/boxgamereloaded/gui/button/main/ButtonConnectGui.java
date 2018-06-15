@@ -13,15 +13,15 @@ public class ButtonConnectGui extends Button {
     }
 
     @Override
-    public String text() {
+    public String genText() {
         return "Multiplayer";
     }
 
     @Override
-    public BoundingBox3d bound() {
+    public BoundingBox3d genBound() {
         float dy=game.gui==null||game.gui.main==null?0:(1-game.gui.main.uiState)*-.25f;
-        bound.set(game.aspectratio/10,.05f+dy,0,game.aspectratio*4/10f,.2f+dy,.05f);
-        return bound;
+        buttonBound.set(game.aspectratio/10,.05f+dy,0,game.aspectratio*4/10f,.2f+dy,.05f);
+        return buttonBound;
     }
 
     @Override

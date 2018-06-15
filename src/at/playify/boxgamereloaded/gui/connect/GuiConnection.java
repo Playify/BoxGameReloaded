@@ -3,6 +3,7 @@ package at.playify.boxgamereloaded.gui.connect;
 import at.playify.boxgamereloaded.BoxGameReloaded;
 import at.playify.boxgamereloaded.gui.Gui;
 import at.playify.boxgamereloaded.gui.button.Button;
+import at.playify.boxgamereloaded.interfaces.Drawer;
 import at.playify.boxgamereloaded.network.connection.ConnectionSinglePlayer;
 import at.playify.boxgamereloaded.util.BoundingBox3d;
 import at.playify.boxgamereloaded.util.Finger;
@@ -19,6 +20,27 @@ public class GuiConnection extends Gui {
         buttons.add(new ButtonClose(game));
         buttons.add(new ButtonDisconnect(game));
         buttons.add(new ButtonLan(game));
+        buttons.add(new Button(game) {
+            @Override
+            public String genText(){
+                return "";
+            }
+
+            @Override
+            public BoundingBox3d genBound(){
+                buttonBound.set(game.aspectratio/4,.1f,0.01f,game.aspectratio*3/4,.9f,0);
+                return buttonBound;
+            }
+
+            @Override
+            public boolean click(Finger finger){
+                return true;
+            }
+
+            @Override
+            public void draw(Drawer d){
+            }
+        });
     }
 
     @Override
@@ -43,7 +65,10 @@ public class GuiConnection extends Gui {
 
     @Override
     public boolean click(Finger finger) {
-        super.click(finger);
+        boolean b=super.click(finger);
+        if (!b) {
+            game.gui.close(this);
+        }
         return true;
     }
 
@@ -53,14 +78,14 @@ public class GuiConnection extends Gui {
         }
 
         @Override
-        public String text() {
+        public String genText() {
             return "Close";
         }
 
         @Override
-        public BoundingBox3d bound() {
-            bound.set(game.aspectratio/4+.02f,.12f,0,game.aspectratio/2-.01f,.22f,0.01f);
-            return bound;
+        public BoundingBox3d genBound() {
+            buttonBound.set(game.aspectratio/4+.02f,.12f,0,game.aspectratio/2-.01f,.22f,0.01f);
+            return buttonBound;
         }
 
         @Override
@@ -76,7 +101,7 @@ public class GuiConnection extends Gui {
         }
 
         @Override
-        public String text() {
+        public String genText() {
             if (game.connection instanceof ConnectionSinglePlayer) {
                 return "Connect";
             }else {
@@ -85,9 +110,9 @@ public class GuiConnection extends Gui {
         }
 
         @Override
-        public BoundingBox3d bound() {
-            bound.set(game.aspectratio/4+.02f,.24f,0,game.aspectratio*3/4-.02f,.44f,0.01f);
-            return bound;
+        public BoundingBox3d genBound() {
+            buttonBound.set(game.aspectratio/4+.02f,.24f,0,game.aspectratio*3/4-.02f,.44f,0.01f);
+            return buttonBound;
         }
 
         @Override
@@ -109,7 +134,7 @@ public class GuiConnection extends Gui {
         }
 
         @Override
-        public String text() {
+        public String genText() {
             if (game.connection instanceof ConnectionSinglePlayer) {
                 return "Lan World";
             }else {
@@ -118,7 +143,7 @@ public class GuiConnection extends Gui {
         }
 
         @Override
-        public int color() {
+        public int genColor() {
             if (game.connection instanceof ConnectionSinglePlayer) {
                 if (((ConnectionSinglePlayer) game.connection).isLanWorld()){
                     return 0xFF00FF00;
@@ -131,13 +156,13 @@ public class GuiConnection extends Gui {
         }
 
         @Override
-        public BoundingBox3d bound() {
+        public BoundingBox3d genBound() {
             if (game.connection instanceof ConnectionSinglePlayer) {
-                bound.set(game.aspectratio/4+.02f,.57f,0,game.aspectratio*.45f-.01f,.67f,0.01f);
+                buttonBound.set(game.aspectratio/4+.02f,.57f,0,game.aspectratio*.45f-.01f,.67f,0.01f);
             }else {
-                bound.set(0,0,0,0,0,0);
+                buttonBound.set(0,0,0,0,0,0);
             }
-            return bound;
+            return buttonBound;
         }
 
         @Override

@@ -26,7 +26,7 @@ public class BlockKeyhole extends Block {
     }
 
     @Override
-    protected boolean isBackGround(int meta) {
+    public boolean isBackGround(int meta) {
         return false;
     }
 
@@ -54,9 +54,9 @@ public class BlockKeyhole extends Block {
             game.d.translate(0,0,v-3/5f);
             game.vertex.drawKey(false,meta);
         }else{
-            if (game.vars.keys[meta]&&!(level instanceof FakeLevel))
             game.vertex.drawKey(false,meta);
-            game.d.rect(0,0,1,1,0xFFFF4F49);
+            if (game.vars.keys[meta]&&!(level instanceof FakeLevel)) game.d.rect(0, 0, 1, 1, ((int) ((0xFF)*(1-v*.75f))<<24)|0xFF4F49);
+            else game.d.rect(0, 0, 1, 1, 0xFFFF4F49);
         }
         game.d.popMatrix();
     }

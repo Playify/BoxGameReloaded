@@ -24,13 +24,13 @@ public class BlockBoost extends Block implements Collideable{
         if (Math.abs(player.motionY)<0.015f) {
             Borrow.BorrowedBoundingBox b = Borrow.bound(x, y, x + 1, y + 1);
             b.left=b.right=false;
-            b.down=!(b.up=game.vars.inverted_gravity);
+            b.down=!(b.up=game.vars.gravity);
             list.add(b);
         }
     }
 
     @Override
-    protected boolean isBackGround(int meta) {
+    public boolean isBackGround(int meta) {
         return true;
     }
 
@@ -50,7 +50,7 @@ public class BlockBoost extends Block implements Collideable{
             game.d.cube(x, y, 0.9f, 1, 1, .1f,0xFF00C656);
             game.d.pushMatrix();
             game.d.translate(x+.5f,y+.5f,.9f);
-            game.d.rotate(game.vars.inverted_gravity?-15:15,-1,0,0);
+            game.d.rotate(game.vars.gravity ?-15:15,-1,0,0);
             game.d.rotate(45,0,0,1);
             final float v=.3f;
             game.d.cube(-v,-v,0,2*v,2*v,.2f, 0xFF59FF59);
@@ -59,7 +59,7 @@ public class BlockBoost extends Block implements Collideable{
             game.d.rect(x, y, 1, 1, 0xFF00C656);
             game.d.pushMatrix();
             game.d.translate(x+.5f,y+.5f,-0.01f);
-            game.d.scale(1,game.vars.inverted_gravity?1:-1,1);
+            game.d.scale(1,game.vars.gravity ?1:-1,1);
             game.d.vertex(game.vertex.bigtriangle,0xFF59FF59);
             game.d.popMatrix();
         }

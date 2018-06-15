@@ -34,7 +34,7 @@ public class BlockTeleporter extends Block implements Collideable, NoCollideable
     }
 
     @Override
-    protected boolean isBackGround(int meta) {
+    public boolean isBackGround(int meta) {
         return true;
     }
 

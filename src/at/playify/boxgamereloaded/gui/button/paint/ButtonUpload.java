@@ -13,14 +13,14 @@ public class ButtonUpload extends Button {
     }
 
     @Override
-    public String text() {
+    public String genText() {
         return "Upload";
     }
 
     @Override
-    public BoundingBox3d bound() {
-        bound.set(game.aspectratio/2+0.025f, .55f, -.05f,game.aspectratio-.25f , .65f, 0);
-        return bound;
+    public BoundingBox3d genBound() {
+        buttonBound.set(game.aspectratio/2+0.025f, .55f, -.05f,game.aspectratio-.25f , .65f, 0);
+        return buttonBound;
     }
 
     @Override

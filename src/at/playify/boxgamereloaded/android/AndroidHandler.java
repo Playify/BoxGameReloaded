@@ -4,7 +4,10 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Rect;
+import android.os.Build;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -12,6 +15,7 @@ import android.text.TextWatcher;
 import android.text.method.PasswordTransformationMethod;
 import android.view.*;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -28,6 +32,7 @@ import static android.content.Context.CLIPBOARD_SERVICE;
 
 
 class AndroidHandler extends Handler {
+    public Text text;
     private GameActivity a;
     private AlertDialog ad;
 
@@ -51,8 +56,18 @@ class AndroidHandler extends Handler {
                 return;
             }
         }
+        InputMethodManager in=(InputMethodManager) a.getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (b) {
+            in.showSoftInput(a.view, InputMethodManager.SHOW_FORCED);
+        }else{
+            a.layout();
+            in.hideSoftInputFromWindow(a.view.getWindowToken(),0);
+        }
+
+        if (a!=null) return;
+
         ContextThemeWrapper context;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             context=new ContextThemeWrapper(a, android.R.style.Theme_Material_Dialog);
         } else {
             context=a;
@@ -185,7 +200,7 @@ class AndroidHandler extends Handler {
     }
 
     @Override
-    public void keybd(String title, boolean pw,String preEnteredText, final Action.Bool<String> action) {
+    public void keybd(String title, boolean pw, String preEnteredText, final Action.Bool<String> action) {
         ContextThemeWrapper context;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             context=new ContextThemeWrapper(a, android.R.style.Theme_Material_Dialog);
@@ -199,7 +214,7 @@ class AndroidHandler extends Handler {
         text.setSingleLine();
         text.setText(preEnteredText);
         text.setSelection(preEnteredText.length());
-        if (pw){
+        if (pw) {
             text.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
             text.setTransformationMethod(PasswordTransformationMethod.getInstance());
         }
@@ -211,7 +226,7 @@ class AndroidHandler extends Handler {
                     if (action.exec(text.getText().toString())) {
                         dialog.dismiss();
                         return true;
-                    }else{
+                    } else {
                         return false;
                     }
                 }
@@ -234,5 +249,20 @@ class AndroidHandler extends Handler {
     @Override
     public boolean buttons() {
         return true;
+    }
+
+    public static class Text extends EditText {
+        private final GameActivity a;
+
+        public Text(GameActivity activity) {
+            super(activity);
+            a=activity;
+        }
+
+        @Override
+        protected void onFocusChanged(boolean focused, int direction, Rect previouslyFocusedRect) {
+
+            super.onFocusChanged(focused, direction, previouslyFocusedRect);
+        }
     }
 }

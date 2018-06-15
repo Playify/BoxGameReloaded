@@ -12,15 +12,15 @@ public class ConsoleButton extends Button {
     }
 
     @Override
-    public String text() {
+    public String genText() {
         return "Console";
     }
 
     @Override
-    public BoundingBox3d bound() {
+    public BoundingBox3d genBound() {
         float z=1/7f;
-        bound.set(0, 0, 0, z, z, z);
-        return bound;
+        buttonBound.set(0, 0, 0, z, z, z);
+        return buttonBound;
     }
 
     @Override
@@ -28,7 +28,7 @@ public class ConsoleButton extends Button {
         if (!game.vars.debug.console) {
             return;
         }
-        int color=color();
+        int color=genColor();
         final float v=.1f;
         d.pushMatrix();
         d.cube(0, 0, 0, 1, v, v, color, true, false, true, false);

@@ -61,7 +61,7 @@ public class PlayPaint implements Paintable {
             float angle=System.currentTimeMillis()%(360*v)/(float) v;
             game.d.rotate(angle, 0, 1, 0);
             int i=0;
-            game.d.translate(0, ((float) Math.sin(Math.toRadians(angle * 2))) * .2f);
+            game.d.translate(0, ((float) Math.sin(Math.PI/180*(angle * 2))) * .2f);
             game.d.scale(.5f);
             game.d.vertex(vertex[i++], 0xFF005C7A, 1);
             game.d.vertex(vertex[i++], 0xFF005C7A, 0.8f);

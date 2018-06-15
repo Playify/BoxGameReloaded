@@ -13,14 +13,14 @@ public class KeyButtons extends Button {
     }
 
     @Override
-    public String text() {
+    public String genText() {
         return "KeyButtons";
     }
 
     @Override
-    public BoundingBox3d bound() {
-        bound.set(0,6/7f,-1/14f,1/7f,1,1/14f);
-        return bound;
+    public BoundingBox3d genBound() {
+        buttonBound.set(0,6/7f,-1/14f,1/7f,1,1/14f);
+        return buttonBound;
     }
 
     @Override
@@ -46,8 +46,10 @@ public class KeyButtons extends Button {
             game.blocks.KEYHOLE.state[i]=Utils.clamp(game.blocks.KEYHOLE.state[i]+(game.vars.keys[i] ? 1 : -1)/8f,0,1);
             ret&=game.blocks.KEYHOLE.state[i]==0||game.blocks.KEYHOLE.state[i]==1;
         }
-        game.vars.switchState=Utils.clamp(game.vars.switchState+1/8f*((game.vars.switched)?1:-1),0,1);
-        ret&=game.vars.switchState==(game.vars.switched?1:0);
+        game.vars.switchState0=Utils.clamp(game.vars.switchState0+1/8f*((game.connection.switch0)?1:-1),0,1);
+        game.vars.switchState1=Utils.clamp(game.vars.switchState1+1/8f*((game.connection.switch1)?1:-1),0,1);
+        ret&=game.vars.switchState0==(game.connection.switch0 ?1:0);
+        ret&=game.vars.switchState1==(game.connection.switch1 ?1:0);
         return ret;
     }
 }

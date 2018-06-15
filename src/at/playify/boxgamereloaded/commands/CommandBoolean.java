@@ -10,6 +10,12 @@ public class CommandBoolean extends Command {
     private String def;
     private Object o;
 
+    CommandBoolean(String s, Object o) throws NoSuchFieldException{
+        cmd=s;
+        this.field=o.getClass().getField(s);
+        this.o=o;
+        this.def="toggle";
+    }
     CommandBoolean(String s, Field field, Object o) {
         cmd=s;
         this.field=field;

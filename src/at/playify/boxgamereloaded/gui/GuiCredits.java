@@ -24,14 +24,14 @@ public class GuiCredits extends Gui {
     public void initGui(ArrayList<Button> buttons) {
         buttons.add(new Button(game) {
             @Override
-            public String text(){
+            public String genText(){
                 return "";
             }
 
             @Override
-            public BoundingBox3d bound(){
-                bound.set(game.aspectratio/4,.1f,0.01f,game.aspectratio*3/4,.9f,0);
-                return bound;
+            public BoundingBox3d genBound(){
+                buttonBound.set(game.aspectratio/4,.1f,0.01f,game.aspectratio*3/4,.9f,0);
+                return buttonBound;
             }
 
             @Override
@@ -105,14 +105,14 @@ public class GuiCredits extends Gui {
         }
 
         @Override
-        public String text() {
+        public String genText() {
             return "Close";
         }
 
         @Override
-        public BoundingBox3d bound() {
-            bound.set(game.aspectratio/4+.02f,.12f,0,game.aspectratio/2-.01f,.22f,0.01f);
-            return bound;
+        public BoundingBox3d genBound() {
+            buttonBound.set(game.aspectratio/4+.02f,.12f,0,game.aspectratio/2-.01f,.22f,0.01f);
+            return buttonBound;
         }
 
         @Override

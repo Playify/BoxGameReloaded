@@ -1,6 +1,7 @@
 package at.playify.boxgamereloaded.util.bound;
 
 import at.playify.boxgamereloaded.level.Level;
+import at.playify.boxgamereloaded.util.Borrow;
 import at.playify.boxgamereloaded.util.Utils;
 
 import java.io.Serializable;
@@ -11,7 +12,7 @@ import java.util.Locale;
 
 @SuppressWarnings({"WeakerAccess", "unused"})
 //Rechteckige KollisionsBox
-public class RectBound implements Serializable, Cloneable , Bound<RectBound>{
+public class RectBound implements Serializable, Cloneable , Bound {
     private static final DecimalFormat dmf = new DecimalFormat("00.00", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
     private static final DecimalFormat dm = new DecimalFormat("#.#", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
     private static final float FACTOR = 10000;
@@ -70,10 +71,9 @@ public class RectBound implements Serializable, Cloneable , Bound<RectBound>{
         return new RectBound(x(), y(), w(), h());
     }
 
-    public RectBound move(float x, float y) {
+    public void move(float x, float y) {
         this.x(this.x()+x);
         this.y(this.y()+y);
-        return this;
     }
 
     @Override
@@ -315,6 +315,10 @@ public class RectBound implements Serializable, Cloneable , Bound<RectBound>{
             while (cy()<0) cy(cy()+sizeY);
             while (cy()>sizeY) cy(cy()-sizeY);
         }
+    }
+
+    public Borrow.BorrowedBoundingBox borrow(){
+        return Borrow.bound(x(),y(),xw(),yh());
     }
 }
 

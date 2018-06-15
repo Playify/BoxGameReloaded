@@ -4,31 +4,15 @@ import at.playify.boxgamereloaded.BoxGameReloaded;
 import at.playify.boxgamereloaded.network.Server;
 import at.playify.boxgamereloaded.network.connection.ConnectionToClient;
 import at.playify.boxgamereloaded.network.connection.ConnectionToServer;
+import at.playify.boxgamereloaded.network.connection.Input;
+import at.playify.boxgamereloaded.network.connection.Output;
 import at.playify.boxgamereloaded.util.Action;
+
+import java.io.IOException;
 
 public class PacketFinish extends Packet {
     @Override
-    public String convertToString(BoxGameReloaded game) {
-        return "";
-    }
-
-    @Override
-    public void loadFromString(String s, BoxGameReloaded game) {
-
-    }
-
-    @Override
     public void handle(BoxGameReloaded game, ConnectionToServer connectionToServer) {
-
-    }
-
-    @Override
-    public String convertToString(Server server, ConnectionToClient client) {
-        return "";
-    }
-
-    @Override
-    public void loadFromString(String s, Server server) {
 
     }
 
@@ -41,5 +25,25 @@ public class PacketFinish extends Packet {
                 connectionToClient.setWorld(s);
             }
         });
+    }
+
+    @Override
+    public void send(Output out, Server server, ConnectionToClient con) throws IOException{
+
+    }
+
+    @Override
+    public void send(Output out, BoxGameReloaded game, ConnectionToServer con) throws IOException{
+
+    }
+
+    @Override
+    public void receive(Input in, Server server, ConnectionToClient con) throws IOException{
+
+    }
+
+    @Override
+    public void receive(Input in, BoxGameReloaded game, ConnectionToServer con) throws IOException{
+
     }
 }

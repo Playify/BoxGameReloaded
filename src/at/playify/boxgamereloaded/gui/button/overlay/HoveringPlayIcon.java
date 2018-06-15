@@ -57,19 +57,19 @@ public class HoveringPlayIcon extends Button {
     }
 
     @Override
-    public String text() {
+    public String genText() {
         return "PlayIcon";
     }
 
     @Override
-    public BoundingBox3d bound() {
+    public BoundingBox3d genBound() {
         if(pauseState!=0&&!game.gui.isMainMenuVisible()&&!game.gui.isOptionsVisible()) {
             float v=(game.aspectratio-1+.1f)/2;
-            bound.set(v, .1f, -.5f, game.aspectratio-v, 1, -1.5f);
+            buttonBound.set(v, .1f, -.5f, game.aspectratio-v, 1, -1.5f);
         }else{
-            bound.set(0,0,0,0,0,0);
+            buttonBound.set(0,0,0,0,0,0);
         }
-        return bound;
+        return buttonBound;
     }
 
     @Override
@@ -91,7 +91,7 @@ public class HoveringPlayIcon extends Button {
 
             long angle = (System.currentTimeMillis() / 20) % 720;
             d.rotate(angle, 0, 1, 0);
-            d.translate(0, ((float) Math.sin(Math.toRadians(angle * 2))) * .04f);
+            d.translate(0, ((float) Math.sin(Math.PI/180*(angle * 2))) * .04f);
             d.scale(.15f, .15f);
             int i=0;
             d.vertex(vertex[i++], 0xFF005C7A, 1);

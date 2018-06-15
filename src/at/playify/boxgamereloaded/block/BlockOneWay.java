@@ -65,21 +65,21 @@ public class BlockOneWay extends Block {
 
         /*
         if (meta==0){
-            if (bound.x()>player.bound.cx()+0.0001f) {
-                list.add(Borrow.bound(x,y,x+1,y+1));
+            if (genBound.x()>player.genBound.cx()+0.0001f) {
+                list.add(Borrow.genBound(x,y,x+1,y+1));
             }
             if (!(level.get(x,y-1) instanceof BlockOneWay&&level.getMeta(x,y-1)==0))
-            list.add(Borrow.bound(x,y,x+1,y));
+            list.add(Borrow.genBound(x,y,x+1,y));
             if (!(level.get(x,y+1) instanceof BlockOneWay&&level.getMeta(x,y+1)==0))
-            list.add(Borrow.bound(x,y+1,x+1,y+1));
+            list.add(Borrow.genBound(x,y+1,x+1,y+1));
         }else if (meta==2){
-            if (bound.x()+0.0001f<player.bound.cx()) {
-                list.add(Borrow.bound(x,y,x+1,y+1));
+            if (genBound.x()+0.0001f<player.genBound.cx()) {
+                list.add(Borrow.genBound(x,y,x+1,y+1));
             }
             if (!(level.get(x,y-1) instanceof BlockOneWay&&level.getMeta(x,y-1)==2))
-                list.add(Borrow.bound(x,y,x+1,y));
+                list.add(Borrow.genBound(x,y,x+1,y));
             if (!(level.get(x,y+1) instanceof BlockOneWay&&level.getMeta(x,y+1)==2))
-                list.add(Borrow.bound(x,y+1,x+1,y+1));
+                list.add(Borrow.genBound(x,y+1,x+1,y+1));
         }else if (meta==1){
 
         }else if (meta==3){
@@ -88,7 +88,7 @@ public class BlockOneWay extends Block {
     }
 
     @Override
-    protected boolean isBackGround(int meta) {
+    public boolean isBackGround(int meta) {
         return true;
     }
 
